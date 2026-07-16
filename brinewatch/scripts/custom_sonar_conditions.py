@@ -144,7 +144,7 @@ def run_condition(args) -> int:
                                   n_ports=6, port_spacing_m=3.2),
             scene=OutfallSceneConfig(structure_yaw_deg=YAW_DEG,
                                      scatter_rocks=0),
-            terrain=terrain, spawn_fn=raw_spawn)
+            terrain=terrain, spawn_fn=spawn)
         if keep is not None:
             orig = builder._spawn
 
