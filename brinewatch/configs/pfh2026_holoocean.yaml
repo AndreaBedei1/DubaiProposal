@@ -1,0 +1,97 @@
+# PFH 2026 official demonstration: BlueROV2 in PierHarbor (official world),
+# sonar-based outfall localization with NO ground-truth access.
+#
+# Site (from outputs/pierharbor_recon_*): the pier piling lattice at
+# ~(456.5, -630.5) is stock world geometry, strongly visible to the official
+# ImagingSonar (open-water control returns zero). It acts as the acoustic
+# localization target; the spawned outfall (manifold, risers, pipe) is
+# co-located VISUAL geometry (runtime props are not in the acoustic octree —
+# verified, see docs/application/pfh2026/BASELINE_AUDIT.md). The analytic
+# plume is anchored to the same point, over the flat ~-20 m harbor shelf that
+# extends south (current direction) of the pier.
+name: brinewatch_pfh2026
+seed: 7
+planner: adaptive
+
+environment:
+  ambient_salinity_psu: 39.5
+  salinity_stratification_per_m: 0.005
+  ambient_temperature_c: 24.0
+  # Nominal plane; the demo script recalibrates z0/slopes from a RangeFinder
+  # terrain probe at mission start (see scripts/run_pfh2026_demo.py).
+  seabed_z0: -20.0
+  seabed_slope_x: 0.0
+  seabed_slope_y: 0.0
+  current_dir_deg: -90.0        # plume spreads south, away from the pier
+  tide_amplitude_m: 2.5
+  tide_period_s: 2400.0
+
+outfall:
+  x: 456.5
+  y: -630.5
+  axis_deg: 90.0                # manifold parallel to the pier line
+  n_ports: 5
+  port_spacing_m: 3.0
+  riser_height_m: 1.6
+  discharge_salinity_psu: 68.0
+  discharge_temperature_c: 27.5
+
+survey:
+  x_min: 416.0
+  x_max: 516.0
+  y_min: -700.0
+  y_max: -624.0                 # keeps clearance from the pier lattice
+  altitude_m: 2.2
+  grid_resolution_m: 3.0
+
+budget:
+  max_distance_m: 1100.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+  locate_fraction: 0.35         # sonar LOCATE needs more travel than synthetic
+
+locator:
+  mode: sonar                   # REAL ImagingSonar pipeline; no oracle
+  prior_x: 466.0                # chart prior ~17 m off the true structure
+  prior_y: -644.0
+  n_confirm: 4
+  max_range_m: 25.0             # also sets the LOCATE search-leg scale
+
+adaptive:
+  weight_turn: 0.35
+  min_leg_m: 12.0
+
+compliance:
+  mixing_zone_radius_m: 40.0
+  threshold_increment_pct: 5.0
+  eval_altitude_m: 1.0
+
+backend:
+  name: holoocean
+  holoocean:
+    world: PierHarbor
+    package_name: Ocean
+    ticks_per_sec: 30
+    control_ticks: 15
+    frames_per_sec: false
+    show_viewport: true
+    window_width: 1280
+    window_height: 720
+    spawn_outfall_props: true
+    defer_scene_build: true     # scene built by the demo script after the
+                                # terrain-calibration probe
+    draw_debug: true
+    min_altitude_m: 1.0
+    sonar_enabled: true
+    sonar_hz: 1.0               # 1 frame/sim-second: ample for LOCATE, halves
+                                # the acoustic compute cost of the mission
+    sonar_range_min_m: 1.0
+    sonar_range_max_m: 40.0
+    sonar_azimuth_deg: 120.0
+    sonar_elevation_deg: 20.0
+    sonar_range_bins: 512
+    sonar_azimuth_bins: 256
+    sonar_add_sigma: 0.05
+    sonar_mult_sigma: 0.05
+    sonar_init_octree_range_m: 50.0
+    octree_min_m: 0.05
+    octree_max_m: 5.0

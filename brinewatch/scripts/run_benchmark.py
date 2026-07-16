@@ -24,6 +24,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", type=str, default=None, help="YAML mission config")
     ap.add_argument("--seeds", type=int, default=5, help="number of seeds per planner")
+    ap.add_argument("--seed-start", type=int, default=0,
+                    help="first seed offset (use e.g. 100 for the held-out "
+                         "evaluation set; 0-4 are the development seeds)")
     ap.add_argument("--backend", type=str, default=None, choices=[None, "kinematic", "holoocean"])
     ap.add_argument("--budget", type=float, default=None, help="override budget in metres")
     ap.add_argument("--out", type=str, default=str(REPO_ROOT / "outputs"))
@@ -39,9 +42,8 @@ def main() -> int:
     print(f"[benchmark] run dir: {run_dir}")
     save_config(cfg, run_dir / "config_used.yaml")
 
-    result = run_benchmark(
-        cfg, run_dir, seeds=tuple(range(args.seeds)), backend=backend, verbose=True
-    )
+    seeds = tuple(range(args.seed_start, args.seed_start + args.seeds))
+    result = run_benchmark(cfg, run_dir, seeds=seeds, backend=backend, verbose=True)
     curves = plot_learning_curves(result.records, run_dir / "learning_curves.png")
 
     # ------------------------------------------------------------------ #

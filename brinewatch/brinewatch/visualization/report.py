@@ -62,6 +62,9 @@ div.banner{border-radius:8px;padding:14px 20px;color:#ffffff;margin:1rem 0 0.4re
 div.banner span.verdict-label{font-size:1.6em;font-weight:700;margin-right:16px;}
 .pass{background:#1e7d3b;}
 .fail{background:#c0392b;}
+.clear{background:#1e7d3b;}
+.review{background:#c9871b;}
+.possible_exceedance{background:#c0392b;}
 span.chip{display:inline-block;padding:1px 10px;border-radius:10px;color:#ffffff;font-weight:600;}
 p.gt-verdict{color:#5a6b7a;margin-top:0.3rem;}
 table{border-collapse:collapse;margin:0.6rem 0 1.2rem;}
@@ -110,6 +113,26 @@ def _figure_html(name: str, fig_path: Union[str, Path]) -> str:
         f"<figure><img src=\"data:{mime};base64,{data}\" alt=\"{caption}\"/>"
         f"<figcaption>{caption}</figcaption></figure>"
     )
+
+
+def _screening_banner_html(screening) -> str:
+    """Three-state screening banner (CLEAR / REVIEW / POSSIBLE EXCEEDANCE)."""
+    css = screening.state.value.lower()
+    detail = (
+        f"P(exceed) {_fmt(screening.prob_exceed_max)} &middot; "
+        f"max exceedance {_fmt(screening.max_exceedance_psu)} PSU &middot; "
+        f"max posterior std outside zone {_fmt(screening.max_std_outside_psu)} PSU &middot; "
+        f"threshold {_fmt(screening.threshold_psu)} PSU"
+    )
+    return "\n".join([
+        f"<div class=\"banner {css}\">",
+        f"<span class=\"verdict-label\">{html.escape(screening.label)}</span>",
+        f"<span>{detail}</span>",
+        "</div>",
+        f"<p class=\"gt-verdict\"><b>Why:</b> {html.escape(screening.reason)}.<br/>"
+        f"<b>Recommended action:</b> {html.escape(screening.recommended_action)}<br/>"
+        "This is uncertainty-aware <i>screening</i>, not regulatory certification.</p>",
+    ])
 
 
 def _verdict_banner_html(verdict: ComplianceVerdict, gt_verdict: Optional[ComplianceVerdict]) -> str:
@@ -200,6 +223,7 @@ def render_html_report(
     metrics: Optional[MetricsResult],
     figures: Dict[str, Union[str, Path]],
     extra: Optional[Dict[str, Any]] = None,
+    screening=None,  # Optional[brinewatch.evaluation.screening.ScreeningResult]
 ) -> Path:
     """Write the self-contained HTML mission report; see module docstring."""
     out = Path(path)
@@ -219,7 +243,12 @@ def render_html_report(
         "</p>"
     )
 
-    body.append("<h2>Compliance verdict</h2>")
+    if screening is not None:
+        body.append("<h2>Screening result</h2>")
+        body.append(_screening_banner_html(screening))
+        body.append("<h3>Legacy binary verdict</h3>")
+    else:
+        body.append("<h2>Compliance verdict</h2>")
     body.append(_verdict_banner_html(verdict, gt_verdict))
 
     body.append("<h2>Mission stats</h2>")

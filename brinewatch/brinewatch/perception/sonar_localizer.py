@@ -31,7 +31,23 @@ class SonarLocalizerConfig:
     cluster_radius_m: float = 5.0  # consensus radius for world estimates
     min_hits_for_consensus: int = 2  # estimates needed before emitting detections
     max_buffer: int = 400  # cap on stored world estimates
-    min_strength: float = 5.0  # contact strength gate (robust z units)
+    # Gates tuned on PierHarbor probe data (outputs/locate_probe_*): real
+    # man-made structures return strength >~130 as compact components, while
+    # seabed clutter at grazing incidence is weaker (<~105), diffuse
+    # (>1500 bins) or very close.
+    min_strength: float = 100.0  # contact strength gate (robust z units)
+    max_area_bins: int = 1500  # reject diffuse bottom patches
+    # Chart-prior plausibility gate: detections whose world estimate falls
+    # farther than this from the configured prior are ignored. This is chart
+    # information from the mission config, NOT simulator ground truth.
+    prior_xy: Optional[Tuple[float, float]] = None
+    prior_gate_m: float = 30.0
+    # Aspect diversity: detections are only emitted once the consensus
+    # cluster contains contacts observed from headings at least this far
+    # apart. Vertical structures (pilings, risers) return echoes from every
+    # aspect; seabed scarps and ripple fields reflect specularly in a narrow
+    # aspect band and fail this test (PierHarbor clutter analysis).
+    min_aspect_diff_deg: float = 25.0
 
 
 class SonarDiffuserLocator:
@@ -42,7 +58,7 @@ class SonarDiffuserLocator:
     def __init__(self, cfg: SonarLocalizerConfig = SonarLocalizerConfig()):
         self.cfg = cfg
         self.detector = SonarDiffuserDetector(cfg.detector)
-        self._estimates: List[Tuple[float, float]] = []
+        self._estimates: List[Tuple[float, float, float]] = []  # (x, y, heading)
         self.frames_seen = 0
         self.contacts_seen = 0
 
@@ -63,10 +79,17 @@ class SonarDiffuserLocator:
         for contact in contacts:
             if contact.strength < self.cfg.min_strength:
                 continue
-            self.contacts_seen += 1
+            if contact.area_bins > self.cfg.max_area_bins:
+                continue  # diffuse bottom patch, not a compact structure
             est = self._to_world(frame, contact.range_m, contact.bearing_rad)
-            self._push(est)
-            if self._consistent(est):
+            if self.cfg.prior_xy is not None:
+                if math.hypot(est[0] - self.cfg.prior_xy[0],
+                              est[1] - self.cfg.prior_xy[1]) > self.cfg.prior_gate_m:
+                    continue  # outside the chart-plausible area
+            self.contacts_seen += 1
+            heading = frame.vehicle_rpy[2] + frame.extrinsics.yaw_offset_rad
+            self._push((est[0], est[1], heading))
+            if self._consistent(est) and self._aspect_diverse():
                 bearing_world = float(frame.world_bearing(contact.centroid_col))
                 det = Detection(
                     t=frame.t,
@@ -88,6 +111,25 @@ class SonarDiffuserLocator:
         arr = np.asarray(self._estimates, dtype=float)
         return (float(np.median(arr[:, 0])), float(np.median(arr[:, 1])))
 
+    def _aspect_diverse(self) -> bool:
+        """True when in-cluster contacts span sufficiently different headings."""
+        if self.cfg.min_aspect_diff_deg <= 0.0:
+            return True
+        consensus = self.consensus
+        if consensus is None:
+            return False
+        headings = [
+            h for x, y, h in self._estimates
+            if math.hypot(x - consensus[0], y - consensus[1]) <= self.cfg.cluster_radius_m
+        ]
+        if len(headings) < 2:
+            return False
+        spread = max(
+            abs(math.atan2(math.sin(a - b), math.cos(a - b)))
+            for a in headings for b in headings
+        )
+        return spread >= math.radians(self.cfg.min_aspect_diff_deg)
+
     def _to_world(self, frame: SonarFrame, range_m: float, bearing_sensor: float
                   ) -> Tuple[float, float]:
         yaw = frame.vehicle_rpy[2] + frame.extrinsics.yaw_offset_rad
@@ -97,7 +139,8 @@ class SonarDiffuserLocator:
         return (x0 + range_m * math.cos(bearing_world),
                 y0 + range_m * math.sin(bearing_world))
 
-    def _push(self, est: Tuple[float, float]) -> None:
+    def _push(self, est: Tuple[float, float, float]) -> None:
+        """Store an (x, y, heading) contact estimate."""
         self._estimates.append(est)
         if len(self._estimates) > self.cfg.max_buffer:
             self._estimates = self._estimates[-self.cfg.max_buffer:]

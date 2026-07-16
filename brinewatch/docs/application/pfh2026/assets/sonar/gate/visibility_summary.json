@@ -1,0 +1,32 @@
+{
+  "world": "SimpleUnderwater",
+  "sonar": "ImagingSonar",
+  "poses": [
+    {
+      "range_m": 8.0,
+      "mask_mean_present": 0.03169184923171997,
+      "mask_mean_absent": 0.03169184923171997,
+      "z_score": 0.0,
+      "ratio": 1.0,
+      "visible": false
+    },
+    {
+      "range_m": 12.0,
+      "mask_mean_present": 0.06665807217359543,
+      "mask_mean_absent": 0.06665807217359543,
+      "z_score": 0.0,
+      "ratio": 1.0,
+      "visible": false
+    },
+    {
+      "range_m": 18.0,
+      "mask_mean_present": 0.12213510274887085,
+      "mask_mean_absent": 0.12213510274887085,
+      "z_score": 0.0,
+      "ratio": 1.0,
+      "visible": false
+    }
+  ],
+  "visible": false,
+  "visible_votes": 0
+}

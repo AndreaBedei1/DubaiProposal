@@ -123,6 +123,9 @@ class SurveyConfig:
     y_max: float = 60.0
     altitude_m: float = 2.0  # survey altitude above the (analytic) seabed
     grid_resolution_m: float = 3.0  # evaluation grid resolution
+    # Safety ceiling: no waypoint may be commanded shallower than this, even
+    # if a mis-fitted seabed plane extrapolates toward the surface.
+    max_z_m: float = -3.0
 
 
 @dataclass
@@ -207,6 +210,10 @@ class HoloOceanConfig:
     window_width: int = 1024
     window_height: int = 576
     spawn_outfall_props: bool = True
+    # When true, the backend does NOT auto-spawn the legacy plane-placed props
+    # at construction; the mission script builds the scene properly via
+    # OutfallSceneBuilder (terrain-calibrated placement + manifest).
+    defer_scene_build: bool = False
     draw_debug: bool = True  # draw waypoints/detections in the viewport
     min_altitude_m: float = 1.0  # safety floor when commanding depth
     # --- Official ImagingSonar (for locator.mode == "sonar") --------------- #

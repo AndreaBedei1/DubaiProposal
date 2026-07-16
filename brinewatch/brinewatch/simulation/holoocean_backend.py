@@ -111,7 +111,7 @@ class HoloOceanBackend(SimulatorBackend):
         self._last_state: Optional[VehicleState] = None
         self._last_raw_state: Optional[dict] = None
         self._last_sonar_emitted: Optional[np.ndarray] = None
-        if self.ho.spawn_outfall_props:
+        if self.ho.spawn_outfall_props and not self.ho.defer_scene_build:
             self._spawn_outfall_props()
 
     # ------------------------------------------------------------------ #
@@ -180,6 +180,21 @@ class HoloOceanBackend(SimulatorBackend):
                 pass
 
     # ------------------------------------------------------------------ #
+    def scene_builder(self, scene_cfg=None, upstream_dir_rad: float = math.pi):
+        """A terrain-calibrating OutfallSceneBuilder bound to this env/agent.
+
+        Used by mission scripts when ``defer_scene_build`` is set: probe the
+        real terrain, build the visual outfall, save the manifest."""
+        from .outfall_scene import OutfallSceneBuilder, OutfallSceneConfig
+
+        return OutfallSceneBuilder(
+            env=self._env,
+            agent_name=AGENT_NAME,
+            outfall=self.outfall_cfg,
+            scene=scene_cfg or OutfallSceneConfig(),
+            upstream_dir_rad=upstream_dir_rad,
+        )
+
     def draw_waypoint(self, wp: Waypoint) -> None:
         if self.ho.draw_debug:
             try:

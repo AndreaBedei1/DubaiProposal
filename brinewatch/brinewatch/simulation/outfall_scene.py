@@ -101,15 +101,23 @@ class OutfallSceneBuilder:
     # ------------------------------------------------------------------ #
     # Terrain calibration (official sensors only)
     # ------------------------------------------------------------------ #
-    def probe_terrain(self, reference_bed_z: float) -> TerrainMap:
-        """Automated calibration pass: sound the bottom on a grid around the
-        outfall with the vehicle's down-looking RangeFinder (via teleport)."""
+    def probe_terrain(self, reference_bed_z: float,
+                      xs: Optional[np.ndarray] = None,
+                      ys: Optional[np.ndarray] = None) -> TerrainMap:
+        """Automated calibration pass: sound the bottom on a grid with the
+        vehicle's down-looking RangeFinder (via teleport). By default the
+        grid surrounds the outfall; pass explicit ``xs``/``ys`` to cover a
+        wider area (e.g. the whole survey box for the plume plane fit)."""
         sc = self.scene
         cx, cy = self.outfall.x, self.outfall.y
-        xs = np.arange(cx - sc.probe_half_extent_m, cx + sc.probe_half_extent_m + 1e-6,
-                       sc.probe_spacing_m)
-        ys = np.arange(cy - sc.probe_half_extent_m, cy + sc.probe_half_extent_m + 1e-6,
-                       sc.probe_spacing_m)
+        if xs is None:
+            xs = np.arange(cx - sc.probe_half_extent_m, cx + sc.probe_half_extent_m + 1e-6,
+                           sc.probe_spacing_m)
+        if ys is None:
+            ys = np.arange(cy - sc.probe_half_extent_m, cy + sc.probe_half_extent_m + 1e-6,
+                           sc.probe_spacing_m)
+        xs = np.asarray(xs, dtype=float)
+        ys = np.asarray(ys, dtype=float)
         hold_z = reference_bed_z + sc.probe_hold_z_m
         agent = self.env.agents[self.agent_name]
         bed = np.full((len(ys), len(xs)), np.nan)
@@ -133,9 +141,17 @@ class OutfallSceneBuilder:
         return self.terrain
 
     def _bed(self, x: float, y: float) -> float:
+        """Seabed z for placement: the terrain map value, unless it deviates
+        from the robust plane by more than 3 m — such soundings hit
+        structures (pier lattice) rather than the bottom, and placing scene
+        components on them would float/bury the geometry."""
         if self.terrain is None:
             raise SceneBuildError("no terrain model: call probe_terrain() or pass one")
-        return float(self.terrain.z(x, y))
+        if not hasattr(self, "_plane"):
+            self._plane = self.terrain.fit_plane(robust=True)
+        z_map = float(self.terrain.z(x, y))
+        z_plane = float(self._plane.z(x, y))
+        return z_plane if abs(z_map - z_plane) > 3.0 else z_map
 
     # ------------------------------------------------------------------ #
     # Building

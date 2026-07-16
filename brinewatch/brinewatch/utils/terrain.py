@@ -65,12 +65,31 @@ class TerrainMap:
         dh = float(np.hypot(p1[0] - p0[0], p1[1] - p0[1]))
         return float(np.arctan2(dz, dh)) if dh > 1e-6 else 0.0
 
-    def fit_plane(self) -> PlaneFit:
-        """Least-squares plane through the soundings (for the plume model)."""
+    def fit_plane(self, robust: bool = True, n_iter: int = 3,
+                  reject_sigma: float = 2.5) -> PlaneFit:
+        """Plane through the soundings (for the plume model).
+
+        With ``robust=True`` (default) the fit iteratively rejects soundings
+        whose residual exceeds ``reject_sigma`` robust standard deviations —
+        essential when some soundings hit structures (pier lattice, wrecks)
+        instead of the seabed: a single -12 m hit among -20 m bottom returns
+        otherwise tilts the plane catastrophically far from the probe area."""
         X, Y = np.meshgrid(self.xs, self.ys)
-        A = np.column_stack([np.ones(X.size), X.ravel(), Y.ravel()])
-        coef, *_ = np.linalg.lstsq(A, self.bed.ravel(), rcond=None)
-        resid = self.bed.ravel() - A @ coef
+        A_all = np.column_stack([np.ones(X.size), X.ravel(), Y.ravel()])
+        z_all = self.bed.ravel()
+        keep = np.ones(z_all.size, dtype=bool)
+        coef = None
+        for _ in range(max(1, n_iter if robust else 1)):
+            coef, *_ = np.linalg.lstsq(A_all[keep], z_all[keep], rcond=None)
+            resid = z_all - A_all @ coef
+            if not robust:
+                break
+            mad = np.median(np.abs(resid[keep] - np.median(resid[keep]))) * 1.4826
+            new_keep = np.abs(resid) <= max(reject_sigma * mad, 0.5)
+            if new_keep.sum() < 6 or np.array_equal(new_keep, keep):
+                break
+            keep = new_keep
+        resid = z_all[keep] - A_all[keep] @ coef
         return PlaneFit(z0=float(coef[0]), slope_x=float(coef[1]),
                         slope_y=float(coef[2]), rmse_m=float(np.sqrt(np.mean(resid ** 2))))
 

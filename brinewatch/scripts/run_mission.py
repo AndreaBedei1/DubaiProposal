@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from brinewatch.evaluation.compliance import evaluate_compliance
 from brinewatch.evaluation.metrics import compute_metrics
+from brinewatch.evaluation.screening import screen, screening_outcome
 from brinewatch.mapping.grid_map import EvalGrid
 from brinewatch.mission.runner import boundary_salinity_psu, create_mission
 from brinewatch.utils.config import load_config, save_config
@@ -75,6 +76,8 @@ def main() -> int:
     verdict = evaluate_compliance(mean, std, grid, true_xy, cfg.compliance, ambient_bottom)
     gt_verdict = evaluate_compliance(truth, None, grid, true_xy, cfg.compliance, ambient_bottom)
     metrics = compute_metrics(mean, truth, grid, result.samples, threshold, plume=plume)
+    screening = screen(verdict, cfg.compliance)
+    outcome = screening_outcome(screening, gt_verdict.compliant)
 
     # ----------------------------------------------------------------- #
     # Artifacts
@@ -99,25 +102,32 @@ def main() -> int:
         title=f"Exceedance vs threshold ({verdict.label})",
     )
     save_result_summary(result, run_dir / "summary.json", extra={
-        "verdict": verdict.label,
+        "screening": screening.state.value,
+        "screening_reason": screening.reason,
+        "screening_outcome_vs_gt": outcome,
+        "verdict_binary_legacy": verdict.label,
         "gt_verdict": gt_verdict.label,
         "threshold_psu": round(threshold, 3),
         "max_exceedance_psu": round(verdict.max_exceedance_psu, 3),
         "prob_exceed_max": round(verdict.prob_exceed_max, 3),
+        "max_std_outside_psu": round(verdict.max_std_outside_psu, 3),
         "rmse_plume": round(metrics.rmse_plume, 4),
         "boundary_f1": round(metrics.boundary_f1, 3),
     })
     report = render_html_report(
         run_dir / "report.html", cfg, result, verdict, gt_verdict, metrics,
         figures={"Ground truth vs reconstruction": fig1, "Compliance map": fig2},
+        screening=screening,
     )
 
     print(f"[brinewatch] planner={planner_name} backend={backend_name} "
           f"samples={len(result.samples)} budget={result.budget.used_m:.0f}/"
           f"{result.budget.max_distance_m:.0f} m")
-    print(f"[brinewatch] verdict: {verdict.label} (ground truth: {gt_verdict.label}) | "
+    print(f"[brinewatch] screening: {screening.label} (vs GT: {outcome}) | "
+          f"binary legacy: {verdict.label} / GT {gt_verdict.label} | "
           f"max exceedance {verdict.max_exceedance_psu:+.2f} PSU | "
-          f"P(exceed) {verdict.prob_exceed_max:.2f}")
+          f"P(exceed) {verdict.prob_exceed_max:.2f} | "
+          f"max std outside {verdict.max_std_outside_psu:.2f} PSU")
     print(f"[brinewatch] rmse(plume)={metrics.rmse_plume:.3f} PSU  "
           f"boundary F1={metrics.boundary_f1:.2f}  coverage={metrics.coverage_frac:.2f}")
     print(f"[brinewatch] report: {report}")

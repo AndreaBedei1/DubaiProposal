@@ -25,12 +25,14 @@ from ..mission.runner import boundary_salinity_psu, create_mission
 from ..utils.config import MissionConfig
 from .compliance import evaluate_compliance
 from .metrics import compute_metrics
+from .screening import screen, screening_outcome
 
 RECORD_KEYS = [
     "planner", "seed", "checkpoint_frac", "budget_m", "n_samples",
     "rmse_all", "rmse_plume", "mae_all", "boundary_f1", "boundary_iou",
     "coverage_frac", "in_plume_frac", "compliant", "gt_compliant",
     "verdict_correct", "max_exceedance_psu", "prob_exceed_max",
+    "max_std_outside_psu", "screening_state", "screening_outcome",
 ]
 
 SUMMARY_METRICS = [
@@ -93,6 +95,8 @@ def run_benchmark(
                 metrics = compute_metrics(
                     mean, truth, grid, subset, threshold, plume=plume
                 )
+                screening = screen(verdict, cfg.compliance)
+                s_outcome = screening_outcome(screening, gt_verdict.compliant)
                 records.append({
                     "planner": planner_name,
                     "seed": int(seed),
@@ -111,6 +115,9 @@ def run_benchmark(
                     "verdict_correct": bool(verdict.compliant == gt_verdict.compliant),
                     "max_exceedance_psu": float(verdict.max_exceedance_psu),
                     "prob_exceed_max": float(verdict.prob_exceed_max),
+                    "max_std_outside_psu": float(verdict.max_std_outside_psu),
+                    "screening_state": screening.state.value,
+                    "screening_outcome": s_outcome,
                 })
             if verbose:
                 last = records[-1]
@@ -156,6 +163,13 @@ def _summarize(
             entry["verdict_accuracy"] = float(
                 np.mean([1.0 if r["verdict_correct"] else 0.0 for r in rows])
             )
+            # Three-state screening: conclusive-and-correct / inconclusive /
+            # conclusive-and-wrong fractions (REVIEW is honest, not an error)
+            n = len(rows)
+            for outcome_name in ("correct", "inconclusive", "wrong"):
+                entry[f"screening_{outcome_name}"] = float(
+                    sum(1 for r in rows if r.get("screening_outcome") == outcome_name) / n
+                )
             summary[planner][f"{float(frac):g}"] = entry
     return summary
 

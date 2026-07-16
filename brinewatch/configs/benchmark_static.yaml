@@ -1,0 +1,19 @@
+# PRIMARY planner benchmark: static field (tide frozen).
+#
+# The ground truth is identical throughout sampling and evaluation, so the
+# comparison measures sampling strategy alone — no uncontrolled temporal
+# inconsistency. LOCATE and BASELINE are identical for both planners; only
+# SURVEY differs; the travel budget is equal by construction.
+# Development seeds: 0-4. Held-out evaluation seeds: --seed-start 100.
+name: brinewatch_benchmark_static
+seed: 7
+
+environment:
+  tide_amplitude_m: 0.0        # frozen field: the defining property of family A
+
+budget:
+  max_distance_m: 1600.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+
+backend:
+  name: kinematic

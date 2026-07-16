@@ -1,0 +1,20 @@
+# DYNAMIC STRESS TEST: tidal advection enabled.
+#
+# The plume pattern oscillates (+-2.5 m along the current axis, period
+# 2400 s) while the mission samples it, and the reconstruction is scored
+# against the field at t=0. This measures the degradation caused by a
+# time-varying field with a static GP — motivating the future
+# spatio-temporal kernel. NOT comparable with the static primary benchmark.
+name: brinewatch_benchmark_dynamic
+seed: 7
+
+environment:
+  tide_amplitude_m: 2.5
+  tide_period_s: 2400.0
+
+budget:
+  max_distance_m: 1600.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+
+backend:
+  name: kinematic

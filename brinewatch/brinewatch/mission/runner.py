@@ -54,13 +54,23 @@ def build_locator(cfg: MissionConfig, plume: BrinePlume):
     if mode == "synthetic":
         return DiffuserLocator(cfg.locator, plume.outfall_xy(), seed=cfg.seed + 23)
     if mode == "sonar":
+        from ..perception.sonar_diffuser_detector import DetectorConfig
         from ..perception.sonar_localizer import SonarDiffuserLocator, SonarLocalizerConfig
 
         if cfg.backend.name == "holoocean" and not cfg.backend.holoocean.sonar_enabled:
             raise ValueError(
                 "locator.mode='sonar' requires backend.holoocean.sonar_enabled: true"
             )
-        return SonarDiffuserLocator(SonarLocalizerConfig())
+        prior = None
+        if cfg.locator.prior_x is not None and cfg.locator.prior_y is not None:
+            prior = (float(cfg.locator.prior_x), float(cfg.locator.prior_y))
+        return SonarDiffuserLocator(SonarLocalizerConfig(
+            # min_range 8 m: at ~2 m survey altitude the grazing bottom fills
+            # the near ranges with texture returns (see locate_probe outputs)
+            detector=DetectorConfig(min_range_m=8.0),
+            prior_xy=prior,
+            prior_gate_m=2.5 * cfg.locator.prior_sigma_m,
+        ))
     raise ValueError(f"Unknown locator mode '{mode}' (expected 'synthetic' or 'sonar')")
 
 
@@ -164,14 +174,21 @@ class MissionRunner:
             found = self._navigate(wp, ping_locator=True,
                                    stop_after_detections=self.cfg.locator.n_confirm)
             if found == "detected":
-                dets = self.result.detections[-self.cfg.locator.n_confirm:]
-                est = (
-                    float(np.mean([d.est_x for d in dets])),
-                    float(np.mean([d.est_y for d in dets])),
-                )
+                # Prefer the locator's own robust consensus (sonar pipeline);
+                # fall back to averaging the confirming detections (synthetic).
+                est = getattr(self.locator, "consensus", None)
+                if est is None:
+                    dets = self.result.detections[-self.cfg.locator.n_confirm:]
+                    est = (
+                        float(np.mean([d.est_x for d in dets])),
+                        float(np.mean([d.est_y for d in dets])),
+                    )
+                est = (float(est[0]), float(est[1]))
                 self.result.outfall_estimate = est
+                # No ground-truth access here: localization error is computed
+                # only by the post-mission evaluator (see demo/benchmark).
                 self._log("outfall_found", estimate=est,
-                          error_m=round(math.hypot(est[0] - true_xy[0], est[1] - true_xy[1]), 2),
+                          n_detections=len(self.result.detections),
                           budget_used_m=round(self.budget.used_m, 1))
                 return est
             if self.budget.used_m >= locate_cap_m:
@@ -230,6 +247,9 @@ class MissionRunner:
                     return
                 continue
             skips = 0
+            # Depth safety ceiling also for planner-generated waypoints
+            if wp.z > self.cfg.survey.max_z_m:
+                wp = Waypoint(wp.x, wp.y, self.cfg.survey.max_z_m, wp.tolerance)
             draw = getattr(self.backend, "draw_waypoint", None)
             if callable(draw):
                 draw(wp)
@@ -261,7 +281,6 @@ class MissionRunner:
         dist = self._state.distance_to(wp)
         # Hard cap: assume at least ~0.15 m/s effective progress
         max_steps = int(dist / (0.15 * self.backend.control_period_s) + 120)
-        detections_at_entry = len(self.result.detections)
         best_dist = float("inf")
         no_progress = 0
 
@@ -294,9 +313,10 @@ class MissionRunner:
                     self.result.detections.append(det)
                     self._log("detection", t=det.t, range_m=round(det.range_m, 2),
                               est=(round(det.est_x, 1), round(det.est_y, 1)))
+                    # Total across the whole LOCATE phase: consensus-gated
+                    # sonar detections can arrive one or two per leg.
                     if (stop_after_detections is not None
-                            and len(self.result.detections) - detections_at_entry
-                            >= stop_after_detections):
+                            and len(self.result.detections) >= stop_after_detections):
                         return "detected"
 
             # Arrival is HORIZONTAL-only: the waypoint z is advisory — depth is
@@ -343,6 +363,7 @@ class MissionRunner:
         x = min(max(x, self.cfg.survey.x_min + margin), self.cfg.survey.x_max - margin)
         y = min(max(y, self.cfg.survey.y_min + margin), self.cfg.survey.y_max - margin)
         z = float(self.plume.seabed_z(x, y)) + self.cfg.survey.altitude_m
+        z = min(z, self.cfg.survey.max_z_m)  # depth safety ceiling
         return Waypoint(x, y, z)
 
     def _record_trajectory(self) -> None:
@@ -369,9 +390,13 @@ def create_mission(
     backend_name: Optional[str] = None,
     logger: Optional[MissionLogger] = None,
     seed_offset: int = 0,
+    backend: Optional[SimulatorBackend] = None,
+    sonar_recorder=None,
 ) -> MissionRunner:
     """Wire up a full mission from config. ``seed_offset`` lets benchmarks run
-    several statistically independent missions from one config."""
+    several statistically independent missions from one config. Passing an
+    existing ``backend`` reuses a live simulator (e.g. after a terrain-probe
+    and scene-build pass in the same engine session)."""
     import dataclasses
 
     if seed_offset:
@@ -385,12 +410,14 @@ def create_mission(
     locator = build_locator(cfg, plume)
     mapper = GPMapper(cfg.gp, plume.ambient_salinity, seed=cfg.seed + 31)
 
-    start = (
-        0.5 * (cfg.survey.x_min + cfg.survey.x_max),
-        0.5 * (cfg.survey.y_min + cfg.survey.y_max),
-        float(plume.seabed_z(0.5 * (cfg.survey.x_min + cfg.survey.x_max),
-                             0.5 * (cfg.survey.y_min + cfg.survey.y_max))) + 8.0,
-    )
-    backend = make_backend(backend_name, cfg.backend, cfg.environment, cfg.outfall,
-                           start, seed=cfg.seed + 41)
-    return MissionRunner(cfg, backend, planner, plume, ctd, locator, mapper, logger)
+    if backend is None:
+        start = (
+            0.5 * (cfg.survey.x_min + cfg.survey.x_max),
+            0.5 * (cfg.survey.y_min + cfg.survey.y_max),
+            float(plume.seabed_z(0.5 * (cfg.survey.x_min + cfg.survey.x_max),
+                                 0.5 * (cfg.survey.y_min + cfg.survey.y_max))) + 8.0,
+        )
+        backend = make_backend(backend_name, cfg.backend, cfg.environment, cfg.outfall,
+                               start, seed=cfg.seed + 41)
+    return MissionRunner(cfg, backend, planner, plume, ctd, locator, mapper, logger,
+                         sonar_recorder=sonar_recorder)
