@@ -1,0 +1,102 @@
+{
+  "01_wide_establishing": {
+    "pos": [
+      -100.9,
+      -61.7,
+      -58.4
+    ],
+    "yaw_deg": 95.9,
+    "pitch_deg": -12.2,
+    "pixel_mean": 146.6
+  },
+  "02_elevated_oblique": {
+    "pos": [
+      -90.4,
+      -53.1,
+      -57.0
+    ],
+    "yaw_deg": 132.8,
+    "pitch_deg": -15.6,
+    "pixel_mean": 145.3
+  },
+  "03_low_side_along_pipe": {
+    "pos": [
+      -129.4,
+      -30.4,
+      -61.5
+    ],
+    "yaw_deg": -5.8,
+    "pitch_deg": -8.3,
+    "pixel_mean": 145.8
+  },
+  "04_three_quarter_risers": {
+    "pos": [
+      -129.3,
+      -33.9,
+      -60.6
+    ],
+    "yaw_deg": 11.6,
+    "pitch_deg": -12.0,
+    "pixel_mean": 143.2
+  },
+  "05_close_nozzles": {
+    "pos": [
+      -110.3,
+      -35.7,
+      -62.6
+    ],
+    "yaw_deg": 75.0,
+    "pitch_deg": -15.1,
+    "pixel_mean": 142.5
+  },
+  "06_supports_contact": {
+    "pos": [
+      -103.2,
+      -39.3,
+      -64.7
+    ],
+    "yaw_deg": 63.7,
+    "pitch_deg": 4.0,
+    "pixel_mean": 133.3
+  },
+  "07_rov_scale_riser": {
+    "pos": [
+      -102.4,
+      -36.9,
+      -64.3
+    ],
+    "yaw_deg": 75.0,
+    "pitch_deg": 14.2,
+    "pixel_mean": 123.9
+  },
+  "08_overview_oblique": {
+    "pos": [
+      -138.9,
+      -3.9,
+      -53.4
+    ],
+    "yaw_deg": -44.2,
+    "pitch_deg": -16.3,
+    "pixel_mean": 146.7
+  },
+  "09_mission_approach": {
+    "pos": [
+      -73.1,
+      -35.0,
+      -58.6
+    ],
+    "yaw_deg": -175.7,
+    "pitch_deg": -10.7,
+    "pixel_mean": 147.6
+  },
+  "10_departure": {
+    "pos": [
+      -132.3,
+      -18.1,
+      -58.0
+    ],
+    "yaw_deg": -41.6,
+    "pitch_deg": -16.8,
+    "pixel_mean": 142.3
+  }
+}

@@ -136,16 +136,20 @@ def main() -> int:
     views = [
         ("01_wide_establishing", -6.0, 26.0, 9.0, (mid * 0.4, 0.0, 1.0)),
         ("02_elevated_oblique", -14.0, 15.0, 11.0, (mid, 0.0, 0.5)),
-        ("03_low_side_along_pipe", -24.0, 3.6, 1.4, (0.0, 0.0, 1.0)),
+        # low view along the DIFFUSER (the approach end can sit behind local
+        # relief on natural terrain — Dam iteration 10 lesson)
+        ("03_low_side_along_pipe", L + 10.0, 3.2, 1.4, (mid, 0.0, 1.0)),
         ("04_three_quarter_risers", L + 9.0, 6.5, 2.6, (L - 4.0, 0.0, 1.2)),
         ("05_close_nozzles", mid, 3.4, 2.4, (mid, 0.0, 1.9)),
         ("06_supports_contact", 2.0, 5.0, 1.0, (1.0, 0.0, 0.6)),
         ("07_rov_scale_riser", sc.diffuser_margin_m, 2.4, 1.3,
          (sc.diffuser_margin_m, 0.0, 1.4)),
-        # rendered via the free viewport camera (see below): the BlueROV2
-        # cannot hold pitch steeper than about -25 deg
-        ("08_plan_view", mid, -15.0, 26.0, (mid, 0.0, 0.0)),
-        ("09_mission_approach", -40.0, -6.0, 3.0, (-10.0, 0.0, 1.0)),
+        # engineering overview: high agent oblique. True plan views fail on
+        # natural relief here — the free viewport flips upward beyond about
+        # -60 deg pitch and lateral viewpoints get ridge-occluded (Dam
+        # iterations 10-12); a held -24 deg oblique reads better anyway.
+        ("08_overview_oblique", L + 26.0, -20.0, 12.0, (mid, 0.0, 0.0)),
+        ("09_mission_approach", -26.0, -7.0, 5.0, (-6.0, 0.0, 1.0)),
         ("10_departure", L + 16.0, -8.0, 4.0, (L, 0.0, 1.0)),
     ]
 
@@ -158,14 +162,19 @@ def main() -> int:
     images = []
     for name, s, t, h, look in views:
         px, py = builder.to_world(s, t)
-        pz = builder.bed(s, t) + h
+        # plan view: reference the STRUCTURE-LINE bed, not the lateral bed
+        # (on natural relief the lateral point can sit in a hollow and put
+        # the camera underground / behind a ridge — Dam iteration 10)
+        ref_s, ref_t = (look[0], look[1]) if name.startswith("08_") else (s, t)
+        pz = builder.bed(ref_s, ref_t) + h
         lx, ly = builder.to_world(look[0], look[1])
         lz = builder.bed(look[0], look[1]) + look[2]
         yaw = math.degrees(math.atan2(ly - py, lx - px))
         dist = math.hypot(lx - px, ly - py)
         pitch = -math.degrees(math.atan2(pz - lz, max(dist, 1e-3)))
-        if name.startswith("08_"):
-            # steep plan view: free viewport camera, not the agent
+        if name.startswith("08_plan"):
+            # steep plan view: free viewport camera, not the agent (only
+            # usable on flat worlds; see the 08 view comment above)
             env.move_viewport([px, py, pz], [0.0, pitch, yaw])
             state = None
             for _ in range(12):

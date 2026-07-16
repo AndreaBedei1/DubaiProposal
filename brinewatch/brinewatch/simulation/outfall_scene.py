@@ -480,10 +480,12 @@ class OutfallSceneBuilder:
         sc = self.scene
         w_across, w_along, h = sc.sleeper_size_m
         # box local +X points along the requested direction (roll stays 0):
-        # aim X across the pipe so the sleeper lies perpendicular under it
+        # aim X across the pipe so the sleeper lies perpendicular under it.
+        # Sunk 0.15 m below nominal so the box keeps terrain contact on
+        # cross-slopes (Dam iteration 10: boxes floated on the downhill side).
         across = self._yaw_rad + math.pi / 2.0
         self._spawn(kind, "box", critical=False,
-                    location=self._at(s, 0.0, self.bed(s) + h / 2.0),
+                    location=self._at(s, 0.0, self.bed(s) + h / 2.0 - 0.15),
                     rotation=prop_rotation_for_axis(math.cos(across),
                                                     math.sin(across), 0.0),
                     scale=[w_across, w_along, h],
@@ -497,8 +499,10 @@ class OutfallSceneBuilder:
         n = max(3, int(L / 4.5))
         for k in range(n):
             s = (k + 0.5) * L / n
+            # slightly below grade so the disk does not protrude on the
+            # downhill side of cross-slopes (Dam iteration 10)
             self._spawn(f"gravel_pad_{k}", "cylinder", critical=False,
-                        location=self._at(s, 0.0, self.bed(s) + 0.05),
+                        location=self._at(s, 0.0, self.bed(s) - 0.04),
                         rotation=[0.0, 0.0, 0.0],
                         scale=[3.6, 3.6, 0.10],
                         material=sc.material_rock)

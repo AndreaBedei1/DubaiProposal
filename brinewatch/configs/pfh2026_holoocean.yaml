@@ -1,17 +1,16 @@
-# PFH 2026 official demonstration: BlueROV2 in FlatUnderwater (official world),
-# sonar-based outfall localization with NO ground-truth access.
+# PFH 2026 official demonstration: BlueROV2 in Dam (official Ocean world).
 #
-# Site v3 (visual redesign, inspection iterations 7-9): open, well-lit, flat
-# shelf at (100, 50), bed z = -87.08 everywhere (verified by RangeFinder probe
-# grid). The multiport outfall (outfall_scene.py v2: semi-buried approach
-# pipeline + flanges + rock berm -> transition collar -> exposed diffuser on
-# concrete sleepers -> 6 risers with collars + alternating inclined nozzles ->
-# end cap) is the ONLY structure at the site, so every sonar contact and every
-# camera frame is attributable to it. With the OFFICIAL engine the spawned
-# structure is visual-only (runtime props are absent from the acoustic octree
-# - proven in docs/application/pfh2026/SONAR_VALIDATION.md); acoustic
-# experiments against the actual structure require the custom rebuild engine
-# (backend holoocean_custom).
+# Site v4 (official-level evaluation, docs/application/pfh2026/
+# LEVEL_SELECTION.md): natural basin at (-100, -35), bed ~-66 m, structure
+# axis 165 deg (auto-orient result, frozen here for reproducibility). The
+# multiport outfall (outfall_scene.py v2) sits on a near-level line (1.8 m
+# height range) with the dam infrastructure as background context; native
+# penstocks stay 30-60 m away. The demo script recalibrates terrain from a
+# RangeFinder probe at mission start. With the OFFICIAL engine the spawned
+# structure is visual-only (runtime props are absent from the acoustic
+# octree - proven in docs/application/pfh2026/SONAR_VALIDATION.md), so this
+# mission runs from the chart prior; acoustic experiments against the actual
+# structure use the custom rebuild engine (backend holoocean_custom).
 name: brinewatch_pfh2026
 seed: 7
 planner: adaptive
@@ -22,34 +21,35 @@ environment:
   ambient_temperature_c: 24.0
   # Nominal plane; the demo script recalibrates z0/slopes from a RangeFinder
   # terrain probe at mission start (see scripts/run_pfh2026_demo.py).
-  seabed_z0: -87.08
+  seabed_z0: -65.9
   seabed_slope_x: 0.0
   seabed_slope_y: 0.0
-  current_dir_deg: 0.0          # plume spreads east, along the diffuser axis
+  current_dir_deg: 165.0        # plume spreads along the diffuser axis
   tide_amplitude_m: 2.5
   tide_period_s: 2400.0
 
 # Outfall origin = diffuser start (local s=0); the approach pipeline runs
-# 30 m west of it, the 16 m diffuser with 6 risers runs east (axis_deg 0,
-# validated visually in inspection iterations 7-9).
+# 30 m toward -15 deg (NE) behind it, the 16 m diffuser with 6 risers runs
+# toward 165 deg (SW). Axis frozen from the auto-orient of the level
+# evaluation (LEVEL_SELECTION.md) for reproducibility.
 outfall:
-  x: 100.0
-  y: 50.0
-  axis_deg: 0.0
+  x: -100.0
+  y: -35.0
+  axis_deg: 165.0
   n_ports: 6
   port_spacing_m: 3.2
   riser_height_m: 1.35
   discharge_salinity_psu: 68.0
   discharge_temperature_c: 27.5
 
-# Survey box centred on the diffuser + near-field mixing zone; the approach
-# pipeline corridor (x < 95) is left out on purpose - the plume source is the
-# riser field around x 100..116, y = 50.
+# Survey box centred on the diffuser + near-field mixing zone (diffuser
+# centre ~(-107.7, -32.9)); the approach corridor (NE of the origin) is
+# mostly outside on purpose - the plume source is the riser field.
 survey:
-  x_min: 78.0
-  x_max: 140.0
-  y_min: 20.0
-  y_max: 80.0
+  x_min: -150.0
+  x_max: -85.0
+  y_min: -70.0
+  y_max: -10.0
   altitude_m: 2.2
   grid_resolution_m: 3.0
 
@@ -59,9 +59,13 @@ budget:
   locate_fraction: 0.35         # sonar LOCATE needs more travel than synthetic
 
 locator:
-  mode: sonar                   # REAL ImagingSonar pipeline; no oracle
-  prior_x: 113.0                # chart prior ~18 m NE of the diffuser centre
-  prior_y: 62.0
+  # OFFICIAL engine: the spawned outfall is sonar-invisible and Dam has no
+  # stock structure at the site, so the official mission anchors on the
+  # chart prior (documented fallback). The sonar mode with the real
+  # structure runs on backend holoocean_custom (fork level).
+  mode: synthetic
+  prior_x: -95.0                # chart prior ~18 m NE of the diffuser centre
+  prior_y: -20.0
   n_confirm: 4
   max_range_m: 25.0             # also sets the LOCATE search-leg scale
 

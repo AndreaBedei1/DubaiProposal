@@ -12,7 +12,9 @@ Backend legend used below:
 
 | Evidence | Backend | Level | Status |
 |---|---|---|---|
-| [visual/flatunderwater_iter9/](visual/flatunderwater_iter9/) — contact sheet + 10 inspection views + poses + scene manifest of outfall v2 (iteration 9, accepted) | official | FlatUnderwater (official) | PRELIMINARY — final level selection pending |
+| [visual/selected_world/](visual/selected_world/) — **FINAL** contact sheet + 10 inspection views + poses + scene manifest + probed terrain of outfall v2 at the SELECTED site (Dam (−100,−35), axis 165°, iteration 13, accepted) | official | **Dam (official)** | FINAL visual evidence |
+| [visual/world_comparison/](visual/world_comparison/) — official-level evaluation: scored comparison.csv + per-world site sheets + selected-site scene manifest (see docs LEVEL_SELECTION.md) | official | 6 underwater Ocean worlds | FINAL selection evidence |
+| [visual/flatunderwater_iter9/](visual/flatunderwater_iter9/) — contact sheet + 10 inspection views + poses + scene manifest of outfall v2 (iteration 9) | official | FlatUnderwater (official) | superseded — retained as fallback-site evidence |
 | [sonar_visibility/custom_abc_20260716/](sonar_visibility/custom_abc_20260716/) — A/B/C/D runtime visibility experiment: manifest, per-pose metrics, difference images, raw frames | custom fork | ExampleLevel (fork-internal) | PRELIMINARY — clean re-run on the selected official level pending; B-phase contamination documented in the manifest |
 | [localization/custom_orbit_20260716/](localization/custom_orbit_20260716/) — single-orbit localization study: manifest, raw frames + poses, default-gate study, gate-sweep summary | custom fork | ExampleLevel (fork-internal) | PRELIMINARY — tuning and scoring share one dataset; v2 study pending |
 | visual/world_comparison/ | — | — | pending (official-level evaluation) |

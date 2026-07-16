@@ -43,3 +43,22 @@ flanges + berm), `04_three_quarter_risers` (hero shot of the diffuser),
 `05_close_nozzles` (riser/nozzle hardware at ROV scale), `08_plan_view`
 (system layout). Site adopted into `configs/pfh2026_holoocean.yaml`:
 FlatUnderwater, outfall (100, 50), axis 0°, bed −87.08.
+*(Superseded by the Dam selection below — kept as the FlatUnderwater
+fallback evidence.)*
+
+## Final-level phase (Dam, official-level selection)
+
+After the official-level evaluation (LEVEL_SELECTION.md) the loop repeated
+on Dam (−100, −35), axis 165°, real 9×9 terrain probe (bed −69.7…−60.0):
+
+| # | Change | Observation | Verdict |
+|---|---|---|---|
+| v2-10 | first Dam build, same views as v2-9 | 105/105 components; bright (124–149); dam wall + helix tower background reads as believable infrastructure; BUT sleepers/gravel pads float on the downhill side of cross-slopes, view 03 fully ridge-occluded, plan view all water, 09/10 too distant | rejected |
+| v2-11 | sleepers sunk 0.15 m, gravel pads −0.04 m, view 03 moved to the diffuser end, view 09 closer, plan height referenced to the structure line | terrain contact restored (06/07 ✓), 03 recovered; plan view STILL blank (ridge in the lateral line of sight) | near-accept |
+| v2-12 | plan view near-nadir (−74°) directly overhead | free viewport flips upward beyond ~−60° pitch → water-surface-from-below frame | plan view abandoned on relief |
+| v2-13 | view 08 = held −24° agent overview from the diffuser quadrant | full sheet coherent; hero shots: 02 (structure + dam context), 05 (nozzles), 06 (flange/sleeper contact), 07 (ROV-scale riser) | **accepted — committed as outputs/visual/selected_world/** |
+
+Engine-behaviour lessons recorded: the free viewport pitch is unreliable
+beyond ~−60°, and lateral plan viewpoints on natural relief get
+ridge-occluded — plan figures for the Dam site come from the mission map
+renderings instead of a nadir camera.
