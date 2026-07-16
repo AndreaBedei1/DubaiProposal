@@ -1,4 +1,4 @@
-# Operating-system and editor files
+﻿# Operating-system and editor files
 .DS_Store
 Thumbs.db
 Desktop.ini
@@ -38,8 +38,14 @@ htmlcov/
 build/
 dist/
 
-# Generated BrineWatch mission and benchmark artifacts
-brinewatch/outputs/
+# Generated BrineWatch mission and benchmark artifacts, EXCEPT the curated
+# committed evidence packages (see brinewatch/outputs/README.md)
+brinewatch/outputs/*
+!brinewatch/outputs/README.md
+!brinewatch/outputs/visual/
+!brinewatch/outputs/sonar_visibility/
+!brinewatch/outputs/localization/
+!brinewatch/outputs/full_mission/
 
 # LaTeX build artifacts (keep source files and the published PDF)
 *.aux

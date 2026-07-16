@@ -1,0 +1,40 @@
+{
+  "experiment": "A/B/C/D runtime sonar visibility of the generated outfall",
+  "date": "2026-07-16",
+  "engine": {
+    "type": "custom HoloOcean fork (ALAR)",
+    "client_version": "2.2.2 (fork client/src)",
+    "launch": "UnrealEditor.exe engine/Holodeck.uproject ExampleLevel -game -windowed -ResX=1280 -ResY=720 -ForceRes -LOG=HolodeckCustom.log -OctreeMin=0.05 -OctreeMax=5.0 -EnvMinX=-100.0 -EnvMinY=-100.0 -EnvMinZ=-100.0 -EnvMaxX=100.0 -EnvMaxY=100.0 -EnvMaxZ=10.0",
+    "unreal": "UE 5.3 editor -game mode",
+    "octree_rebuild_log_line": "HolodeckSonar: world geometry changed, rebuilding octree."
+  },
+  "level": "ExampleLevel (fork-internal level; NOT an official Ocean world - superseded by the official-level phase)",
+  "site": {"outfall_origin_xy": [30.0, 0.0], "structure_yaw_deg": 0.0, "bed_z_m": -73.47},
+  "outfall_geometry": "see scene_manifest.json (93 components: approach pipeline, flanges, berm, transition collar, diffuser, sleepers, 6 risers + collars + alternating nozzles, end cap; scatter rocks disabled)",
+  "sonar": {
+    "type": "ImagingSonar", "range_bins": 512, "azimuth_bins": 256,
+    "range_m": [1.0, 40.0], "azimuth_deg": 120.0, "elevation_deg": 20.0,
+    "ticks_per_capture": 30, "add_sigma": 0.0, "mult_sigma": 0.0,
+    "init_octree_range_m": 50.0
+  },
+  "poses": "6 poses: bearings 0/90/180/270 deg at 18 m + 45/225 deg at 28 m from the diffuser centre, z = bed + 3 m, camera aimed at the centre; teleport-pinned each tick",
+  "conditions": {
+    "A": "no structure (baseline)",
+    "B": "outfall via legacy SpawnProp blueprint props (NOT removable at runtime)",
+    "C": "outfall via fork SpawnAsset static meshes (octree marked dirty and rebuilt)",
+    "D": "ClearSpawned (removes SpawnAsset actors only; B props persist by design of the legacy path)"
+  },
+  "known_contamination": "B-phase legacy props cannot be removed within a session, so their acoustic signature persists into C and D. C-B isolates the SpawnAsset contribution. The clean re-run with independent engine sessions per condition is scheduled in the official-level phase.",
+  "command": "python scripts/validate_custom_sonar.py  (engine first via python scripts/launch_custom_engine.py)",
+  "files": {
+    "report.json": "per-pose mean|diff| + bit-identical flags per phase pair + detector contacts on C frames",
+    "diff_images.png": "|B-A|, |C-A|, |C-B| difference images for three poses",
+    "raw_frames/frames_{A,B,C,D}_*.npz": "raw 512x256 sonar frames per pose per condition",
+    "scene_manifest.json": "exact spawned component list (type, location, rotation encoding, scale, material)"
+  },
+  "headline_findings": [
+    "C differs from A at 6/6 poses; structured signature with acoustic shadows at structure-consistent ranges; detector contacts up to 38k bins",
+    "on the fork, legacy spawn_prop props are ALSO acoustically visible (B-A large): the fork handles runtime props generally",
+    "global mean|frame diff| is noise/jitter-dominated (~0.014 for all phases) and is NOT the evidence; localized contrast (up to 17x head-on) and difference images are"
+  ]
+}

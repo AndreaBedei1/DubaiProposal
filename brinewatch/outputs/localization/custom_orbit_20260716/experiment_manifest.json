@@ -1,0 +1,31 @@
+{
+  "experiment": "single-orbit localization study on the generated outfall (PRELIMINARY)",
+  "date": "2026-07-16",
+  "engine": "custom HoloOcean fork, same launch line as sonar_visibility/custom_abc_20260716",
+  "level": "ExampleLevel (fork-internal level; superseded by the official-level phase)",
+  "site": {"outfall_origin_xy": [30.0, 0.0], "structure_yaw_deg": 0.0, "bed_z_m": -73.47,
+            "true_diffuser_centre_xy": [39.8, 0.0],
+            "true_position_usage": "scoring only - never passed to the locator"},
+  "acquisition": "16-pose orbit, radius 20 m around the diffuser centre, z = bed + 3 m, one deterministic (noise-free) sonar frame per pose, teleport-pinned poses recorded per frame",
+  "sweep": "12 chart priors (bearings 0/90/180/270 deg x offsets 10/18/26 m) replayed OFFLINE over the same recorded orbit - NOT independent acquisitions",
+  "command": "python scripts/localize_custom_outfall.py",
+  "files": {
+    "orbit_frames.npz": "16 raw sonar frames",
+    "orbit_poses.json": "per-frame vehicle xyz + yaw",
+    "study.json": "original sweep with MISSION-DEFAULT gates: 0/12 consensus",
+    "retune_summary.json": "offline gate sweep + clean-frame profile results"
+  },
+  "results": {
+    "mission_default_gates": "0/12 consensus (max_area_bins 1500 rejects every true contact: contact areas p50~2200, p90~9500 bins on clean frames)",
+    "clean_frame_profile": "max_area 12000, min_hits 6: consensus 11/12 priors, median error 10.1 m to diffuser centre; strength>=80 variant: 10/12, 8.9 m",
+    "stable_estimate": "(34.1, -7.5) = 9.4 m from diffuser centre, ~7.5 m lateral of the structure axis",
+    "column_mirror_hypothesis": "tested (fliplr) and rejected",
+    "interpretation": "clutter-limited: ExampleLevel native geometry contributes to the consensus cluster; gates are data-regime-dependent and were tuned AFTER seeing this data (hence PRELIMINARY, not a validated benchmark)"
+  },
+  "caveats": [
+    "single site, single orbit, one engine session",
+    "prior sweep is NOT an independent-run success rate",
+    "gates tuned on the same recorded data they are scored on",
+    "superseded by the official-level localization v2 plan (background subtraction, separate tuning/validation, independent acquisitions)"
+  ]
+}

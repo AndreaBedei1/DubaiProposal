@@ -1,0 +1,2438 @@
+{
+  "design": "multiport diffuser outfall v2 (local-frame parametric)",
+  "origin_world": [
+    100.0,
+    50.0
+  ],
+  "structure_yaw_deg": 0.0,
+  "pipe": {
+    "length_m": 30.0,
+    "diameter_m": 0.9,
+    "embed_fraction": 0.35
+  },
+  "diffuser": {
+    "length_m": 19.6,
+    "n_risers": 6,
+    "riser_spacing_m": 3.2,
+    "riser_height_m": 1.1,
+    "nozzle_elevation_deg": 55.0
+  },
+  "acoustic_note": "props are in the octree ONLY with the custom octree-rebuild engine; invisible to official HoloOcean sonar (verified)",
+  "components": [
+    {
+      "kind": "approach_pipe_0",
+      "prop_type": "cylinder",
+      "location": [
+        71.25,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_1",
+      "prop_type": "cylinder",
+      "location": [
+        73.75,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_2",
+      "prop_type": "cylinder",
+      "location": [
+        76.25,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_flange_2",
+      "prop_type": "cylinder",
+      "location": [
+        75.0,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        1.188,
+        1.188,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_3",
+      "prop_type": "cylinder",
+      "location": [
+        78.75,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_4",
+      "prop_type": "cylinder",
+      "location": [
+        81.25,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_flange_4",
+      "prop_type": "cylinder",
+      "location": [
+        80.0,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        1.188,
+        1.188,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_5",
+      "prop_type": "cylinder",
+      "location": [
+        83.75,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_6",
+      "prop_type": "cylinder",
+      "location": [
+        86.25,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_flange_6",
+      "prop_type": "cylinder",
+      "location": [
+        85.0,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        1.188,
+        1.188,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_7",
+      "prop_type": "cylinder",
+      "location": [
+        88.75,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_8",
+      "prop_type": "cylinder",
+      "location": [
+        91.25,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_flange_8",
+      "prop_type": "cylinder",
+      "location": [
+        90.0,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        1.188,
+        1.188,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_9",
+      "prop_type": "cylinder",
+      "location": [
+        93.75,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.75
+      ],
+      "material": "steel",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_10",
+      "prop_type": "cylinder",
+      "location": [
+        96.25,
+        50.0,
+        -86.851
+      ],
+      "rotation": [
+        -7.132,
+        -0.0,
+        99.745
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.756
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_flange_10",
+      "prop_type": "cylinder",
+      "location": [
+        95.0,
+        50.0,
+        -86.94
+      ],
+      "rotation": [
+        -3.573,
+        -0.0,
+        99.936
+      ],
+      "scale": [
+        1.188,
+        1.188,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "approach_pipe_11",
+      "prop_type": "cylinder",
+      "location": [
+        98.75,
+        50.0,
+        -86.582
+      ],
+      "rotation": [
+        -14.156,
+        -0.0,
+        98.993
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.775
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_0",
+      "prop_type": "sphere",
+      "location": [
+        80.497,
+        51.393,
+        -87.02
+      ],
+      "rotation": [
+        -0.081,
+        -0.517,
+        99.999
+      ],
+      "scale": [
+        0.461,
+        0.364,
+        0.23
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_1",
+      "prop_type": "sphere",
+      "location": [
+        73.541,
+        49.231,
+        -87.018
+      ],
+      "rotation": [
+        -0.153,
+        0.501,
+        99.999
+      ],
+      "scale": [
+        0.473,
+        0.398,
+        0.237
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_2",
+      "prop_type": "sphere",
+      "location": [
+        89.515,
+        50.96,
+        -87.037
+      ],
+      "rotation": [
+        0.493,
+        -0.177,
+        99.999
+      ],
+      "scale": [
+        0.318,
+        0.27,
+        0.159
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_3",
+      "prop_type": "sphere",
+      "location": [
+        82.502,
+        48.538,
+        -87.019
+      ],
+      "rotation": [
+        0.377,
+        0.364,
+        99.999
+      ],
+      "scale": [
+        0.465,
+        0.464,
+        0.233
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_4",
+      "prop_type": "sphere",
+      "location": [
+        91.971,
+        50.877,
+        -87.025
+      ],
+      "rotation": [
+        -0.504,
+        -0.143,
+        99.999
+      ],
+      "scale": [
+        0.416,
+        0.296,
+        0.208
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_5",
+      "prop_type": "sphere",
+      "location": [
+        83.583,
+        48.909,
+        -87.015
+      ],
+      "rotation": [
+        0.36,
+        0.38,
+        99.999
+      ],
+      "scale": [
+        0.5,
+        0.427,
+        0.25
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_6",
+      "prop_type": "sphere",
+      "location": [
+        84.088,
+        50.938,
+        -87.045
+      ],
+      "rotation": [
+        -0.185,
+        -0.49,
+        99.999
+      ],
+      "scale": [
+        0.251,
+        0.228,
+        0.125
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_7",
+      "prop_type": "sphere",
+      "location": [
+        92.383,
+        48.976,
+        -87.045
+      ],
+      "rotation": [
+        -0.252,
+        0.459,
+        99.999
+      ],
+      "scale": [
+        0.249,
+        0.185,
+        0.124
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_8",
+      "prop_type": "sphere",
+      "location": [
+        90.507,
+        51.381,
+        -87.028
+      ],
+      "rotation": [
+        -0.3,
+        0.429,
+        99.999
+      ],
+      "scale": [
+        0.388,
+        0.346,
+        0.194
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_9",
+      "prop_type": "sphere",
+      "location": [
+        77.23,
+        49.171,
+        -87.027
+      ],
+      "rotation": [
+        0.523,
+        0.026,
+        99.999
+      ],
+      "scale": [
+        0.396,
+        0.381,
+        0.198
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_10",
+      "prop_type": "sphere",
+      "location": [
+        87.885,
+        51.184,
+        -87.043
+      ],
+      "rotation": [
+        0.398,
+        -0.34,
+        99.999
+      ],
+      "scale": [
+        0.264,
+        0.21,
+        0.132
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_11",
+      "prop_type": "sphere",
+      "location": [
+        93.794,
+        48.664,
+        -87.033
+      ],
+      "rotation": [
+        -0.519,
+        0.07,
+        99.999
+      ],
+      "scale": [
+        0.352,
+        0.309,
+        0.176
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_12",
+      "prop_type": "sphere",
+      "location": [
+        81.058,
+        51.212,
+        -87.023
+      ],
+      "rotation": [
+        -0.306,
+        -0.425,
+        99.999
+      ],
+      "scale": [
+        0.434,
+        0.361,
+        0.217
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_13",
+      "prop_type": "sphere",
+      "location": [
+        91.292,
+        48.953,
+        -87.042
+      ],
+      "rotation": [
+        -0.513,
+        0.105,
+        99.999
+      ],
+      "scale": [
+        0.274,
+        0.21,
+        0.137
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_14",
+      "prop_type": "sphere",
+      "location": [
+        79.191,
+        50.975,
+        -87.016
+      ],
+      "rotation": [
+        0.274,
+        0.446,
+        99.999
+      ],
+      "scale": [
+        0.488,
+        0.361,
+        0.244
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_15",
+      "prop_type": "sphere",
+      "location": [
+        74.338,
+        48.574,
+        -87.015
+      ],
+      "rotation": [
+        0.474,
+        0.222,
+        99.999
+      ],
+      "scale": [
+        0.496,
+        0.369,
+        0.248
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_16",
+      "prop_type": "sphere",
+      "location": [
+        92.611,
+        51.415,
+        -87.027
+      ],
+      "rotation": [
+        -0.221,
+        -0.475,
+        99.999
+      ],
+      "scale": [
+        0.399,
+        0.385,
+        0.2
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_17",
+      "prop_type": "sphere",
+      "location": [
+        80.036,
+        48.836,
+        -87.033
+      ],
+      "rotation": [
+        0.444,
+        -0.278,
+        99.999
+      ],
+      "scale": [
+        0.351,
+        0.271,
+        0.175
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_18",
+      "prop_type": "sphere",
+      "location": [
+        96.934,
+        51.378,
+        -87.03
+      ],
+      "rotation": [
+        0.5,
+        0.154,
+        99.999
+      ],
+      "scale": [
+        0.376,
+        0.3,
+        0.188
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_19",
+      "prop_type": "sphere",
+      "location": [
+        76.963,
+        49.217,
+        -87.033
+      ],
+      "rotation": [
+        -0.514,
+        -0.099,
+        99.999
+      ],
+      "scale": [
+        0.35,
+        0.258,
+        0.175
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_20",
+      "prop_type": "sphere",
+      "location": [
+        70.92,
+        51.225,
+        -87.031
+      ],
+      "rotation": [
+        0.518,
+        0.078,
+        99.999
+      ],
+      "scale": [
+        0.365,
+        0.351,
+        0.183
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_21",
+      "prop_type": "sphere",
+      "location": [
+        88.362,
+        48.822,
+        -87.023
+      ],
+      "rotation": [
+        0.322,
+        -0.413,
+        99.999
+      ],
+      "scale": [
+        0.436,
+        0.373,
+        0.218
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_22",
+      "prop_type": "sphere",
+      "location": [
+        76.573,
+        51.401,
+        -87.04
+      ],
+      "rotation": [
+        -0.478,
+        0.213,
+        99.999
+      ],
+      "scale": [
+        0.289,
+        0.203,
+        0.145
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_23",
+      "prop_type": "sphere",
+      "location": [
+        76.917,
+        48.668,
+        -87.041
+      ],
+      "rotation": [
+        0.457,
+        -0.255,
+        99.999
+      ],
+      "scale": [
+        0.285,
+        0.269,
+        0.143
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_24",
+      "prop_type": "sphere",
+      "location": [
+        97.6,
+        51.205,
+        -87.019
+      ],
+      "rotation": [
+        0.522,
+        0.043,
+        99.999
+      ],
+      "scale": [
+        0.466,
+        0.427,
+        0.233
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_25",
+      "prop_type": "sphere",
+      "location": [
+        91.66,
+        49.096,
+        -87.033
+      ],
+      "rotation": [
+        -0.225,
+        -0.473,
+        99.999
+      ],
+      "scale": [
+        0.347,
+        0.279,
+        0.174
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_26",
+      "prop_type": "sphere",
+      "location": [
+        71.453,
+        51.166,
+        -87.034
+      ],
+      "rotation": [
+        0.071,
+        -0.519,
+        99.999
+      ],
+      "scale": [
+        0.341,
+        0.336,
+        0.171
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_27",
+      "prop_type": "sphere",
+      "location": [
+        85.555,
+        48.549,
+        -87.028
+      ],
+      "rotation": [
+        0.519,
+        0.069,
+        99.999
+      ],
+      "scale": [
+        0.389,
+        0.377,
+        0.195
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_28",
+      "prop_type": "sphere",
+      "location": [
+        77.203,
+        51.171,
+        -87.031
+      ],
+      "rotation": [
+        -0.378,
+        0.363,
+        99.999
+      ],
+      "scale": [
+        0.365,
+        0.3,
+        0.182
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_29",
+      "prop_type": "sphere",
+      "location": [
+        72.163,
+        49.187,
+        -87.031
+      ],
+      "rotation": [
+        0.52,
+        0.064,
+        99.999
+      ],
+      "scale": [
+        0.366,
+        0.36,
+        0.183
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_30",
+      "prop_type": "sphere",
+      "location": [
+        90.972,
+        51.329,
+        -87.023
+      ],
+      "rotation": [
+        0.108,
+        0.512,
+        99.999
+      ],
+      "scale": [
+        0.434,
+        0.385,
+        0.217
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_31",
+      "prop_type": "sphere",
+      "location": [
+        70.796,
+        49.002,
+        -87.032
+      ],
+      "rotation": [
+        -0.153,
+        -0.501,
+        99.999
+      ],
+      "scale": [
+        0.357,
+        0.255,
+        0.179
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "berm_rock_32",
+      "prop_type": "sphere",
+      "location": [
+        92.039,
+        51.406,
+        -87.018
+      ],
+      "rotation": [
+        -0.398,
+        -0.34,
+        99.999
+      ],
+      "scale": [
+        0.479,
+        0.422,
+        0.239
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "transition_collar",
+      "prop_type": "cylinder",
+      "location": [
+        98.75,
+        50.0,
+        -86.582
+      ],
+      "rotation": [
+        -14.156,
+        -0.0,
+        98.993
+      ],
+      "scale": [
+        1.366,
+        1.366,
+        0.26
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_0",
+      "prop_type": "cylinder",
+      "location": [
+        101.225,
+        50.0,
+        -86.316
+      ],
+      "rotation": [
+        -7.132,
+        -0.0,
+        99.745
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.706
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_1",
+      "prop_type": "cylinder",
+      "location": [
+        103.675,
+        50.0,
+        -86.227
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_2",
+      "prop_type": "cylinder",
+      "location": [
+        106.125,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_3",
+      "prop_type": "cylinder",
+      "location": [
+        108.575,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_4",
+      "prop_type": "cylinder",
+      "location": [
+        111.025,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_5",
+      "prop_type": "cylinder",
+      "location": [
+        113.475,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_6",
+      "prop_type": "cylinder",
+      "location": [
+        115.925,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "diffuser_pipe_7",
+      "prop_type": "cylinder",
+      "location": [
+        118.375,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        2.7
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "sleeper_0",
+      "prop_type": "box",
+      "location": [
+        100.8,
+        50.0,
+        -86.875
+      ],
+      "rotation": [
+        -0.0,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        2.0,
+        0.75,
+        0.4
+      ],
+      "material": "white",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "sleeper_1",
+      "prop_type": "box",
+      "location": [
+        105.6,
+        50.0,
+        -86.875
+      ],
+      "rotation": [
+        -0.0,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        2.0,
+        0.75,
+        0.4
+      ],
+      "material": "white",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "sleeper_2",
+      "prop_type": "box",
+      "location": [
+        110.4,
+        50.0,
+        -86.875
+      ],
+      "rotation": [
+        -0.0,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        2.0,
+        0.75,
+        0.4
+      ],
+      "material": "white",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "sleeper_3",
+      "prop_type": "box",
+      "location": [
+        115.2,
+        50.0,
+        -86.875
+      ],
+      "rotation": [
+        -0.0,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        2.0,
+        0.75,
+        0.4
+      ],
+      "material": "white",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "sleeper_4",
+      "prop_type": "box",
+      "location": [
+        118.8,
+        50.0,
+        -86.875
+      ],
+      "rotation": [
+        -0.0,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        2.0,
+        0.75,
+        0.4
+      ],
+      "material": "white",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "gravel_pad_0",
+      "prop_type": "cylinder",
+      "location": [
+        102.45,
+        50.0,
+        -87.025
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.6,
+        3.6,
+        0.1
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "gravel_pad_1",
+      "prop_type": "cylinder",
+      "location": [
+        107.35,
+        50.0,
+        -87.025
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.6,
+        3.6,
+        0.1
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "gravel_pad_2",
+      "prop_type": "cylinder",
+      "location": [
+        112.25,
+        50.0,
+        -87.025
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.6,
+        3.6,
+        0.1
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "gravel_pad_3",
+      "prop_type": "cylinder",
+      "location": [
+        117.15,
+        50.0,
+        -87.025
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.6,
+        3.6,
+        0.1
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_0",
+      "prop_type": "cylinder",
+      "location": [
+        101.8,
+        50.0,
+        -85.725
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_0",
+      "prop_type": "cylinder",
+      "location": [
+        101.8,
+        50.0,
+        -85.87
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_0",
+      "prop_type": "cylinder",
+      "location": [
+        101.8,
+        50.224,
+        -84.856
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_0",
+      "prop_type": "cone",
+      "location": [
+        101.8,
+        50.482,
+        -84.487
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_1",
+      "prop_type": "cylinder",
+      "location": [
+        105.0,
+        50.0,
+        -85.675
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_1",
+      "prop_type": "cylinder",
+      "location": [
+        105.0,
+        50.0,
+        -85.82
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_1",
+      "prop_type": "cylinder",
+      "location": [
+        105.0,
+        49.776,
+        -84.806
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_1",
+      "prop_type": "cone",
+      "location": [
+        105.0,
+        49.518,
+        -84.437
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_2",
+      "prop_type": "cylinder",
+      "location": [
+        108.2,
+        50.0,
+        -85.675
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_2",
+      "prop_type": "cylinder",
+      "location": [
+        108.2,
+        50.0,
+        -85.82
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_2",
+      "prop_type": "cylinder",
+      "location": [
+        108.2,
+        50.224,
+        -84.806
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_2",
+      "prop_type": "cone",
+      "location": [
+        108.2,
+        50.482,
+        -84.437
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_3",
+      "prop_type": "cylinder",
+      "location": [
+        111.4,
+        50.0,
+        -85.675
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_3",
+      "prop_type": "cylinder",
+      "location": [
+        111.4,
+        50.0,
+        -85.82
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_3",
+      "prop_type": "cylinder",
+      "location": [
+        111.4,
+        49.776,
+        -84.806
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_3",
+      "prop_type": "cone",
+      "location": [
+        111.4,
+        49.518,
+        -84.437
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_4",
+      "prop_type": "cylinder",
+      "location": [
+        114.6,
+        50.0,
+        -85.675
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_4",
+      "prop_type": "cylinder",
+      "location": [
+        114.6,
+        50.0,
+        -85.82
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_4",
+      "prop_type": "cylinder",
+      "location": [
+        114.6,
+        50.224,
+        -84.806
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_4",
+      "prop_type": "cone",
+      "location": [
+        114.6,
+        50.482,
+        -84.437
+      ],
+      "rotation": [
+        -0.0,
+        -81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_5",
+      "prop_type": "cylinder",
+      "location": [
+        117.8,
+        50.0,
+        -85.675
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.38,
+        0.38,
+        1.46
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_collar_5",
+      "prop_type": "cylinder",
+      "location": [
+        117.8,
+        50.0,
+        -85.82
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.589,
+        0.589,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_5",
+      "prop_type": "cylinder",
+      "location": [
+        117.8,
+        49.776,
+        -84.806
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.22,
+        0.22,
+        0.78
+      ],
+      "material": "steel",
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_tip_5",
+      "prop_type": "cone",
+      "location": [
+        117.8,
+        49.518,
+        -84.437
+      ],
+      "rotation": [
+        -0.0,
+        81.915,
+        57.358
+      ],
+      "scale": [
+        0.253,
+        0.253,
+        0.22
+      ],
+      "material": "gold",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "end_cap",
+      "prop_type": "cone",
+      "location": [
+        119.95,
+        50.0,
+        -86.225
+      ],
+      "rotation": [
+        -0.524,
+        -0.0,
+        99.999
+      ],
+      "scale": [
+        0.945,
+        0.945,
+        0.8
+      ],
+      "material": "black",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_0",
+      "prop_type": "sphere",
+      "location": [
+        78.293,
+        56.854,
+        -86.832
+      ],
+      "rotation": [
+        0.182,
+        -0.491,
+        99.999
+      ],
+      "scale": [
+        0.696,
+        0.688,
+        0.452
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_1",
+      "prop_type": "sphere",
+      "location": [
+        77.956,
+        54.805,
+        -86.837
+      ],
+      "rotation": [
+        -0.211,
+        -0.479,
+        99.999
+      ],
+      "scale": [
+        0.681,
+        0.489,
+        0.443
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_2",
+      "prop_type": "sphere",
+      "location": [
+        78.527,
+        63.342,
+        -86.799
+      ],
+      "rotation": [
+        0.066,
+        0.519,
+        99.999
+      ],
+      "scale": [
+        0.789,
+        0.579,
+        0.513
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_3",
+      "prop_type": "sphere",
+      "location": [
+        122.276,
+        36.513,
+        -86.786
+      ],
+      "rotation": [
+        0.518,
+        0.076,
+        99.999
+      ],
+      "scale": [
+        0.827,
+        0.806,
+        0.537
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_4",
+      "prop_type": "sphere",
+      "location": [
+        110.153,
+        57.064,
+        -86.966
+      ],
+      "rotation": [
+        0.009,
+        -0.524,
+        99.999
+      ],
+      "scale": [
+        0.312,
+        0.242,
+        0.203
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_5",
+      "prop_type": "sphere",
+      "location": [
+        108.166,
+        69.717,
+        -86.962
+      ],
+      "rotation": [
+        0.441,
+        0.282,
+        99.999
+      ],
+      "scale": [
+        0.323,
+        0.242,
+        0.21
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_6",
+      "prop_type": "sphere",
+      "location": [
+        95.437,
+        40.63,
+        -86.905
+      ],
+      "rotation": [
+        -0.485,
+        0.198,
+        99.999
+      ],
+      "scale": [
+        0.486,
+        0.419,
+        0.316
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_7",
+      "prop_type": "sphere",
+      "location": [
+        108.74,
+        28.552,
+        -86.842
+      ],
+      "rotation": [
+        -0.189,
+        -0.488,
+        99.999
+      ],
+      "scale": [
+        0.666,
+        0.581,
+        0.433
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_8",
+      "prop_type": "sphere",
+      "location": [
+        125.228,
+        56.425,
+        -86.768
+      ],
+      "rotation": [
+        -0.318,
+        0.416,
+        99.999
+      ],
+      "scale": [
+        0.876,
+        0.627,
+        0.569
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_9",
+      "prop_type": "sphere",
+      "location": [
+        91.35,
+        63.887,
+        -86.946
+      ],
+      "rotation": [
+        0.366,
+        0.374,
+        99.999
+      ],
+      "scale": [
+        0.368,
+        0.345,
+        0.239
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_10",
+      "prop_type": "sphere",
+      "location": [
+        89.377,
+        75.101,
+        -86.803
+      ],
+      "rotation": [
+        -0.36,
+        -0.38,
+        99.999
+      ],
+      "scale": [
+        0.778,
+        0.724,
+        0.506
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "ambient_rock_11",
+      "prop_type": "sphere",
+      "location": [
+        110.322,
+        40.622,
+        -86.85
+      ],
+      "rotation": [
+        0.337,
+        0.401,
+        99.999
+      ],
+      "scale": [
+        0.644,
+        0.569,
+        0.419
+      ],
+      "material": "cobblestone",
+      "critical": false,
+      "ok": true,
+      "error": ""
+    }
+  ]
+}

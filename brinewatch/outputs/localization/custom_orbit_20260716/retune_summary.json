@@ -1,0 +1,23 @@
+{
+  "purpose": "offline gate sweep over the recorded 16-frame orbit (tuning on the same data - PRELIMINARY, not validation)",
+  "detector_contact_stats": {
+    "frames_with_contacts": "16/16", "n_contacts": 48,
+    "strength_p25_p50_p90": [76, 95, 145],
+    "area_bins_p25_p50_p90_max": [866, 2172, 9529, 26192]
+  },
+  "sweep": [
+    {"max_area_bins": 1500, "min_hits": 6,  "min_strength": 6,  "consensus": "0/12"},
+    {"max_area_bins": 1500, "min_hits": 10, "min_strength": 6,  "consensus": "0/12"},
+    {"max_area_bins": 12000, "min_hits": 6, "min_strength": 6,  "consensus": "11/12", "median_err_m": 10.07},
+    {"max_area_bins": 12000, "min_hits": 6, "min_strength": 80, "consensus": "10/12", "median_err_m": 8.85},
+    {"max_area_bins": 12000, "min_hits": 10, "min_strength": 6, "consensus": "0/12"},
+    {"max_area_bins": 60000, "min_hits": 6, "min_strength": 6,  "consensus": "11/12", "median_err_m": 10.07}
+  ],
+  "stable_estimate": {
+    "estimate_xy": [34.09, -7.46],
+    "true_diffuser_centre_xy": [39.8, 0.0],
+    "error_to_diffuser_centre_m": 9.39,
+    "distance_to_structure_axis_m": 7.46,
+    "note": "identical cluster across priors; fliplr (mirrored azimuth convention) hypothesis rejected (offset does not collapse); consistent with native ExampleLevel clutter near the site"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "true_xy": [
+    39.8,
+    0.0
+  ],
+  "bed_z": -73.46761703491211,
+  "n_frames": 16,
+  "orbit_radius_m": 20.0,
+  "priors": [
+    {
+      "prior_offset_m": 10.0,
+      "prior_bearing_deg": 0.0,
+      "prior_error_m": 10.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 15
+    },
+    {
+      "prior_offset_m": 18.0,
+      "prior_bearing_deg": 0.0,
+      "prior_error_m": 18.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 12
+    },
+    {
+      "prior_offset_m": 26.0,
+      "prior_bearing_deg": 0.0,
+      "prior_error_m": 26.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 7
+    },
+    {
+      "prior_offset_m": 10.0,
+      "prior_bearing_deg": 90.0,
+      "prior_error_m": 10.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 15
+    },
+    {
+      "prior_offset_m": 18.0,
+      "prior_bearing_deg": 90.0,
+      "prior_error_m": 18.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 13
+    },
+    {
+      "prior_offset_m": 26.0,
+      "prior_bearing_deg": 90.0,
+      "prior_error_m": 26.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 8
+    },
+    {
+      "prior_offset_m": 10.0,
+      "prior_bearing_deg": 180.0,
+      "prior_error_m": 10.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 14
+    },
+    {
+      "prior_offset_m": 18.0,
+      "prior_bearing_deg": 180.0,
+      "prior_error_m": 18.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 12
+    },
+    {
+      "prior_offset_m": 26.0,
+      "prior_bearing_deg": 180.0,
+      "prior_error_m": 26.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 11
+    },
+    {
+      "prior_offset_m": 10.0,
+      "prior_bearing_deg": 270.0,
+      "prior_error_m": 10.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 15
+    },
+    {
+      "prior_offset_m": 18.0,
+      "prior_bearing_deg": 270.0,
+      "prior_error_m": 18.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 13
+    },
+    {
+      "prior_offset_m": 26.0,
+      "prior_bearing_deg": 270.0,
+      "prior_error_m": 26.0,
+      "estimate": null,
+      "error_m": null,
+      "contacts_seen": 10
+    }
+  ]
+}

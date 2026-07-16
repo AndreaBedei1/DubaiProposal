@@ -1,0 +1,236 @@
+{
+  "site": [
+    30.0,
+    0.0
+  ],
+  "yaw_deg": 0.0,
+  "bed_z": -73.46761703491211,
+  "poses": [
+    [
+      0.0,
+      18.0
+    ],
+    [
+      90.0,
+      18.0
+    ],
+    [
+      180.0,
+      18.0
+    ],
+    [
+      270.0,
+      18.0
+    ],
+    [
+      45.0,
+      28.0
+    ],
+    [
+      225.0,
+      28.0
+    ]
+  ],
+  "phases": {
+    "B_vs_A": {
+      "b000_r18": {
+        "mean_abs_diff": 0.026611,
+        "bit_identical": false
+      },
+      "b090_r18": {
+        "mean_abs_diff": 0.013814,
+        "bit_identical": false
+      },
+      "b180_r18": {
+        "mean_abs_diff": 0.017034,
+        "bit_identical": false
+      },
+      "b270_r18": {
+        "mean_abs_diff": 0.007969,
+        "bit_identical": false
+      },
+      "b045_r28": {
+        "mean_abs_diff": 0.004931,
+        "bit_identical": false
+      },
+      "b225_r28": {
+        "mean_abs_diff": 0.011718,
+        "bit_identical": false
+      }
+    },
+    "C_vs_A": {
+      "b000_r18": {
+        "mean_abs_diff": 0.024485,
+        "bit_identical": false
+      },
+      "b090_r18": {
+        "mean_abs_diff": 0.014327,
+        "bit_identical": false
+      },
+      "b180_r18": {
+        "mean_abs_diff": 0.01693,
+        "bit_identical": false
+      },
+      "b270_r18": {
+        "mean_abs_diff": 0.011141,
+        "bit_identical": false
+      },
+      "b045_r28": {
+        "mean_abs_diff": 0.00444,
+        "bit_identical": false
+      },
+      "b225_r28": {
+        "mean_abs_diff": 0.013119,
+        "bit_identical": false
+      }
+    },
+    "D_vs_A": {
+      "b000_r18": {
+        "mean_abs_diff": 0.02506,
+        "bit_identical": false
+      },
+      "b090_r18": {
+        "mean_abs_diff": 0.014566,
+        "bit_identical": false
+      },
+      "b180_r18": {
+        "mean_abs_diff": 0.017076,
+        "bit_identical": false
+      },
+      "b270_r18": {
+        "mean_abs_diff": 0.011414,
+        "bit_identical": false
+      },
+      "b045_r28": {
+        "mean_abs_diff": 0.004502,
+        "bit_identical": false
+      },
+      "b225_r28": {
+        "mean_abs_diff": 0.013128,
+        "bit_identical": false
+      }
+    }
+  },
+  "contacts_C": {
+    "b000_r18": [
+      {
+        "range_m": 17.4,
+        "bearing_deg": -49.1,
+        "strength": 179.2,
+        "area_bins": 3479
+      },
+      {
+        "range_m": 5.3,
+        "bearing_deg": 31.5,
+        "strength": 167.8,
+        "area_bins": 2731
+      },
+      {
+        "range_m": 15.8,
+        "bearing_deg": 55.2,
+        "strength": 53.5,
+        "area_bins": 425
+      }
+    ],
+    "b090_r18": [
+      {
+        "range_m": 12.6,
+        "bearing_deg": -31.8,
+        "strength": 133.0,
+        "area_bins": 9130
+      },
+      {
+        "range_m": 22.0,
+        "bearing_deg": -36.4,
+        "strength": 79.9,
+        "area_bins": 9759
+      },
+      {
+        "range_m": 37.0,
+        "bearing_deg": 42.4,
+        "strength": 68.2,
+        "area_bins": 2114
+      }
+    ],
+    "b180_r18": [
+      {
+        "range_m": 10.2,
+        "bearing_deg": -47.4,
+        "strength": 141.9,
+        "area_bins": 2708
+      },
+      {
+        "range_m": 38.2,
+        "bearing_deg": -30.5,
+        "strength": 81.4,
+        "area_bins": 1712
+      },
+      {
+        "range_m": 38.2,
+        "bearing_deg": -15.8,
+        "strength": 81.6,
+        "area_bins": 908
+      }
+    ],
+    "b270_r18": [
+      {
+        "range_m": 22.3,
+        "bearing_deg": -6.2,
+        "strength": 110.0,
+        "area_bins": 38389
+      },
+      {
+        "range_m": 19.8,
+        "bearing_deg": 4.2,
+        "strength": 122.4,
+        "area_bins": 39
+      },
+      {
+        "range_m": 18.1,
+        "bearing_deg": -29.4,
+        "strength": 59.7,
+        "area_bins": 69
+      }
+    ],
+    "b045_r28": [
+      {
+        "range_m": 14.9,
+        "bearing_deg": -33.6,
+        "strength": 107.1,
+        "area_bins": 6404
+      },
+      {
+        "range_m": 17.9,
+        "bearing_deg": 53.6,
+        "strength": 153.3,
+        "area_bins": 811
+      },
+      {
+        "range_m": 6.8,
+        "bearing_deg": -47.7,
+        "strength": 78.6,
+        "area_bins": 2200
+      }
+    ],
+    "b225_r28": [
+      {
+        "range_m": 31.0,
+        "bearing_deg": -33.5,
+        "strength": 94.1,
+        "area_bins": 12585
+      },
+      {
+        "range_m": 6.7,
+        "bearing_deg": 17.7,
+        "strength": 164.0,
+        "area_bins": 3113
+      },
+      {
+        "range_m": 27.4,
+        "bearing_deg": -0.4,
+        "strength": 134.8,
+        "area_bins": 1232
+      }
+    ]
+  }
+}
