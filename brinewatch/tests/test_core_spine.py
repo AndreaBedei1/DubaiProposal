@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import math
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -277,3 +278,30 @@ class TestGeometry:
         assert abs(wrap_angle(-3 * math.pi)) == pytest.approx(math.pi)
         assert wrap_angle(0.5) == pytest.approx(0.5)
         assert wrap_angle(2 * math.pi + 0.3) == pytest.approx(0.3)
+
+
+class TestApplicationConfigs:
+    """The application-facing YAML configs must load and satisfy the
+    invariants the PFH demo relies on."""
+
+    REPO = Path(__file__).resolve().parents[1]
+
+    def test_pfh2026_config_valid(self):
+        cfg = load_config(self.REPO / "configs" / "pfh2026_holoocean.yaml")
+        assert cfg.locator.mode == "sonar"
+        assert cfg.backend.holoocean.sonar_enabled
+        assert cfg.backend.holoocean.defer_scene_build
+        assert cfg.locator.prior_x is not None and cfg.locator.prior_y is not None
+        # chart prior must be inside the survey box
+        assert cfg.survey.x_min <= cfg.locator.prior_x <= cfg.survey.x_max
+        assert cfg.survey.y_min <= cfg.locator.prior_y <= cfg.survey.y_max
+        # survey never above the safety ceiling
+        assert cfg.survey.max_z_m < -1.0
+
+    def test_benchmark_configs_valid(self):
+        static = load_config(self.REPO / "configs" / "benchmark_static.yaml")
+        dynamic = load_config(self.REPO / "configs" / "benchmark_dynamic.yaml")
+        assert static.environment.tide_amplitude_m == 0.0
+        assert dynamic.environment.tide_amplitude_m > 0.0
+        assert static.backend.name == "kinematic"
+

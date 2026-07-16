@@ -185,6 +185,7 @@ def main() -> int:
         "rmse_plume": round(metrics.rmse_plume, 4),
         "boundary_f1": round(metrics.boundary_f1, 3),
         "prob_exceed_max": round(verdict.prob_exceed_max, 3),
+        "p95_std_outside_psu": round(verdict.p95_std_outside_psu, 3),
     }
     save_result_summary(result, run_dir / "summary.json", extra=extra)
     report = render_html_report(

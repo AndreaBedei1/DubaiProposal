@@ -1,0 +1,17 @@
+{
+  "n_frames": 538,
+  "n_target_contacts": 62,
+  "n_clutter_contacts": 2218,
+  "target_strength_p10_p50_p90": [
+    5.339077652658451,
+    7.7063223994386725,
+    12.732914300788664
+  ],
+  "clutter_strength_p50_p90_p99": [
+    8.031996368925686,
+    17.347618700735154,
+    72.19203750750395
+  ],
+  "recommended_min_strength": null,
+  "recommended_pr": null
+}

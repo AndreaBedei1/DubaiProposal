@@ -36,11 +36,16 @@ outfall:
   discharge_salinity_psu: 68.0
   discharge_temperature_c: 27.5
 
+# Survey the water side only (v5 collision feedback): a continuous quay
+# wall runs N-S at x~451 (hits spanning y -637..-655) and the diffuser
+# lattice occupies the anchor line itself — like a real shoreline outfall,
+# the mixing zone is truncated at the structures and the ROV does not fly
+# through them.
 survey:
-  x_min: 416.0
+  x_min: 453.0
   x_max: 516.0
   y_min: -700.0
-  y_max: -624.0                 # keeps clearance from the pier lattice
+  y_max: -634.0
   altitude_m: 2.2
   grid_resolution_m: 3.0
 

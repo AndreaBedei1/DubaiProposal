@@ -105,29 +105,44 @@ class SonarDiffuserLocator:
     # ------------------------------------------------------------------ #
     @property
     def consensus(self) -> Optional[Tuple[float, float]]:
-        """Robust (median) world estimate from all buffered contacts."""
+        """Densest-cluster (mode) world estimate.
+
+        A global median is NOT used: with a low-SNR contact stream the median
+        is dragged to the centroid of the clutter cloud (which accumulates
+        wherever the vehicle happens to spend time — verified on recorded
+        mission data). A persistent physical structure instead forms the
+        densest compact cluster of world estimates; the consensus is the
+        median of that cluster's members."""
+        cluster = self._mode_cluster()
+        if cluster is None:
+            return None
+        return (float(np.median(cluster[:, 0])), float(np.median(cluster[:, 1])))
+
+    def _mode_cluster(self) -> Optional[np.ndarray]:
+        """Members (x, y, heading) of the densest cluster, or None if the
+        densest neighbourhood has fewer than ``min_hits_for_consensus``."""
         if len(self._estimates) < self.cfg.min_hits_for_consensus:
             return None
-        arr = np.asarray(self._estimates, dtype=float)
-        return (float(np.median(arr[:, 0])), float(np.median(arr[:, 1])))
+        arr = np.asarray(self._estimates, dtype=float)  # (n, 3)
+        d2 = ((arr[:, None, 0] - arr[None, :, 0]) ** 2
+              + (arr[:, None, 1] - arr[None, :, 1]) ** 2)
+        within = d2 <= self.cfg.cluster_radius_m ** 2
+        counts = within.sum(axis=1)
+        best = int(np.argmax(counts))
+        if counts[best] < self.cfg.min_hits_for_consensus:
+            return None
+        return arr[within[best]]
 
     def _aspect_diverse(self) -> bool:
-        """True when in-cluster contacts span sufficiently different headings."""
+        """True when the mode cluster spans sufficiently different headings."""
         if self.cfg.min_aspect_diff_deg <= 0.0:
             return True
-        consensus = self.consensus
-        if consensus is None:
+        cluster = self._mode_cluster()
+        if cluster is None or len(cluster) < 2:
             return False
-        headings = [
-            h for x, y, h in self._estimates
-            if math.hypot(x - consensus[0], y - consensus[1]) <= self.cfg.cluster_radius_m
-        ]
-        if len(headings) < 2:
-            return False
-        spread = max(
-            abs(math.atan2(math.sin(a - b), math.cos(a - b)))
-            for a in headings for b in headings
-        )
+        headings = cluster[:, 2]
+        diff = headings[:, None] - headings[None, :]
+        spread = float(np.max(np.abs(np.arctan2(np.sin(diff), np.cos(diff)))))
         return spread >= math.radians(self.cfg.min_aspect_diff_deg)
 
     def _to_world(self, frame: SonarFrame, range_m: float, bearing_sensor: float

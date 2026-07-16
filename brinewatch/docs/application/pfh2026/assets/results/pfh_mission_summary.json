@@ -1,0 +1,55 @@
+{
+  "planner": "adaptive",
+  "n_samples": 1364,
+  "budget_used_m": 1100.0839442554452,
+  "budget_max_m": 1100.0,
+  "outfall_estimate": [
+    461.8620148094438,
+    -634.0085283307185
+  ],
+  "n_detections": 4,
+  "phase_history": [
+    [
+      10.0,
+      "locate"
+    ],
+    [
+      140.0,
+      "baseline"
+    ],
+    [
+      321.5,
+      "survey"
+    ],
+    [
+      1374.0,
+      "done"
+    ]
+  ],
+  "wall_time_s": 1400.72,
+  "notes": [
+    "stalled while navigating to (454.1, -667.3)",
+    "stalled while navigating to (453.9, -651.2)",
+    "stalled while navigating to (454.7, -677.7)",
+    "stalled while navigating to (459.9, -640.3)",
+    "27 collision event(s) detected"
+  ],
+  "screening": "POSSIBLE_EXCEEDANCE",
+  "screening_outcome_vs_gt": "correct",
+  "verdict_binary_legacy": "FAIL",
+  "gt_verdict": "FAIL",
+  "localization_error_m": 6.41,
+  "sonar": {
+    "frames_processed": 130,
+    "contacts_accepted": 115,
+    "detections_emitted": 4,
+    "localized_by_sonar": true
+  },
+  "acoustic_target": "official stock pier structure (PierHarbor)",
+  "scene_components_ok": 22,
+  "terrain_plane_rmse_m": 0.119,
+  "rmse_plume": 3.1662,
+  "boundary_f1": 0.0,
+  "prob_exceed_max": 0.859,
+  "p95_std_outside_psu": 1.791
+}

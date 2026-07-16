@@ -1,0 +1,496 @@
+{
+  "outfall": {
+    "x": 456.5,
+    "y": -630.5,
+    "axis_deg": 90.0,
+    "n_ports": 5,
+    "port_spacing_m": 3.0
+  },
+  "acoustic_note": "spawned props are visual/collision only; NOT in the HoloOcean acoustic octree (verified)",
+  "components": [
+    {
+      "kind": "pipe_segment_0",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -627.5,
+        -16.352
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "pipe_segment_1",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -621.5,
+        -16.206
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "pipe_segment_2",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -615.5,
+        -16.06
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "pipe_segment_3",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -609.5,
+        -15.915
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "pipe_segment_4",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -603.5,
+        -15.769
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "pipe_segment_5",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -597.5,
+        -18.717
+      ],
+      "rotation": [
+        0.0,
+        91.39,
+        90.0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        6.0
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "manifold",
+      "prop_type": "box",
+      "location": [
+        456.5,
+        -630.5,
+        -16.325
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": [
+        16.5,
+        1.2,
+        1.1
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_0",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -636.5,
+        -15.12
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        1.6
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_0",
+      "prop_type": "cone",
+      "location": [
+        456.5,
+        -636.5,
+        -14.07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7200000000000001,
+        0.7200000000000001,
+        0.5
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "collar_0",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -636.5,
+        -16.895
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.4,
+        1.4,
+        0.25
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_1",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -633.5,
+        -15.047
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        1.6
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_1",
+      "prop_type": "cone",
+      "location": [
+        456.5,
+        -633.5,
+        -13.997
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7200000000000001,
+        0.7200000000000001,
+        0.5
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "collar_1",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -633.5,
+        -16.822
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.4,
+        1.4,
+        0.25
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_2",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -630.5,
+        -14.975
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        1.6
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_2",
+      "prop_type": "cone",
+      "location": [
+        456.5,
+        -630.5,
+        -13.925
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7200000000000001,
+        0.7200000000000001,
+        0.5
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "collar_2",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -630.5,
+        -16.75
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.4,
+        1.4,
+        0.25
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_3",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -627.5,
+        -14.902
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        1.6
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_3",
+      "prop_type": "cone",
+      "location": [
+        456.5,
+        -627.5,
+        -13.852
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7200000000000001,
+        0.7200000000000001,
+        0.5
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "collar_3",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -627.5,
+        -16.677
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.4,
+        1.4,
+        0.25
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "riser_4",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -624.5,
+        -14.829
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        1.6
+      ],
+      "critical": true,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "nozzle_4",
+      "prop_type": "cone",
+      "location": [
+        456.5,
+        -624.5,
+        -13.779
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.7200000000000001,
+        0.7200000000000001,
+        0.5
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    },
+    {
+      "kind": "collar_4",
+      "prop_type": "cylinder",
+      "location": [
+        456.5,
+        -624.5,
+        -16.604
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.4,
+        1.4,
+        0.25
+      ],
+      "critical": false,
+      "ok": true,
+      "error": ""
+    }
+  ]
+}

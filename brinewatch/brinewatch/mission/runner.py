@@ -65,11 +65,16 @@ def build_locator(cfg: MissionConfig, plume: BrinePlume):
         if cfg.locator.prior_x is not None and cfg.locator.prior_y is not None:
             prior = (float(cfg.locator.prior_x), float(cfg.locator.prior_y))
         return SonarDiffuserLocator(SonarLocalizerConfig(
-            # min_range 8 m: at ~2 m survey altitude the grazing bottom fills
-            # the near ranges with texture returns (see locate_probe outputs)
+            # Gates tuned on RECORDED noisy mission data (detector_eval): in
+            # noise, contact strength no longer separates structure from
+            # clutter (distributions overlap), so the burden moves to spatial
+            # persistence — the densest multi-aspect cluster of world
+            # estimates near the chart prior.
             detector=DetectorConfig(min_range_m=8.0),
+            min_strength=6.0,
+            min_hits_for_consensus=10,
             prior_xy=prior,
-            prior_gate_m=2.5 * cfg.locator.prior_sigma_m,
+            prior_gate_m=2.0 * cfg.locator.prior_sigma_m,
         ))
     raise ValueError(f"Unknown locator mode '{mode}' (expected 'synthetic' or 'sonar')")
 

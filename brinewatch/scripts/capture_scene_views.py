@@ -50,6 +50,26 @@ def main() -> int:
 
     import holoocean
 
+    # Single-engine guard: booting while another Holodeck instance is alive
+    # (even one still shutting down) yields black camera frames with working
+    # sensors — verified empirically (see SCENE_ITERATION_LOG.md).
+    try:
+        import psutil  # type: ignore
+
+        for proc in psutil.process_iter(["name"]):
+            if (proc.info["name"] or "").lower().startswith("holodeck"):
+                raise SystemExit(
+                    "another Holodeck engine is running (PID "
+                    f"{proc.pid}); close it before capturing scene views")
+    except ImportError:
+        import subprocess
+
+        res = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Holodeck.exe"],
+                             capture_output=True, text=True)
+        if "Holodeck" in res.stdout:
+            raise SystemExit("another Holodeck engine is running; close it "
+                             "before capturing scene views")
+
     cfg = load_config(args.config)
     out_cfg = cfg.outfall
     ox, oy = out_cfg.x, out_cfg.y
@@ -69,13 +89,22 @@ def main() -> int:
                 {"sensor_type": "RangeFinderSensor", "socket": "SonarSocket",
                  "configuration": {"LaserCount": 4, "LaserAngle": -90,
                                    "LaserMaxDistance": 80}},
+                # NOTE (scene iteration log): 1600x900 returned all-black
+                # frames on this machine; 960x540 renders correctly.
                 {"sensor_type": "RGBCamera", "socket": "CameraSocket",
-                 "configuration": {"CaptureWidth": 1600, "CaptureHeight": 900}},
+                 "configuration": {"CaptureWidth": 960, "CaptureHeight": 540}},
             ],
             "control_scheme": 1,
-            "location": [ox, oy - 20.0, -12.0], "rotation": [0.0, 0.0, 90.0],
+            # NOTE (scene iteration log): booting at (outfall_x, outfall_y-20)
+            # placed the vehicle against a stock obstacle (the same one the v6
+            # mission bumped at ~(457,-645)) and every subsequent camera frame
+            # came back black; boot in verified open water instead.
+            "location": [ox + 18.0, oy - 26.0, -12.0], "rotation": [0.0, 0.0, 120.0],
         }],
-        "window_width": 1280, "window_height": 720,
+        # NOTE (scene iteration log): with window 1280x720 the RGBCamera
+        # returns black frames on this machine; 800x450 renders correctly
+        # (window and capture buffers appear to contend).
+        "window_width": 800, "window_height": 450,
     }
 
     env = holoocean.make(scenario_cfg=scenario, show_viewport=True, verbose=False)
@@ -120,6 +149,11 @@ def main() -> int:
             state = env.tick()
         if "RGBCamera" in state:
             rgb = np.asarray(state["RGBCamera"])[:, :, :3][:, :, ::-1]
+            mean_px = float(rgb.mean())
+            if mean_px < 2.0:
+                raise SystemExit(
+                    f"black frame captured for '{name}' (pixel mean {mean_px:.1f}) "
+                    "— rendering broken (engine overlap?); aborting loudly")
             import matplotlib
 
             matplotlib.use("Agg")
@@ -128,7 +162,7 @@ def main() -> int:
             path = out / f"{name}.png"
             plt.imsave(path, rgb.astype(np.uint8))
             captures[name] = str(path)
-            print(f"[scene_views] captured {name}")
+            print(f"[scene_views] captured {name} (pixel mean {mean_px:.0f})")
 
     (out / "views.json").write_text(json.dumps(
         {"world": WORLD, "outfall": {"x": ox, "y": oy, "bed_z": bed},
