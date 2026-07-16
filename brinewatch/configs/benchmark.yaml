@@ -1,0 +1,10 @@
+# Equal-budget benchmark configuration (kinematic backend for speed).
+name: brinewatch_benchmark
+seed: 7
+
+budget:
+  max_distance_m: 1600.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+
+backend:
+  name: kinematic

@@ -1,0 +1,43 @@
+# Live HoloOcean mission: BlueROV2 in SimpleUnderwater, adaptive planner.
+# Runs ~2.5x real time on a discrete GPU (frames_per_sec: false).
+name: brinewatch_holoocean
+seed: 7
+planner: adaptive
+
+budget:
+  max_distance_m: 1100.0     # ~8 min wall time at ~2.5x real time; verdict
+                             # confidence grows with budget (see benchmark)
+
+adaptive:
+  weight_turn: 0.35          # smoother trajectories for the live demo
+  min_leg_m: 12.0            # longer legs -> less zig-zag on screen
+
+# SimpleUnderwater has steep rocky walls around much of its perimeter
+# (collision feedback, v3 run: hits at x~-50 and x~+49 on the slopes).
+# Survey the flat central bowl only; the kinematic/benchmark box is unchanged.
+survey:
+  x_min: -45.0
+  x_max: 40.0                # E/SE slopes intrude diagonally past x~40 and
+  y_min: -28.0               # y~-28 (v7 collision feedback: wall-climb
+  y_max: 40.0                # episodes clustered at x>40, y<-28)
+  altitude_m: 2.2            # near the compliance evaluation layer (1 m):
+                             # surveying too high (3 m tried in v6) samples a
+                             # 3.5x weaker brine layer and biases the verdict
+                             # toward PASS. Outfall structures (~2 m tall) are
+                             # avoided by the baseline corridor offsets + the
+                             # collision pop-up escape.
+
+backend:
+  name: holoocean
+  holoocean:
+    world: SimpleUnderwater
+    package_name: Ocean
+    ticks_per_sec: 30
+    control_ticks: 15
+    frames_per_sec: false
+    show_viewport: true
+    window_width: 1024
+    window_height: 576
+    spawn_outfall_props: true
+    draw_debug: true
+    min_altitude_m: 1.0
