@@ -13,6 +13,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# -File invocations deliver arrays as one comma-joined string: split them
+$Conditions = @($Conditions | ForEach-Object { $_ -split "," } |
+        Where-Object { $_ })
 $py = "C:\Users\andrea.bedei3\.conda\envs\ocean\python.exe"
 if ($env:BRINEWATCH_PYTHON) { $py = $env:BRINEWATCH_PYTHON }
 $repo = Split-Path -Parent $PSScriptRoot
