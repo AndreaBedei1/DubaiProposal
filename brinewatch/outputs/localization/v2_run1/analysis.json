@@ -1,0 +1,66 @@
+{
+  "summary": {
+    "n_acquisitions": 4,
+    "success": 4,
+    "fallback_rate": 0.0,
+    "median_error_m": 1.52,
+    "mean_error_m": 1.31,
+    "p95_error_m": 1.63,
+    "max_error_m": 1.63,
+    "note": "independent engine sessions per acquisition; pose-matched background subtraction removes native clutter; true centre used only here for scoring"
+  },
+  "runs": {
+    "acq_r18_p0000_s101": {
+      "n_frames": 16,
+      "n_contacts": 48,
+      "estimate": [
+        38.04,
+        -1.42
+      ],
+      "core_size": 19,
+      "aspect_span_deg": 315.0,
+      "error_to_centre_m": 1.42,
+      "dist_to_axis_m": 1.42,
+      "fallback": false
+    },
+    "acq_r18_p1125_s202": {
+      "n_frames": 16,
+      "n_contacts": 48,
+      "estimate": [
+        37.52,
+        -0.34
+      ],
+      "core_size": 16,
+      "aspect_span_deg": 315.0,
+      "error_to_centre_m": 0.59,
+      "dist_to_axis_m": 0.34,
+      "fallback": false
+    },
+    "acq_r22_p0000_s303": {
+      "n_frames": 16,
+      "n_contacts": 48,
+      "estimate": [
+        39.42,
+        -0.75
+      ],
+      "core_size": 16,
+      "aspect_span_deg": 292.5,
+      "error_to_centre_m": 1.61,
+      "dist_to_axis_m": 0.75,
+      "fallback": false
+    },
+    "acq_r22_p1125_s404": {
+      "n_frames": 16,
+      "n_contacts": 48,
+      "estimate": [
+        37.59,
+        -1.57
+      ],
+      "core_size": 16,
+      "aspect_span_deg": 315.0,
+      "error_to_centre_m": 1.63,
+      "dist_to_axis_m": 1.57,
+      "fallback": false
+    }
+  }
+}

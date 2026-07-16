@@ -1,5 +1,39 @@
 # Localization study on the actual outfall (custom engine)
 
+## v2 — pose-matched background subtraction (AUTHORITATIVE, 2026-07-17)
+
+Method: a baseline pass WITHOUT the structure records sonar frames at every
+survey pose (real-survey change-detection analogue: pre-installation
+baseline vs post-installation inspection). Each inspection acquisition then
+subtracts the pose-matched background before detection; residual contacts
+are clustered (weighted 5 m mode cluster). Native clutter cancels by
+construction. No ground truth reaches the locator (truth scores only).
+
+Campaign (`scripts/run_localization_v2_campaign.ps1`, evidence
+`outputs/localization/v2_run1/`): 1 background session (64 poses: 2 radii ×
+2 phases × 16 bearings, noise-free) + **4 independent orbit acquisitions**,
+each in its OWN fresh engine session with sensor noise enabled
+(add/mult σ = 0.05), radius ∈ {18, 22} m × phase ∈ {0°, 11.25°}:
+
+| acquisition | estimate | error to diffuser centre | dist to axis | aspect span |
+|---|---|---|---|---|
+| r18 φ0 | (38.04, −1.42) | 1.42 m | 1.42 m | 315° |
+| r18 φ11.25 | (37.52, −0.34) | **0.59 m** | 0.34 m | 315° |
+| r22 φ0 | (39.42, −0.75) | 1.61 m | 0.75 m | 292° |
+| r22 φ11.25 | (37.59, −1.57) | 1.63 m | 1.57 m | 315° |
+
+**Summary: 4/4 independent acquisitions succeed; median error 1.52 m,
+mean 1.31 m, p95 1.63 m, max 1.63 m; fallback rate 0.0.** Cross-session
+pose repeatability ≤ 0.1 mm (measured in the conditions campaign), so the
+background subtraction is exact up to sensor noise.
+
+Boundary: the method assumes a pre-installation baseline over the same
+waypoints exists — realistic for planned-infrastructure monitoring (the
+BrineWatch use case) but not for unknown-site search, where the v1
+clutter-limited result below still applies.
+
+## v1 — single-orbit, no background model (PRELIMINARY, superseded)
+
 Run 2026-07-16, `scripts/localize_custom_outfall.py`, output
 `outputs/custom_localization_20260716_235206/`. One fork-engine session:
 93-component outfall built via SpawnAsset at (30, 0), axis +x, ExampleLevel
