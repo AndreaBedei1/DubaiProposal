@@ -3,6 +3,14 @@ __pycache__/
 *.egg-info/
 build/
 dist/
-outputs/
 .pytest_cache/
 .vscode/
+
+# outputs/ holds local working artifacts EXCEPT the curated, committed
+# evidence packages whitelisted below (see outputs/README.md)
+outputs/*
+!outputs/README.md
+!outputs/visual/
+!outputs/sonar_visibility/
+!outputs/localization/
+!outputs/full_mission/
