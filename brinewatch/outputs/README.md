@@ -15,10 +15,11 @@ Backend legend used below:
 | [visual/selected_world/](visual/selected_world/) — **FINAL** contact sheet + 10 inspection views + poses + scene manifest + probed terrain of outfall v2 at the SELECTED site (Dam (−100,−35), axis 165°, iteration 13, accepted) | official | **Dam (official)** | FINAL visual evidence |
 | [visual/world_comparison/](visual/world_comparison/) — official-level evaluation: scored comparison.csv + per-world site sheets + selected-site scene manifest (see docs LEVEL_SELECTION.md) | official | 6 underwater Ocean worlds | FINAL selection evidence |
 | [visual/flatunderwater_iter9/](visual/flatunderwater_iter9/) — contact sheet + 10 inspection views + poses + scene manifest of outfall v2 (iteration 9) | official | FlatUnderwater (official) | superseded — retained as fallback-site evidence |
-| [sonar_visibility/custom_abc_20260716/](sonar_visibility/custom_abc_20260716/) — A/B/C/D runtime visibility experiment: manifest, per-pose metrics, difference images, raw frames | custom fork | ExampleLevel (fork-internal) | PRELIMINARY — clean re-run on the selected official level pending; B-phase contamination documented in the manifest |
-| [localization/custom_orbit_20260716/](localization/custom_orbit_20260716/) — single-orbit localization study: manifest, raw frames + poses, default-gate study, gate-sweep summary | custom fork | ExampleLevel (fork-internal) | PRELIMINARY — tuning and scoring share one dataset; v2 study pending |
-| visual/world_comparison/ | — | — | pending (official-level evaluation) |
-| full_mission/ | custom fork | selected official level | pending |
+| [sonar_visibility/conditions_run1/](sonar_visibility/conditions_run1/) — **FINAL** clean visibility campaign: 5 conditions in independent engine sessions (A/FULL/PIPE/RISERS/REMOVED), 8 poses × 4 bearings × 4 ranges, geometry-derived windows, raw frames + analysis + NOTES (REMOVED anomaly flagged) | custom fork | fork test level | FINAL acoustic evidence (one open anomaly documented) |
+| [localization/v2_run1/](localization/v2_run1/) — **FINAL** localization study: pose-matched background subtraction, 4 independent acquisitions, median error 1.52 m, fallback 0 | custom fork | fork test level | FINAL localization evidence |
+| [sonar_visibility/custom_abc_20260716/](sonar_visibility/custom_abc_20260716/) — in-session A/B/C/D experiment | custom fork | fork test level | superseded by conditions_run1 (B-phase contamination documented) |
+| [localization/custom_orbit_20260716/](localization/custom_orbit_20260716/) — single-orbit gate study | custom fork | fork test level | superseded by v2_run1 (kept: shows why background modelling is required) |
+| full_mission/ | custom fork + official | fork test level + Dam | pending |
 
 Commands used (engine first, then the client script, fresh engine session per
 client run):
