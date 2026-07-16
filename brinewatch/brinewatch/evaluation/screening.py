@@ -67,7 +67,12 @@ def screen(verdict: ComplianceVerdict, cfg: ComplianceConfig) -> ScreeningResult
     the binary rule (CLEAR iff compliant).
     """
     p = float(verdict.prob_exceed_max)
-    std_out = float(verdict.max_std_outside_psu)
+    # CLEAR uses the p95 of the outside-zone posterior std (a single small
+    # sampling void must not invalidate a dense survey); fall back to the max
+    # for verdicts produced before p95 existed.
+    std_out = float(getattr(verdict, "p95_std_outside_psu", float("nan")))
+    if math.isnan(std_out):
+        std_out = float(verdict.max_std_outside_psu)
     std_known = not math.isnan(std_out)
     std_ok = (std_out <= cfg.max_posterior_std_psu) if std_known else True
 

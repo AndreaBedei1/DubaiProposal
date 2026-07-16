@@ -43,9 +43,13 @@ class ComplianceVerdict:
     prob_exceed_max: float
     n_cells_exceeding: int
     mixing_zone_radius_m: float
-    # Max GP posterior std outside the zone (NaN for noiseless/GT fields):
-    # the three-state screening needs it to tell CLEAR from REVIEW.
+    # GP posterior std outside the zone (NaN for noiseless/GT fields): the
+    # three-state screening needs it to tell CLEAR from REVIEW. The CLEAR
+    # requirement uses the 95th percentile — a single small sampling void at
+    # the survey rim must not invalidate an otherwise dense survey — while
+    # the max is recorded for transparency.
     max_std_outside_psu: float = float("nan")
+    p95_std_outside_psu: float = float("nan")
 
     @property
     def label(self) -> str:
@@ -88,10 +92,13 @@ def evaluate_compliance(
     prob_exceed_max = float(np.max(np.where(outside, prob, 0.0)))
 
     max_std_outside = float("nan")
+    p95_std_outside = float("nan")
     if std is not None:
         std_arr = np.asarray(std, dtype=float).ravel()
         if std_arr.size == mean.size:
-            max_std_outside = float(np.max(np.where(outside, std_arr, 0.0)))
+            outside_std = std_arr[outside]
+            max_std_outside = float(outside_std.max())
+            p95_std_outside = float(np.percentile(outside_std, 95.0))
 
     return ComplianceVerdict(
         compliant=n_exceeding == 0,
@@ -102,6 +109,7 @@ def evaluate_compliance(
         n_cells_exceeding=n_exceeding,
         mixing_zone_radius_m=cfg.mixing_zone_radius_m,
         max_std_outside_psu=max_std_outside,
+        p95_std_outside_psu=p95_std_outside,
     )
 
 
