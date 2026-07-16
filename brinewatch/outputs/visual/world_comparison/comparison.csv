@@ -1,0 +1,10 @@
+world,site,usable,bed_median,relief_m,lum_mean,built,visual,terrain,depth,note,total
+Dam,"(-100,-35)",41,-65.94,11.35,142.1,93,3.0,2.0,2.0,,7.0
+FlatUnderwater,"(100,50)",49,-87.07,0.0,138.4,93,3.0,2.0,2.0,,7.0
+Dam,"(-135,-15)",41,-67.13,8.11,117.6,93,2.0,2.0,2.0,,6.0
+Dam,"(-65,-45)",41,-67.55,17.66,140.7,93,3.0,1.0,2.0,,6.0
+OpenWater,"(-133,67)",49,-296.72,11.67,148.5,93,3.0,2.0,0.0,,5.0
+OpenWater,"(-133,133)",49,-296.88,7.17,142.9,93,3.0,2.0,0.0,,5.0
+ExampleLevel,-,0,,,,,0,0,0,no usable site,0
+PierHarbor,-,49,,,,,0,0,0,sites failed,0
+SimpleUnderwater,-,31,,,,,0,0,0,sites failed,0

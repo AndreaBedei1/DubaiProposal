@@ -17,7 +17,7 @@ accordingly (and phrased identically in all documents).
 | 9 | Terrain-calibrated scene placement works on real uneven terrain | live logs: robust plane RMSE 0.06–0.12 m vs 4.6 m unrobust (poisoned by structure soundings); `scene_manifest.json` per run | failure mode measured, fix verified live |
 | 10 | Longitudinal screening tracks a discharge trend | `assets/results/site_history_trend.png` + `site_history_ledger.jsonl` (6 simulated missions: CLEAR×2 → REVIEW → POSSIBLE_EXCEEDANCE×3) | clearly labelled simulated campaign |
 | 11 | The architecture transfers to the physical ROV | `brinewatch/simulation/base.py` (backend abstraction), `docs/sim_to_real.md` (MAVLink plan), PHYSICAL_VALIDATION_PROTOCOL.md | plan + owned hardware; no physical test executed yet |
-| 12 | Reproducibility | README one-command demos; 86 tests green (`python -m pytest tests -q`); configs versioned; environment manifest | HoloOcean install documented as prerequisite |
+| 12 | Reproducibility | README one-command demos; **111 passed** engine-free tests (`python -m pytest -q`, 2026-07-17, Python 3.9.25; engine tests carry the `holoocean_integration` marker and are excluded by default); GitHub Actions CI runs the same suite; configs versioned; environment manifest | HoloOcean install documented as prerequisite for engine runs |
 
 Claims explicitly NOT made: regulatory certification; field validation;
 first-ever robotic brine mapping; commercial cost figures; unattended

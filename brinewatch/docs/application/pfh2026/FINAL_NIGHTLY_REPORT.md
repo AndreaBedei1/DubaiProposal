@@ -123,7 +123,9 @@ page. The original two-page concept PDF is retained unchanged.
 
 ## 15-16. Tests and reproduction commands
 
-`python -m pytest tests -q` → **88 passed** (final run of this session).
+`python -m pytest tests -q` → **88 passed** (final run of that session —
+historical count; the suite has since grown, see VALIDATION_EVIDENCE.md for
+the current figure).
 Reproduction: see README "One-command demos" (kinematic demo; 20-seed
 static/dynamic benchmarks with `--seed-start 100`; official demo
 `python scripts/run_pfh2026_demo.py`; sonar gate; detector eval; site

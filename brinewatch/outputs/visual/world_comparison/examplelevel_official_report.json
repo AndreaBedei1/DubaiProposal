@@ -1,0 +1,10 @@
+{
+  "world": "ExampleLevel",
+  "stamp": "2026-07-17T00:37:46.162348",
+  "scan_half_span_m": 120.0,
+  "usable_soundings": 0,
+  "grid": 7,
+  "bed_min": null,
+  "bed_max": null,
+  "sites": []
+}

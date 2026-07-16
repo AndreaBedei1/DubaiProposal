@@ -18,7 +18,7 @@ environment facts).
 
 | Command | Result |
 |---|---|
-| `python -m pytest tests -q` | **65 passed** (0 failed) |
+| `python -m pytest tests -q` | **65 passed** (0 failed) — historical count at audit time; current figure in VALIDATION_EVIDENCE.md |
 | `python scripts/run_mission.py --config configs/mission_default.yaml` | Completed: 1775 samples, budget 1600/1600 m, rmse_plume 0.662 PSU, F1 0.81, coverage 0.92 — **binary verdict PASS vs GT FAIL** (max exceedance −0.30 PSU, P(exceed) 0.38) |
 | `python scripts/run_benchmark.py --config configs/benchmark.yaml --seeds 5` | Completed. Full-budget: lawnmower rmse_plume 0.375±0.057 / F1 0.767, adaptive 0.543±0.033 / F1 0.752, coverage 0.797 vs 0.909. **Binary verdict accuracy collapsed: 0.60 / 0.20** |
 | `python scripts/run_mission.py --config configs/holoocean_live.yaml` | Fresh baseline run executed this session (see `outputs/`); previous evidence: 1100 m mission, 0 stalls, rmse_plume 0.555 PSU, F1 0.81 |

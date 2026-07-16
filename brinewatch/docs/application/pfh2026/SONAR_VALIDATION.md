@@ -106,8 +106,11 @@ all headings; specular seabed features do not), ≥ 10 clustered hits.
   noise-dependent and must be re-tuned on real acoustics), and any claim of
   acoustic realism of the ray-cast model itself.
 - Honest status: sonar *pipeline* validated end-to-end against official
-  static structures in official HoloOcean; outfall-specific acoustic
-  validation awaits either an official static-outfall asset or the physical
-  trial. In structure-rich harbors, unattended structure identification is
-  hard; the documented fallback is operator-assisted contact confirmation
-  (a normal step in real survey practice).
+  static structures in official HoloOcean. Outfall-specific acoustic
+  visibility has been demonstrated in the CUSTOM HoloOcean fork (section 0:
+  runtime octree rebuild, A/B/C/D experiment on the generated structure).
+  Validation in the unmodified official HoloOcean engine (which cannot see
+  runtime-spawned geometry) and against physical sonar data remains
+  outstanding. In structure-rich harbors, unattended structure
+  identification is hard; the documented fallback is operator-assisted
+  contact confirmation (a normal step in real survey practice).
