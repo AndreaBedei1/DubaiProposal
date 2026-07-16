@@ -36,13 +36,16 @@ from ..utils.config import ComplianceConfig
 
 @dataclass
 class ComplianceVerdict:
-    compliant: bool
+    compliant: bool  # legacy binary verdict (kept for backward-compatible metrics)
     threshold_psu: float
     max_exceedance_psu: float
     worst_point: Tuple[float, float]
     prob_exceed_max: float
     n_cells_exceeding: int
     mixing_zone_radius_m: float
+    # Max GP posterior std outside the zone (NaN for noiseless/GT fields):
+    # the three-state screening needs it to tell CLEAR from REVIEW.
+    max_std_outside_psu: float = float("nan")
 
     @property
     def label(self) -> str:
@@ -84,6 +87,12 @@ def evaluate_compliance(
     prob = _prob_exceed(mean, std, threshold)
     prob_exceed_max = float(np.max(np.where(outside, prob, 0.0)))
 
+    max_std_outside = float("nan")
+    if std is not None:
+        std_arr = np.asarray(std, dtype=float).ravel()
+        if std_arr.size == mean.size:
+            max_std_outside = float(np.max(np.where(outside, std_arr, 0.0)))
+
     return ComplianceVerdict(
         compliant=n_exceeding == 0,
         threshold_psu=threshold,
@@ -92,6 +101,7 @@ def evaluate_compliance(
         prob_exceed_max=prob_exceed_max,
         n_cells_exceeding=n_exceeding,
         mixing_zone_radius_m=cfg.mixing_zone_radius_m,
+        max_std_outside_psu=max_std_outside,
     )
 
 

@@ -30,6 +30,36 @@ AGENT_NAME = "brine_rov"
 
 def build_scenario(cfg: BackendConfig, start_position: Tuple[float, float, float]) -> dict:
     ho = cfg.holoocean
+    sensors = [
+        {"sensor_type": "PoseSensor", "socket": "IMUSocket"},
+        {"sensor_type": "LocationSensor", "socket": "IMUSocket"},
+        {"sensor_type": "VelocitySensor", "socket": "IMUSocket"},
+        {"sensor_type": "DepthSensor", "socket": "DepthSocket",
+         "configuration": {"Sigma": 0.05}},
+        {"sensor_type": "DVLSensor", "socket": "DVLSocket",
+         "configuration": {"ReturnRange": True, "MaxRange": 60}},
+        {"sensor_type": "RangeFinderSensor", "socket": "SonarSocket",
+         "configuration": {"LaserCount": 4, "LaserAngle": -90,
+                           "LaserMaxDistance": 50}},
+        {"sensor_type": "CollisionSensor", "socket": "COM"},
+    ]
+    if ho.sonar_enabled:
+        sensors.append({
+            "sensor_type": "ImagingSonar", "socket": "SonarSocket",
+            "Hz": ho.sonar_hz,
+            "configuration": {
+                "RangeMin": ho.sonar_range_min_m,
+                "RangeMax": ho.sonar_range_max_m,
+                "Azimuth": ho.sonar_azimuth_deg,
+                "Elevation": ho.sonar_elevation_deg,
+                "RangeBins": ho.sonar_range_bins,
+                "AzimuthBins": ho.sonar_azimuth_bins,
+                "AddSigma": ho.sonar_add_sigma,
+                "MultSigma": ho.sonar_mult_sigma,
+                "InitOctreeRange": ho.sonar_init_octree_range_m,
+                "ShowWarning": False,
+            },
+        })
     return {
         "name": "brinewatch",
         "package_name": ho.package_name,
@@ -37,23 +67,13 @@ def build_scenario(cfg: BackendConfig, start_position: Tuple[float, float, float
         "main_agent": AGENT_NAME,
         "ticks_per_sec": ho.ticks_per_sec,
         "frames_per_sec": ho.frames_per_sec,
+        "octree_min": ho.octree_min_m,
+        "octree_max": ho.octree_max_m,
         "agents": [
             {
                 "agent_name": AGENT_NAME,
                 "agent_type": "BlueROV2",
-                "sensors": [
-                    {"sensor_type": "PoseSensor", "socket": "IMUSocket"},
-                    {"sensor_type": "LocationSensor", "socket": "IMUSocket"},
-                    {"sensor_type": "VelocitySensor", "socket": "IMUSocket"},
-                    {"sensor_type": "DepthSensor", "socket": "DepthSocket",
-                     "configuration": {"Sigma": 0.05}},
-                    {"sensor_type": "DVLSensor", "socket": "DVLSocket",
-                     "configuration": {"ReturnRange": True, "MaxRange": 60}},
-                    {"sensor_type": "RangeFinderSensor", "socket": "SonarSocket",
-                     "configuration": {"LaserCount": 4, "LaserAngle": -90,
-                                       "LaserMaxDistance": 50}},
-                    {"sensor_type": "CollisionSensor", "socket": "COM"},
-                ],
+                "sensors": sensors,
                 "control_scheme": 1,  # PID: [x, y, z, roll, pitch, yaw(deg)]
                 "location": list(start_position),
                 "rotation": [0.0, 0.0, 0.0],
@@ -89,6 +109,8 @@ class HoloOceanBackend(SimulatorBackend):
         self._t = 0.0
         self._yaw_cmd_deg = 0.0
         self._last_state: Optional[VehicleState] = None
+        self._last_raw_state: Optional[dict] = None
+        self._last_sonar_emitted: Optional[np.ndarray] = None
         if self.ho.spawn_outfall_props:
             self._spawn_outfall_props()
 
@@ -174,7 +196,46 @@ class HoloOceanBackend(SimulatorBackend):
         for _ in range(max(1, n)):
             self._env.act(AGENT_NAME, cmd)
             state_dict = self._env.tick()
+        self._last_raw_state = state_dict
         return self._parse_state(state_dict)
+
+    # ------------------------------------------------------------------ #
+    def get_observation(self) -> Optional[dict]:
+        """Observation bundle for the mission layer (currently: sonar).
+
+        Returns ``{"sonar": SonarFrame}`` when a NEW ImagingSonar frame is
+        available since the last call, else ``{"sonar": None}``. The frame's
+        pose comes from the same tick's state dict — synchronized by
+        construction. Returns None when the sonar sensor is not configured."""
+        if not self.ho.sonar_enabled:
+            return None
+        sd = self._last_raw_state
+        if sd is None or "ImagingSonar" not in sd:
+            return {"sonar": None}
+        raw = np.asarray(sd["ImagingSonar"], dtype=np.float32)
+        if self._last_sonar_emitted is not None and np.array_equal(raw, self._last_sonar_emitted):
+            return {"sonar": None}
+        self._last_sonar_emitted = raw.copy()
+
+        from ..sensors.sonar_types import SonarExtrinsics, SonarFrame
+
+        loc = np.asarray(sd["LocationSensor"], dtype=float)
+        pose = np.asarray(sd.get("PoseSensor", np.eye(4)), dtype=float)
+        yaw = math.atan2(pose[1, 0], pose[0, 0])
+        roll = math.atan2(pose[2, 1], pose[2, 2])
+        pitch = -math.asin(max(-1.0, min(1.0, pose[2, 0])))
+        frame = SonarFrame(
+            t=float(sd.get("t", self._t)),
+            image=raw,
+            range_min_m=self.ho.sonar_range_min_m,
+            range_max_m=self.ho.sonar_range_max_m,
+            azimuth_fov_deg=self.ho.sonar_azimuth_deg,
+            elevation_fov_deg=self.ho.sonar_elevation_deg,
+            vehicle_xyz=(float(loc[0]), float(loc[1]), float(loc[2])),
+            vehicle_rpy=(roll, pitch, yaw),
+            extrinsics=SonarExtrinsics(),
+        )
+        return {"sonar": frame}
 
     def _parse_state(self, sd: dict) -> VehicleState:
         loc = np.asarray(sd["LocationSensor"], dtype=float)

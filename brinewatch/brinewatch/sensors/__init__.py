@@ -1,4 +1,4 @@
 from .ctd import VirtualCTD
-from .locator import DiffuserLocator
+from .locator import DiffuserLocator, SyntheticDiffuserLocator
 
-__all__ = ["VirtualCTD", "DiffuserLocator"]
+__all__ = ["VirtualCTD", "DiffuserLocator", "SyntheticDiffuserLocator"]

@@ -89,13 +89,26 @@ class CTDConfig:
 
 @dataclass
 class LocatorConfig:
-    """Sonar-like diffuser locator (simulated detection model, see docs)."""
+    """Diffuser localization source.
 
+    ``mode``: "synthetic" (oracle-fed detection model — kinematic baselines
+    only) or "sonar" (real HoloOcean ImagingSonar pipeline, no ground-truth
+    access; see brinewatch/perception/). The official PFH 2026 demo uses
+    "sonar"; any fallback to "synthetic" must be an explicit config change,
+    which the mission report records."""
+
+    mode: str = "synthetic"
     max_range_m: float = 25.0
-    detect_prob: float = 0.9  # per ping, when in range
+    detect_prob: float = 0.9  # per ping, when in range (synthetic mode only)
     range_sigma_m: float = 0.4
     bearing_sigma_deg: float = 4.0
     prior_sigma_m: float = 12.0  # error injected on the a-priori outfall position
+    # Explicit chart prior (world x, y). When set, the mission uses it as-is
+    # and never derives the prior from ground truth — required for the
+    # official no-leakage runs. When None (kinematic baselines), the prior is
+    # synthesized as truth + seeded Gaussian(prior_sigma_m) chart error.
+    prior_x: Optional[float] = None
+    prior_y: Optional[float] = None
     n_confirm: int = 3  # detections averaged before declaring the outfall found
 
 
@@ -164,6 +177,12 @@ class ComplianceConfig:
     mixing_zone_radius_m: float = 40.0
     threshold_increment_pct: float = 5.0
     eval_altitude_m: float = 1.0  # metres above seabed for the evaluation layer
+    # Three-state screening thresholds (CLEAR / REVIEW / POSSIBLE EXCEEDANCE):
+    # CLEAR requires BOTH a low worst-case exceedance probability AND low
+    # posterior uncertainty outside the zone; a low mean alone is not enough.
+    p_exceed_min: float = 0.50  # P(exceed) at/above this -> POSSIBLE EXCEEDANCE
+    p_clear_max: float = 0.10  # P(exceed) must be below this for CLEAR
+    max_posterior_std_psu: float = 0.75  # outside-zone std must be below this for CLEAR
 
 
 # --------------------------------------------------------------------------- #
@@ -190,6 +209,24 @@ class HoloOceanConfig:
     spawn_outfall_props: bool = True
     draw_debug: bool = True  # draw waypoints/detections in the viewport
     min_altitude_m: float = 1.0  # safety floor when commanding depth
+    # --- Official ImagingSonar (for locator.mode == "sonar") --------------- #
+    # NOTE (verified, outputs/sonar_visibility_*): runtime-spawned props are
+    # NOT in the acoustic octree; the sonar sees STOCK world geometry only.
+    # The acoustic localization target must therefore be a stock structure
+    # (e.g. PierHarbor pier pilings); spawned outfall props remain visual.
+    sonar_enabled: bool = False
+    sonar_hz: float = 2.0
+    sonar_range_min_m: float = 1.0
+    sonar_range_max_m: float = 40.0
+    sonar_azimuth_deg: float = 120.0
+    sonar_elevation_deg: float = 20.0
+    sonar_range_bins: int = 512
+    sonar_azimuth_bins: int = 256
+    sonar_add_sigma: float = 0.05
+    sonar_mult_sigma: float = 0.05
+    sonar_init_octree_range_m: float = 50.0
+    octree_min_m: float = 0.05  # standardized BrineWatch octree resolution
+    octree_max_m: float = 5.0
 
 
 @dataclass

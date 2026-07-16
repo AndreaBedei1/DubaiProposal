@@ -43,6 +43,27 @@ def boundary_salinity_psu(cfg: MissionConfig, plume: BrinePlume) -> float:
     return ambient_bottom * (1.0 + cfg.compliance.threshold_increment_pct / 100.0)
 
 
+def build_locator(cfg: MissionConfig, plume: BrinePlume):
+    """Build the localization source selected by ``cfg.locator.mode``.
+
+    - "synthetic": oracle-fed detection model (kinematic baselines only).
+    - "sonar": real ImagingSonar pipeline — NO ground-truth access; requires
+      the HoloOcean backend with ``backend.holoocean.sonar_enabled: true``.
+    """
+    mode = cfg.locator.mode
+    if mode == "synthetic":
+        return DiffuserLocator(cfg.locator, plume.outfall_xy(), seed=cfg.seed + 23)
+    if mode == "sonar":
+        from ..perception.sonar_localizer import SonarDiffuserLocator, SonarLocalizerConfig
+
+        if cfg.backend.name == "holoocean" and not cfg.backend.holoocean.sonar_enabled:
+            raise ValueError(
+                "locator.mode='sonar' requires backend.holoocean.sonar_enabled: true"
+            )
+        return SonarDiffuserLocator(SonarLocalizerConfig())
+    raise ValueError(f"Unknown locator mode '{mode}' (expected 'synthetic' or 'sonar')")
+
+
 def build_planner(name: str, cfg: MissionConfig, plume: BrinePlume) -> Planner:
     seabed = lambda x, y: float(plume.seabed_z(x, y))  # noqa: E731
     if name == "lawnmower":
@@ -66,9 +87,10 @@ class MissionRunner:
         planner: Planner,
         plume: BrinePlume,
         ctd: VirtualCTD,
-        locator: DiffuserLocator,
+        locator,  # SyntheticDiffuserLocator | SonarDiffuserLocator (observe() protocol)
         mapper: GPMapper,
         logger: Optional[MissionLogger] = None,
+        sonar_recorder=None,  # optional brinewatch.sensors.sonar_recorder.SonarRecorder
     ):
         self.cfg = cfg
         self.backend = backend
@@ -78,6 +100,7 @@ class MissionRunner:
         self.locator = locator
         self.mapper = mapper
         self.logger = logger
+        self.sonar_recorder = sonar_recorder
         self._rng = np.random.default_rng(cfg.seed)
         self.result = MissionResult(planner_name=planner.name)
         self.budget = MissionBudget(cfg.budget.max_distance_m)
@@ -119,12 +142,20 @@ class MissionRunner:
     def _phase_locate(self) -> Tuple[float, float]:
         """Search for the diffuser around the a-priori outfall position."""
         self._set_phase(MissionPhase.LOCATE)
-        true_xy = self.plume.outfall_xy()
-        prior = (
-            true_xy[0] + float(self._rng.normal(0.0, self.cfg.locator.prior_sigma_m)),
-            true_xy[1] + float(self._rng.normal(0.0, self.cfg.locator.prior_sigma_m)),
-        )
-        self._log("locate_prior", prior=prior, true=true_xy)
+        if self.cfg.locator.prior_x is not None and self.cfg.locator.prior_y is not None:
+            # Explicit chart prior from configuration: the official no-leakage
+            # path — nothing here reads the true outfall position.
+            prior = (float(self.cfg.locator.prior_x), float(self.cfg.locator.prior_y))
+            self._log("locate_prior", prior=prior, source="config")
+        else:
+            # Kinematic-baseline convenience: synthesize chart error around the
+            # true position (documented; not used in official evidence runs).
+            true_xy = self.plume.outfall_xy()
+            prior = (
+                true_xy[0] + float(self._rng.normal(0.0, self.cfg.locator.prior_sigma_m)),
+                true_xy[1] + float(self._rng.normal(0.0, self.cfg.locator.prior_sigma_m)),
+            )
+            self._log("locate_prior", prior=prior, source="synthesized_from_truth")
 
         locate_cap_m = self.cfg.budget.locate_fraction * self.budget.max_distance_m
         step = 1.5 * self.cfg.locator.max_range_m
@@ -258,7 +289,7 @@ class MissionRunner:
                 self.mapper.add_sample(sample)
 
             if ping_locator:
-                det = self.locator.ping(self._state)
+                det = self.locator.observe(self._state, self._observation())
                 if det is not None:
                     self.result.detections.append(det)
                     self._log("detection", t=det.t, range_m=round(det.range_m, 2),
@@ -289,6 +320,18 @@ class MissionRunner:
         self.result.notes.append(f"stalled while navigating to ({wp.x:.1f}, {wp.y:.1f})")
         self._log("navigation_stalled", wp=(wp.x, wp.y, wp.z))
         return "stalled"
+
+    def _observation(self) -> Optional[dict]:
+        """Fetch the backend's observation bundle (None for backends without
+        sensors beyond vehicle state, e.g. the kinematic one). Records sonar
+        frames when a recorder is attached."""
+        get_obs = getattr(self.backend, "get_observation", None)
+        if not callable(get_obs):
+            return None
+        obs = get_obs()
+        if obs and self.sonar_recorder is not None and obs.get("sonar") is not None:
+            self.sonar_recorder.add(obs["sonar"])
+        return obs
 
     def _survey_waypoint(self, x: float, y: float) -> Waypoint:
         """Waypoint at survey altitude, clamped inside the survey box.
@@ -339,7 +382,7 @@ def create_mission(
     plume = BrinePlume(cfg.environment, cfg.outfall, cfg.plume)
     planner = build_planner(planner_name, cfg, plume)
     ctd = VirtualCTD(cfg.ctd, plume, seed=cfg.seed + 11)
-    locator = DiffuserLocator(cfg.locator, plume.outfall_xy(), seed=cfg.seed + 23)
+    locator = build_locator(cfg, plume)
     mapper = GPMapper(cfg.gp, plume.ambient_salinity, seed=cfg.seed + 31)
 
     start = (
