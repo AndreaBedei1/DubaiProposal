@@ -92,20 +92,42 @@ class HoloOceanBackend(SimulatorBackend):
         outfall_cfg: OutfallConfig,
         start_position: Tuple[float, float, float],
         seed: int = 0,
+        custom_engine: bool = False,
     ):
-        import holoocean  # lazy: only needed for this backend
+        self._custom = bool(custom_engine)
+        if self._custom:
+            # Fork engine with runtime octree rebuild: import the FORK client
+            # (must happen before any official import) and attach to the
+            # externally launched engine. Fails loudly, never falls back.
+            from .custom_engine import activate_fork_client, resolve_custom_engine
 
+            self._engine_info = resolve_custom_engine()
+            holoocean = activate_fork_client(self._engine_info)
+        else:
+            import holoocean  # lazy: only needed for this backend
+
+        self._holoocean = holoocean
         self.cfg = cfg
         self.ho = cfg.holoocean
         self.env_cfg = env_cfg
         self.outfall_cfg = outfall_cfg
         self._start = tuple(float(v) for v in start_position)
         self._scenario = build_scenario(cfg, self._start)
-        self._env = holoocean.make(
-            scenario_cfg=self._scenario,
-            show_viewport=self.ho.show_viewport,
-            verbose=False,
-        )
+        if self._custom:
+            # world must be the level already running in the fork engine
+            self._scenario["world"] = self._engine_info.level
+            self._env = holoocean.make(
+                scenario_cfg=self._scenario,
+                show_viewport=self.ho.show_viewport,
+                verbose=False,
+                start_world=False,
+            )
+        else:
+            self._env = holoocean.make(
+                scenario_cfg=self._scenario,
+                show_viewport=self.ho.show_viewport,
+                verbose=False,
+            )
         self._t = 0.0
         self._yaw_cmd_deg = 0.0
         self._last_state: Optional[VehicleState] = None
@@ -117,7 +139,7 @@ class HoloOceanBackend(SimulatorBackend):
     # ------------------------------------------------------------------ #
     @property
     def name(self) -> str:
-        return "holoocean"
+        return "holoocean_custom" if self._custom else "holoocean"
 
     @property
     def control_period_s(self) -> float:
@@ -187,12 +209,20 @@ class HoloOceanBackend(SimulatorBackend):
         real terrain, build the visual outfall, save the manifest."""
         from .outfall_scene import OutfallSceneBuilder, OutfallSceneConfig
 
+        spawn_fn = None
+        if self._custom:
+            # SpawnAsset-based spawner: static meshes that enter the acoustic
+            # octree (the fork rebuilds it on the next sonar tick)
+            from .custom_engine import make_asset_spawner
+
+            spawn_fn = make_asset_spawner(self._env, self._holoocean)
         return OutfallSceneBuilder(
             env=self._env,
             agent_name=AGENT_NAME,
             outfall=self.outfall_cfg,
             scene=scene_cfg or OutfallSceneConfig(),
             upstream_dir_rad=upstream_dir_rad,
+            spawn_fn=spawn_fn,
         )
 
     def draw_waypoint(self, wp: Waypoint) -> None:

@@ -1,14 +1,17 @@
-# PFH 2026 official demonstration: BlueROV2 in PierHarbor (official world),
+# PFH 2026 official demonstration: BlueROV2 in FlatUnderwater (official world),
 # sonar-based outfall localization with NO ground-truth access.
 #
-# Site (from outputs/pierharbor_recon_*): the pier piling lattice at
-# ~(456.5, -630.5) is stock world geometry, strongly visible to the official
-# ImagingSonar (open-water control returns zero). It acts as the acoustic
-# localization target; the spawned outfall (manifold, risers, pipe) is
-# co-located VISUAL geometry (runtime props are not in the acoustic octree —
-# verified, see docs/application/pfh2026/BASELINE_AUDIT.md). The analytic
-# plume is anchored to the same point, over the flat ~-20 m harbor shelf that
-# extends south (current direction) of the pier.
+# Site v3 (visual redesign, inspection iterations 7-9): open, well-lit, flat
+# shelf at (100, 50), bed z = -87.08 everywhere (verified by RangeFinder probe
+# grid). The multiport outfall (outfall_scene.py v2: semi-buried approach
+# pipeline + flanges + rock berm -> transition collar -> exposed diffuser on
+# concrete sleepers -> 6 risers with collars + alternating inclined nozzles ->
+# end cap) is the ONLY structure at the site, so every sonar contact and every
+# camera frame is attributable to it. With the OFFICIAL engine the spawned
+# structure is visual-only (runtime props are absent from the acoustic octree
+# - proven in docs/application/pfh2026/SONAR_VALIDATION.md); acoustic
+# experiments against the actual structure require the custom rebuild engine
+# (backend holoocean_custom).
 name: brinewatch_pfh2026
 seed: 7
 planner: adaptive
@@ -19,33 +22,34 @@ environment:
   ambient_temperature_c: 24.0
   # Nominal plane; the demo script recalibrates z0/slopes from a RangeFinder
   # terrain probe at mission start (see scripts/run_pfh2026_demo.py).
-  seabed_z0: -20.0
+  seabed_z0: -87.08
   seabed_slope_x: 0.0
   seabed_slope_y: 0.0
-  current_dir_deg: -90.0        # plume spreads south, away from the pier
+  current_dir_deg: 0.0          # plume spreads east, along the diffuser axis
   tide_amplitude_m: 2.5
   tide_period_s: 2400.0
 
+# Outfall origin = diffuser start (local s=0); the approach pipeline runs
+# 30 m west of it, the 16 m diffuser with 6 risers runs east (axis_deg 0,
+# validated visually in inspection iterations 7-9).
 outfall:
-  x: 456.5
-  y: -630.5
-  axis_deg: 90.0                # manifold parallel to the pier line
-  n_ports: 5
-  port_spacing_m: 3.0
-  riser_height_m: 1.6
+  x: 100.0
+  y: 50.0
+  axis_deg: 0.0
+  n_ports: 6
+  port_spacing_m: 3.2
+  riser_height_m: 1.35
   discharge_salinity_psu: 68.0
   discharge_temperature_c: 27.5
 
-# Survey the water side only (v5 collision feedback): a continuous quay
-# wall runs N-S at x~451 (hits spanning y -637..-655) and the diffuser
-# lattice occupies the anchor line itself — like a real shoreline outfall,
-# the mixing zone is truncated at the structures and the ROV does not fly
-# through them.
+# Survey box centred on the diffuser + near-field mixing zone; the approach
+# pipeline corridor (x < 95) is left out on purpose - the plume source is the
+# riser field around x 100..116, y = 50.
 survey:
-  x_min: 453.0
-  x_max: 516.0
-  y_min: -700.0
-  y_max: -634.0
+  x_min: 78.0
+  x_max: 140.0
+  y_min: 20.0
+  y_max: 80.0
   altitude_m: 2.2
   grid_resolution_m: 3.0
 
@@ -56,8 +60,8 @@ budget:
 
 locator:
   mode: sonar                   # REAL ImagingSonar pipeline; no oracle
-  prior_x: 466.0                # chart prior ~17 m off the true structure
-  prior_y: -644.0
+  prior_x: 113.0                # chart prior ~18 m NE of the diffuser centre
+  prior_y: 62.0
   n_confirm: 4
   max_range_m: 25.0             # also sets the LOCATE search-leg scale
 
@@ -73,7 +77,7 @@ compliance:
 backend:
   name: holoocean
   holoocean:
-    world: PierHarbor
+    world: FlatUnderwater
     package_name: Ocean
     ticks_per_sec: 30
     control_ticks: 15

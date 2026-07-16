@@ -2,8 +2,48 @@
 
 Sensor: **official HoloOcean 2.3.0 ImagingSonar** (range-azimuth intensity
 image; configured 1–40 m, 120°×20°, 512×256 bins, Rayleigh additive +
-Gaussian multiplicative noise in missions). Everything below uses only the
-unmodified official package.
+Gaussian multiplicative noise in missions). Sections 1+ use only the
+unmodified official package; section 0 documents the CUSTOM fork engine
+(runtime octree rebuild), clearly separated.
+
+## 0. Custom fork engine: runtime geometry IS acoustically visible (proven)
+
+With the custom ALAR fork (see [CUSTOM_ENGINE.md](CUSTOM_ENGINE.md)),
+`scripts/smoke_custom_engine.py` attached to the fork engine (UE 5.3 -game,
+ExampleLevel), captured a sonar frame, spawned a cylinder via `SpawnAsset` at
+runtime, and captured again from the same pose: **frames differ**
+(mean |after−before| = 2.26e-4 > 0), and the engine log shows
+`HolodeckSonar: world geometry changed, rebuilding octree.` on both spawn and
+`ClearSpawned`. The same runtime-spawn experiment on the OFFICIAL engine
+gives bit-identical frames (section 1).
+
+**A/B/C/D experiment on the ACTUAL generated outfall**
+(`scripts/validate_custom_sonar.py`, run 2026-07-16, output
+`outputs/custom_sonar_abc_20260716_224530/`): one fork-engine session,
+ExampleLevel, 6 poses (4 bearings x 18 m + 2 x 28 m) around the full
+93-component multiport outfall; deterministic sonar (zero noise config).
+
+- **C (outfall via SpawnAsset) vs A (no structure)**: every pose differs;
+  the difference images show a large structured signature with acoustic
+  shadows at structure-consistent ranges (bright pipeline arc at 15-20 m from
+  the 18 m poses); the classical detector fires with contacts up to 38k bins
+  at matching ranges. In-window/out-of-window contrast ratio up to 17x at the
+  head-on pose.
+- **Unexpected but consistent finding**: on the FORK, phase B (outfall via the
+  legacy `spawn_prop` blueprint path) is ALSO acoustically visible — the fork
+  handles runtime props generally, not only SpawnAsset. `spawn_prop` props
+  cannot be removed at runtime, so their signature persists through C and D.
+- **C - B** isolates the SpawnAsset static meshes: crisp, well-defined
+  pipeline echo arcs on top of the prop signature.
+- **D (ClearSpawned)**: removes the SpawnAsset actors only (rebuild-on-removal
+  confirmed); the remaining D-A difference matches the persistent B props.
+- Global mean|frame difference| is a MISLEADING metric here (pose-jitter and
+  background dominate, all phases ~0.014): the evidence is the localized
+  contrast, the difference images (`diff_images.png`) and the detector
+  contacts, not global means.
+
+Claims boundary: "the generated outfall is sonar-visible" holds for the
+CUSTOM engine only; official-engine missions still localize stock geometry.
 
 ## 1. Runtime-spawned geometry is NOT acoustically visible (proven)
 

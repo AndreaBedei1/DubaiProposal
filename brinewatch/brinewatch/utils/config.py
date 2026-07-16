@@ -238,7 +238,7 @@ class HoloOceanConfig:
 
 @dataclass
 class BackendConfig:
-    name: str = "kinematic"  # "kinematic" | "holoocean"
+    name: str = "kinematic"  # "kinematic" | "holoocean" | "holoocean_custom"
     dt_control_s: float = 0.5  # control period used by the kinematic backend
     kinematic: KinematicConfig = field(default_factory=KinematicConfig)
     holoocean: HoloOceanConfig = field(default_factory=HoloOceanConfig)

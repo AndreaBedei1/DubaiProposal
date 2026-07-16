@@ -57,7 +57,8 @@ def build_locator(cfg: MissionConfig, plume: BrinePlume):
         from ..perception.sonar_diffuser_detector import DetectorConfig
         from ..perception.sonar_localizer import SonarDiffuserLocator, SonarLocalizerConfig
 
-        if cfg.backend.name == "holoocean" and not cfg.backend.holoocean.sonar_enabled:
+        if (cfg.backend.name in ("holoocean", "holoocean_custom")
+                and not cfg.backend.holoocean.sonar_enabled):
             raise ValueError(
                 "locator.mode='sonar' requires backend.holoocean.sonar_enabled: true"
             )

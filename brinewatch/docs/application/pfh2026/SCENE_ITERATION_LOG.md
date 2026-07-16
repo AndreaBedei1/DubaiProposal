@@ -19,3 +19,27 @@ analytic plane (visible floating/burial — iteration 1); trusting raw
 soundings near structures (iteration 3); treating "clean-scene" sonar gates
 as mission gates (superseded by recorded-noise evaluation — see
 SONAR_VALIDATION.md).
+
+## Visual redesign phase (outfall v2, multiport diffuser)
+
+Work order: the generated outfall must look genuinely good in HoloOcean
+screenshots BEFORE any acoustic work. Judged on real RGB captures
+(`scripts/inspect_outfall_scene.py`, 10 structured viewpoints + contact
+sheet per iteration; every screenshot below is a genuine render).
+
+| # | Site / change | Observation on the contact sheet | Verdict |
+|---|---|---|---|
+| v2-1 | PierHarbor (485,−668), first v2 build | site inside a kelp forest under the pier deck; structure unreadable | site rejected |
+| v2-2 | PierHarbor (562,−678) | site directly under a moored ship hull (dark, absurd context) | site rejected |
+| v2-3..5 | SimpleUnderwater (three sites) | bumpy 10 m relief: pipe chords under bumps read as monoliths; midpoint-z + endpoint-pitch segments produced sawtooth joints → replaced with shared-node chain + grade clamp | world rejected (relief), geometry fix kept |
+| v2-6 | FlatUnderwater (100,50), bed −87.08, node-chain pipeline | flat well-lit stage, but ALL pipe segments rendered as vertical drums | rotation bug isolated |
+| — | rotation investigation | 23-pose calibration (south view, plan view via free viewport) + engine source: `spawn_prop` rotation is fed to UE `Conv_VectorToRotator` — it is a DIRECTION VECTOR (prop local +X aligned to it, roll 0), not [roll,pitch,yaw] as documented. Inverse recipe implemented as `prop_rotation_for_axis()` | root cause fixed |
+| v2-7 | all rotations via `prop_rotation_for_axis` | 105/105 components; pipeline lies correctly, flanges/sleepers/risers/nozzles coherent; nozzle cones oversized and all-black (silhouette), top-down view all water (ROV cannot hold pitch < −25°) | geometry accepted, dressing to fix |
+| v2-8 | brass hardware (riser collars, nozzle tips), nozzle Ø 0.26→0.22, tip cone 1.5×/0.30→1.15×/0.22 | riser + nozzle assemblies read as engineered fittings; alternating discharge sides visible; berm rocks read as naval mines (big proud cobble spheres) | near-accept |
+| v2-9 | berm rocks smaller/half-sunken/flattened; plan view via `move_viewport` + `ViewportCapture` | full contact sheet coherent: approach pipeline + flanges + berm → transition collar → diffuser on sleepers → 6 risers, alternating nozzles, end cap; plan view frames the whole system | **accepted** |
+
+Proposal-grade captures from v2-9: `03_low_side_along_pipe` (approach +
+flanges + berm), `04_three_quarter_risers` (hero shot of the diffuser),
+`05_close_nozzles` (riser/nozzle hardware at ROV scale), `08_plan_view`
+(system layout). Site adopted into `configs/pfh2026_holoocean.yaml`:
+FlatUnderwater, outfall (100, 50), axis 0°, bed −87.08.
