@@ -24,7 +24,9 @@ environment:
   seabed_slope_x: 0.0
   seabed_slope_y: 0.0
   current_dir_deg: 0.0          # plume spreads +x, along the diffuser axis
-  tide_amplitude_m: 2.5
+  # static plume for a clean reconstruction demo (the GP map is compared to
+  # the t=0 truth; tidal advection is exercised in the dynamic stress test)
+  tide_amplitude_m: 0.0
   tide_period_s: 2400.0
 
 # Outfall origin = diffuser start (local s=0); the 16 m diffuser runs +x, so

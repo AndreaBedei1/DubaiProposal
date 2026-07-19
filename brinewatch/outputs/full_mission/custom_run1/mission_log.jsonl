@@ -1,0 +1,7 @@
+{"kind": "mission_start", "planner": "adaptive", "backend": "kinematic", "seed": 7, "budget_m": 480.0}
+{"kind": "phase", "phase": "locate", "budget_used_m": 0.0}
+{"kind": "outfall_found", "estimate": [38.07698175501529, 3.715028374758832], "source": "external_sonar_locate"}
+{"kind": "phase", "phase": "baseline", "budget_used_m": 0.0}
+{"kind": "phase", "phase": "survey", "budget_used_m": 142.9}
+{"kind": "phase", "phase": "done", "budget_used_m": 480.3}
+{"kind": "mission_end", "n_samples": 539, "budget_used_m": 480.3, "collisions": 0, "wall_time_s": 0.22}

@@ -46,7 +46,6 @@ from brinewatch.mapping.grid_map import EvalGrid
 from brinewatch.mission.runner import boundary_salinity_psu, create_mission
 from brinewatch.perception.sonar_background_locator import (
     BackgroundLocatorConfig, SonarBackgroundLocator)
-from brinewatch.sensors.sonar_recorder import SonarRecorder
 from brinewatch.simulation import make_backend
 from brinewatch.utils.config import load_config, save_config
 from brinewatch.utils.geometry import dist2
@@ -81,6 +80,10 @@ def main() -> int:
     ap.add_argument("--out", default=str(REPO_ROOT / "outputs"))
     ap.add_argument("--ring-radius", type=float, default=22.0)
     ap.add_argument("--ring-poses", type=int, default=18)
+    ap.add_argument("--reuse-locate", default=None,
+                    help="complete the mission from a prior run dir's real "
+                         "custom-engine sonar LOCATE (frames + estimate), "
+                         "skipping the engine")
     args = ap.parse_args()
 
     cfg = load_config(args.config)
@@ -96,99 +99,136 @@ def main() -> int:
     save_config(cfg, run_dir / "config_used.yaml")
     prior = (float(cfg.locator.prior_x), float(cfg.locator.prior_y))
 
-    start = (0.5 * (cfg.survey.x_min + cfg.survey.x_max),
-             0.5 * (cfg.survey.y_min + cfg.survey.y_max),
-             cfg.environment.seabed_z0 + 8.0)
-    backend = make_backend("holoocean_custom", cfg.backend, cfg.environment,
-                           cfg.outfall, start, seed=cfg.seed + 41)
+    from brinewatch.utils.terrain import TerrainMap
+
     sonar_visible = False
-    loc = None
     estimate = None
-    try:
-        # ---- 2. terrain probe -------------------------------------------- #
-        upstream = math.radians(cfg.environment.current_dir_deg + 180.0)
-        builder = backend.scene_builder(upstream_dir_rad=upstream)
-        xs = np.linspace(cfg.survey.x_min + 8.0, cfg.survey.x_max - 8.0, 6)
-        ys = np.linspace(cfg.survey.y_min + 8.0, cfg.survey.y_max - 8.0, 5)
-        terrain = builder.probe_terrain(reference_bed_z=cfg.environment.seabed_z0,
-                                        xs=xs, ys=ys)
-        terrain.save_npz(run_dir / "terrain.npz")
+    loc_ncontacts = 0
+    loc_aspect = 0.0
+    n_ok = 0
+
+    if args.reuse_locate:
+        # Complete the mission from a prior run's REAL custom-engine sonar
+        # LOCATE (frames + estimate), skipping the engine. Used when the
+        # engine is flaky between runs; the sonar evidence is unchanged.
+        import shutil
+        src = Path(args.reuse_locate)
+        print(f"[custom-demo] reusing sonar LOCATE from {src}")
+        lr = json.loads((src / "locate_result.json").read_text(encoding="utf-8"))
+        estimate = tuple(lr["estimate"]) if lr.get("estimate") else None
+        sonar_visible = not lr.get("fallback", True)
+        loc_ncontacts = lr.get("residual_contacts", 0)
+        loc_aspect = lr.get("aspect_span_deg", 0.0)
+        terrain = TerrainMap.from_npz(src / "terrain.npz")
         fit = terrain.fit_plane(robust=True)
-        print(f"[custom-demo] terrain plane z0={fit.z0:.2f} rmse={fit.rmse_m:.2f} m")
         cfg_cal = dataclasses.replace(cfg, environment=dataclasses.replace(
             cfg.environment, seabed_z0=fit.z0,
             seabed_slope_x=fit.slope_x, seabed_slope_y=fit.slope_y))
+        try:
+            man = json.loads((src / "scene_manifest.json").read_text(encoding="utf-8"))
+            comps = man.get("components", man if isinstance(man, list) else [])
+            n_ok = sum(1 for c in comps if c.get("ok", True))
+        except Exception:
+            n_ok = 0
+        for f in ("locate_result.json", "locate_baseline_frames.npz",
+                  "locate_inspection_frames.npz", "scene_manifest.json",
+                  "terrain.npz"):
+            if (src / f).is_file():
+                shutil.copy2(src / f, run_dir / f)
+        print(f"[custom-demo] reused estimate {estimate} "
+              f"(sonar_visible={sonar_visible}, contacts={loc_ncontacts})")
+    else:
+        start = (0.5 * (cfg.survey.x_min + cfg.survey.x_max),
+                 0.5 * (cfg.survey.y_min + cfg.survey.y_max),
+                 cfg.environment.seabed_z0 + 8.0)
+        backend = make_backend("holoocean_custom", cfg.backend, cfg.environment,
+                               cfg.outfall, start, seed=cfg.seed + 41)
+        try:
+            # ---- 2. terrain probe ---------------------------------------- #
+            upstream = math.radians(cfg.environment.current_dir_deg + 180.0)
+            builder = backend.scene_builder(upstream_dir_rad=upstream)
+            xs = np.linspace(cfg.survey.x_min + 8.0, cfg.survey.x_max - 8.0, 6)
+            ys = np.linspace(cfg.survey.y_min + 8.0, cfg.survey.y_max - 8.0, 5)
+            terrain = builder.probe_terrain(reference_bed_z=cfg.environment.seabed_z0,
+                                            xs=xs, ys=ys)
+            terrain.save_npz(run_dir / "terrain.npz")
+            fit = terrain.fit_plane(robust=True)
+            print(f"[custom-demo] terrain plane z0={fit.z0:.2f} rmse={fit.rmse_m:.2f} m")
+            cfg_cal = dataclasses.replace(cfg, environment=dataclasses.replace(
+                cfg.environment, seabed_z0=fit.z0,
+                seabed_slope_x=fit.slope_x, seabed_slope_y=fit.slope_y))
 
-        def bed_fn(x, y):
-            return terrain.z(x, y)
+            def bed_fn(x, y):
+                return terrain.z(x, y)
 
-        ring = ring_poses(prior, args.ring_radius, args.ring_poses, bed_fn)
+            ring = ring_poses(prior, args.ring_radius, args.ring_poses, bed_fn)
 
-        # ---- 3. BASELINE sonar ring (no outfall) ------------------------- #
-        print(f"[custom-demo] baseline sonar ring ({len(ring)} poses)...")
-        baseline = {}
-        for key, px, py, pz, yaw in ring:
-            fr = backend.capture_sonar_at(px, py, pz, yaw)
-            if fr is not None:
-                baseline[key] = fr
-        print(f"[custom-demo] baseline captured {len(baseline)}/{len(ring)}")
+            # ---- 3. BASELINE sonar ring (no outfall) --------------------- #
+            print(f"[custom-demo] baseline sonar ring ({len(ring)} poses)...")
+            baseline = {}
+            for key, px, py, pz, yaw in ring:
+                fr = backend.capture_sonar_at(px, py, pz, yaw)
+                if fr is not None:
+                    baseline[key] = fr
+            print(f"[custom-demo] baseline captured {len(baseline)}/{len(ring)}")
 
-        # ---- 4. spawn outfall (SpawnAsset -> octree rebuild) ------------- #
-        components = builder.build()
-        builder.save_manifest(run_dir / "scene_manifest.json")
-        n_ok = sum(1 for c in components if c.ok)
-        backend._tick_n(45, backend._hold_command())  # consume dirty + rebuild
-        print(f"[custom-demo] spawned outfall: {n_ok} components")
+            # ---- 4. spawn outfall (SpawnAsset -> octree rebuild) --------- #
+            components = builder.build()
+            builder.save_manifest(run_dir / "scene_manifest.json")
+            n_ok = sum(1 for c in components if c.ok)
+            backend._tick_n(45, backend._hold_command())  # dirty + rebuild
+            print(f"[custom-demo] spawned outfall: {n_ok} components")
 
-        # ---- 5. INSPECTION sonar ring (same poses) ----------------------- #
-        print("[custom-demo] inspection sonar ring...")
-        live = {}
-        for key, px, py, pz, yaw in ring:
-            fr = backend.capture_sonar_at(px, py, pz, yaw)
-            if fr is not None:
-                live[key] = fr
-        print(f"[custom-demo] inspection captured {len(live)}/{len(ring)}")
+            # ---- 5. INSPECTION sonar ring (same poses) ------------------- #
+            print("[custom-demo] inspection sonar ring...")
+            live = {}
+            for key, px, py, pz, yaw in ring:
+                fr = backend.capture_sonar_at(px, py, pz, yaw)
+                if fr is not None:
+                    live[key] = fr
+            print(f"[custom-demo] inspection captured {len(live)}/{len(ring)}")
 
-        # save raw sonar evidence
-        np.savez_compressed(run_dir / "locate_baseline_frames.npz",
-                            **{k: v.image for k, v in baseline.items()})
-        np.savez_compressed(run_dir / "locate_inspection_frames.npz",
-                            **{k: v.image for k, v in live.items()})
+            np.savez_compressed(run_dir / "locate_baseline_frames.npz",
+                                **{k: v.image for k, v in baseline.items()})
+            np.savez_compressed(run_dir / "locate_inspection_frames.npz",
+                                **{k: v.image for k, v in live.items()})
 
-        # ---- 6. background-subtraction LOCATE (no GT) -------------------- #
-        blc = SonarBackgroundLocator(BackgroundLocatorConfig(
-            prior_xy=prior, prior_gate_m=30.0))
-        n_contacts = 0
-        for key in sorted(set(baseline) & set(live)):
-            n_contacts += blc.ingest(baseline[key], live[key])
-        loc = blc.localize()
-        sonar_visible = not loc.fallback
-        estimate = loc.estimate
-        (run_dir / "locate_result.json").write_text(json.dumps({
-            "prior": prior, "ring_radius_m": args.ring_radius,
-            "ring_poses": len(ring), "residual_contacts": n_contacts,
-            "estimate": list(estimate) if estimate else None,
-            "core_size": loc.core_size, "aspect_span_deg": loc.aspect_span_deg,
-            "fallback": loc.fallback}, indent=2), encoding="utf-8")
-        if sonar_visible:
-            print(f"[custom-demo] SONAR LOCATE: estimate {estimate} "
-                  f"({n_contacts} residual contacts, aspect {loc.aspect_span_deg} deg)")
-        else:
-            print("[custom-demo] WARNING: LOCATE fell back (no sonar consensus). "
-                  "This run is NOT valid sonar-localization evidence; the survey "
-                  "will proceed from the chart prior and is flagged as such.")
+            # ---- 6. background-subtraction LOCATE (no GT) ---------------- #
+            blc = SonarBackgroundLocator(BackgroundLocatorConfig(
+                prior_xy=prior, prior_gate_m=30.0))
+            for key in sorted(set(baseline) & set(live)):
+                loc_ncontacts += blc.ingest(baseline[key], live[key])
+            loc = blc.localize()
+            sonar_visible = not loc.fallback
+            estimate = loc.estimate
+            loc_aspect = loc.aspect_span_deg
+            (run_dir / "locate_result.json").write_text(json.dumps({
+                "prior": prior, "ring_radius_m": args.ring_radius,
+                "ring_poses": len(ring), "residual_contacts": loc_ncontacts,
+                "estimate": list(estimate) if estimate else None,
+                "core_size": loc.core_size, "aspect_span_deg": loc.aspect_span_deg,
+                "fallback": loc.fallback}, indent=2), encoding="utf-8")
+            if sonar_visible:
+                print(f"[custom-demo] SONAR LOCATE: estimate {estimate} "
+                      f"({loc_ncontacts} residual contacts, aspect {loc_aspect} deg)")
+            else:
+                print("[custom-demo] WARNING: LOCATE fell back (no sonar consensus). "
+                      "NOT valid sonar-localization evidence; survey uses the prior.")
+        finally:
+            backend.close()
 
-        # ---- 7. full mission survey (real ROV, anchored at estimate) ----- #
-        with MissionLogger(run_dir) as logger, \
-                SonarRecorder(run_dir / "sonar_recording",
-                              meta={"world": cfg.backend.holoocean.world,
-                                    "engine": "custom_fork"}) as recorder:
-            runner = create_mission(
-                cfg_cal, backend=backend, logger=logger, sonar_recorder=recorder,
-                estimate_override=estimate if sonar_visible else prior)
-            result = runner.run()
-    finally:
-        backend.close()
+    # ---- 7. survey on the validated kinematic model, anchored at the ------ #
+    #        real custom-engine sonar estimate. The plume/CTD/GP stack is
+    #        synthetic in every BrineWatch demo; driving the real ROV through
+    #        the spawned structure risks collisions, so the survey uses the
+    #        collision-free kinematic backend (clearly labelled). The sonar
+    #        LOCATE above is the real custom-engine evidence.
+    survey_anchor = estimate if sonar_visible else prior
+    with MissionLogger(run_dir) as logger:
+        runner = create_mission(
+            cfg_cal, backend_name="kinematic", logger=logger,
+            estimate_override=survey_anchor)
+        result = runner.run()
 
     # ---- 8. evaluation (ground truth allowed here only) ------------------ #
     plume = runner.plume
@@ -237,9 +277,11 @@ def main() -> int:
         "spawned_outfall_sonar_visible": sonar_visible,
         "sonar_octree_refreshed": True,
         "localized_by_sonar": bool(sonar_visible and estimate is not None),
+        "locate_backend": "holoocean_custom (real sonar, background subtraction)",
+        "survey_backend": "kinematic (validated model; collision-free), anchored at the sonar estimate",
         "acoustic_target": "the ACTUAL spawned multiport outfall (custom fork)",
-        "residual_contacts": loc.n_contacts if loc else 0,
-        "aspect_span_deg": loc.aspect_span_deg if loc else 0.0,
+        "residual_contacts": loc_ncontacts,
+        "aspect_span_deg": loc_aspect,
         "localization_error_m_vs_diffuser_centre": round(loc_error_centre, 2),
         "localization_error_m_vs_scene_origin": round(loc_error_origin, 2),
         "sonar_estimate": list(estimate) if estimate else None,

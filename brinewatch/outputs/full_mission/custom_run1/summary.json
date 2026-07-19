@@ -1,0 +1,58 @@
+{
+  "planner": "adaptive",
+  "n_samples": 539,
+  "budget_used_m": 480.3216386148392,
+  "budget_max_m": 480.0,
+  "outfall_estimate": [
+    38.07698175501529,
+    3.715028374758832
+  ],
+  "n_detections": 1,
+  "phase_history": [
+    [
+      0.0,
+      "locate"
+    ],
+    [
+      0.0,
+      "baseline"
+    ],
+    [
+      157.5,
+      "survey"
+    ],
+    [
+      539.0,
+      "done"
+    ]
+  ],
+  "wall_time_s": 0.22,
+  "notes": [],
+  "custom_engine_used": true,
+  "spawned_outfall_sonar_visible": true,
+  "sonar_octree_refreshed": true,
+  "localized_by_sonar": true,
+  "locate_backend": "holoocean_custom (real sonar, background subtraction)",
+  "survey_backend": "kinematic (validated model; collision-free), anchored at the sonar estimate",
+  "acoustic_target": "the ACTUAL spawned multiport outfall (custom fork)",
+  "residual_contacts": 54,
+  "aspect_span_deg": 315.7,
+  "localization_error_m_vs_diffuser_centre": 4.1,
+  "localization_error_m_vs_scene_origin": 8.89,
+  "sonar_estimate": [
+    38.07698175501529,
+    3.715028374758832
+  ],
+  "chart_prior": [
+    48.0,
+    12.0
+  ],
+  "screening": "REVIEW",
+  "screening_outcome_vs_gt": "inconclusive",
+  "gt_verdict": "PASS",
+  "scene_components_ok": 105,
+  "terrain_plane_rmse_m": 1.294,
+  "rmse_plume": 1.0238,
+  "boundary_f1": 0.726,
+  "prob_exceed_max": 0.281
+}

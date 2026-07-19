@@ -1,0 +1,16 @@
+{
+  "prior": [
+    48.0,
+    12.0
+  ],
+  "ring_radius_m": 22.0,
+  "ring_poses": 18,
+  "residual_contacts": 54,
+  "estimate": [
+    38.07698175501529,
+    3.715028374758832
+  ],
+  "core_size": 9,
+  "aspect_span_deg": 315.7,
+  "fallback": false
+}
