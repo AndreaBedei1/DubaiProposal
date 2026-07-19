@@ -35,6 +35,7 @@ from pathlib import Path
 from typing import Callable, List, Optional, Sequence
 
 ENV_VAR = "HOLOOCEAN_CUSTOM_ENGINE_PATH"
+CLIENT_ENV_VAR = "HOLOOCEAN_CUSTOM_CLIENT_PATH"
 DEFAULT_LEVEL = "ExampleLevel"
 
 #: UE basic-shape meshes used to mirror the official ``spawn_prop`` primitives.
@@ -61,64 +62,148 @@ class CustomEngineError(RuntimeError):
 
 @dataclass(frozen=True)
 class CustomEngine:
-    root: Path
-    client_src: Path
-    uproject: Path
+    root: Path                     # engine project root (holds Holodeck.uproject)
+    uproject: Path                 # <root>/Holodeck.uproject
+    client_src: Optional[Path]     # fork client's src dir, or None -> official client
+    octrees_dir: Path              # <root>/Octrees (on-disk acoustic octree cache)
     level: str = DEFAULT_LEVEL
 
 
-def resolve_custom_engine(level: str = DEFAULT_LEVEL) -> CustomEngine:
-    """Locate and validate the fork checkout from ``HOLOOCEAN_CUSTOM_ENGINE_PATH``."""
+def repo_root() -> Path:
+    """The BrineWatch repository root (holds brinewatch/ and, when present, engine/)."""
+    # .../brinewatch/brinewatch/simulation/custom_engine.py -> parents[3] = repo root
+    return Path(__file__).resolve().parents[3]
+
+
+def _uproject_from(candidate: Path) -> Optional[Path]:
+    """Accept either an engine dir (holds Holodeck.uproject) or a fork root
+    (holds engine/Holodeck.uproject); return the uproject path or None."""
+    candidate = Path(candidate).expanduser()
+    for up in (candidate / "Holodeck.uproject",
+               candidate / "engine" / "Holodeck.uproject"):
+        if up.is_file():
+            return up
+    return None
+
+
+def _find_engine_uproject() -> Path:
+    """Discover the custom-engine uproject. Order:
+
+    1. ``HOLOOCEAN_CUSTOM_ENGINE_PATH`` (engine dir OR fork root), if set;
+    2. the in-project ``<repo>/engine`` directory (auto-discovery, preferred);
+    3. a ``engine/`` sibling of the repo, if any.
+    """
+    tried = []
     raw = os.environ.get(ENV_VAR, "").strip()
-    if not raw:
-        raise CustomEngineError(
-            f"{ENV_VAR} is not set. Point it at the root of the custom "
-            "HoloOcean fork (the directory containing client/ and engine/). "
-            "The custom-engine experiments cannot run without it."
-        )
-    root = Path(raw).expanduser()
-    client_src = root / "client" / "src"
-    uproject = root / "engine" / "Holodeck.uproject"
-    problems = []
-    if not (client_src / "holoocean" / "__init__.py").is_file():
-        problems.append(f"fork client not found at {client_src / 'holoocean'}")
-    if not uproject.is_file():
-        problems.append(f"engine project not found at {uproject}")
-    if problems:
-        raise CustomEngineError(
-            f"{ENV_VAR}={root} does not look like the HoloOcean fork: "
-            + "; ".join(problems)
-        )
-    return CustomEngine(root=root, client_src=client_src, uproject=uproject,
-                        level=level)
+    if raw:
+        up = _uproject_from(Path(raw))
+        if up:
+            return up
+        tried.append(f"{ENV_VAR}={raw}")
+    for cand in (repo_root() / "engine", repo_root().parent / "engine"):
+        up = _uproject_from(cand)
+        if up:
+            return up
+        tried.append(str(cand))
+    raise CustomEngineError(
+        "custom HoloOcean engine not found. Place the fork engine at "
+        f"<repo>/engine/Holodeck.uproject, or set {ENV_VAR} to the engine "
+        "directory (or a fork root containing engine/). Tried: "
+        + "; ".join(tried)
+    )
+
+
+def _find_fork_client(engine_root: Path) -> Optional[Path]:
+    """Discover the fork's Python client src dir, or None (use the official
+    client for attach). Order:
+
+    1. ``HOLOOCEAN_CUSTOM_CLIENT_PATH``, if set;
+    2. a ``client/src`` sibling of the engine root (classic fork layout);
+    3. ``client/src`` under the repo, if the fork client was vendored there.
+    """
+    raw = os.environ.get(CLIENT_ENV_VAR, "").strip()
+    candidates = []
+    if raw:
+        p = Path(raw).expanduser()
+        candidates += [p, p / "src", p / "client" / "src"]
+    candidates += [
+        engine_root.parent / "client" / "src",   # <fork>/client/src (engine at <fork>/engine)
+        repo_root() / "client" / "src",           # vendored into the repo
+    ]
+    for c in candidates:
+        if (c / "holoocean" / "__init__.py").is_file():
+            return c
+    return None
+
+
+def discover_custom_engine(level: str = DEFAULT_LEVEL) -> CustomEngine:
+    """Auto-discover the custom engine (and fork client if available).
+
+    The engine is required and located via :func:`_find_engine_uproject`; the
+    fork client is optional (falls back to the installed official client for
+    attach mode — see :func:`activate_fork_client`)."""
+    uproject = _find_engine_uproject()
+    root = uproject.parent
+    return CustomEngine(root=root, uproject=uproject,
+                        client_src=_find_fork_client(root),
+                        octrees_dir=root / "Octrees", level=level)
+
+
+# Backwards-compatible alias used by existing scripts.
+def resolve_custom_engine(level: str = DEFAULT_LEVEL) -> CustomEngine:
+    return discover_custom_engine(level=level)
 
 
 def activate_fork_client(engine: CustomEngine):
-    """Make ``import holoocean`` resolve to the fork's client and import it.
+    """Import the HoloOcean client used to attach to the fork engine.
 
-    Must run before anything else imports the official package: Python caches
-    modules, so mixing the two in one process is not possible.
+    If ``engine.client_src`` is set, that fork client takes import precedence
+    (prepended to ``sys.path``); otherwise the installed official client is
+    imported as a fallback for attach mode (``SpawnAsset``/``ClearSpawned``
+    are engine-side world commands, sent through the generic ``Command`` API).
+
+    Must run before anything else imports ``holoocean``: Python caches modules,
+    so a client cannot be swapped once imported.
     """
     existing = sys.modules.get("holoocean")
     if existing is not None:
         loaded_from = Path(getattr(existing, "__file__", "?")).resolve()
-        if engine.client_src not in loaded_from.parents:
+        if engine.client_src is not None and engine.client_src not in loaded_from.parents:
             raise CustomEngineError(
-                "the official holoocean package is already imported in this "
-                f"process (from {loaded_from}); the fork client cannot be "
-                "activated. Run custom-engine scripts in a fresh process."
+                f"holoocean is already imported from {loaded_from}, not the "
+                f"fork client at {engine.client_src}. Run custom-engine "
+                "scripts in a fresh process."
             )
         return existing
-    sys.path.insert(0, str(engine.client_src))
+    if engine.client_src is not None:
+        sys.path.insert(0, str(engine.client_src))
     import holoocean  # noqa: PLC0415
 
     loaded_from = Path(holoocean.__file__).resolve()
-    if engine.client_src not in loaded_from.parents:
+    if engine.client_src is not None and engine.client_src not in loaded_from.parents:
         raise CustomEngineError(
             f"import holoocean resolved to {loaded_from}, not the fork client "
             f"under {engine.client_src}. Check the environment."
         )
     return holoocean
+
+
+def clear_octree_cache(engine: CustomEngine) -> int:
+    """Delete on-disk cached octrees for the current level so the next boot
+    rebuilds from scratch (guards against stale caches leaking a previous
+    session's spawned geometry into a fresh run). Returns the number of files
+    removed. Safe to call when the engine is not running."""
+    removed = 0
+    cache = engine.octrees_dir / engine.level
+    if cache.is_dir():
+        for f in cache.glob("*"):
+            try:
+                if f.is_file():
+                    f.unlink()
+                    removed += 1
+            except OSError:
+                pass
+    return removed
 
 
 def editor_launch_args(

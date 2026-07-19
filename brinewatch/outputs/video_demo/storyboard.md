@@ -48,6 +48,17 @@ yields ~24 frames.
 Outputs per run: `frames/frame_*.png`, `camera_log.json`, `contact_sheet.png`,
 `cinematic.mp4` (OpenCV, no ffmpeg dependency).
 
+**Status of the auto-flythrough:** `capture_cinematic_inspection.py` produces
+a smooth free-camera (`move_viewport`) path and an MP4, but the automatic
+framing of the structure is terrain/world-dependent and currently needs
+per-site tuning of the keyframes to keep the outfall centred. The **primary,
+reviewed visual assets** for the video are therefore the committed hero stills
+in [`../visual/selected_world/`](../visual/selected_world/) (10 well-framed
+RGB views + contact sheet of the accepted Dam scene, captured via the proven
+`inspect_outfall_scene.py` ROV-camera path) together with the sonar-visibility
+panels in [`../sonar_truth/`](../sonar_truth/). The flythrough tooling is
+provided for a future tuned pass.
+
 ## Narrative (matches docs/application/pfh2026/VIDEO_STORYBOARD.md)
 
 1. hidden brine plume problem → 2. BlueROV2 descends → 3. **sonar sees the

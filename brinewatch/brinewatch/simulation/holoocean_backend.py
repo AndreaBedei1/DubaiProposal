@@ -282,6 +282,28 @@ class HoloOceanBackend(SimulatorBackend):
         )
         return {"sonar": frame}
 
+    def capture_sonar_at(self, x: float, y: float, z: float, yaw_deg: float,
+                         settle_ticks: int = 8, max_wait_ticks: int = 300):
+        """Teleport the ROV to a fixed pose and return the next fresh
+        ``SonarFrame`` (or None). Used for pose-matched baseline/inspection
+        sonar passes (background-subtraction LOCATE). Pins the pose every tick
+        so the buoyant vehicle holds it long enough for a capture."""
+        agent = self._env.agents[AGENT_NAME]
+        cmd = np.array([x, y, z, 0.0, 0.0, yaw_deg], dtype=np.float64)
+        for _ in range(settle_ticks):
+            agent.teleport([x, y, z], [0.0, 0.0, yaw_deg])
+            self._env.act(AGENT_NAME, cmd)
+            self._env.tick()
+        self._last_sonar_emitted = None  # force the next frame to count as new
+        for _ in range(max_wait_ticks):
+            agent.teleport([x, y, z], [0.0, 0.0, yaw_deg])
+            self._env.act(AGENT_NAME, cmd)
+            self._last_raw_state = self._env.tick()
+            obs = self.get_observation()
+            if obs and obs.get("sonar") is not None:
+                return obs["sonar"]
+        return None
+
     def _parse_state(self, sd: dict) -> VehicleState:
         loc = np.asarray(sd["LocationSensor"], dtype=float)
         vel = np.asarray(sd.get("VelocitySensor", np.zeros(3)), dtype=float)

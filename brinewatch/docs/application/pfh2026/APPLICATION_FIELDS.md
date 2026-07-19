@@ -25,10 +25,12 @@ Use the text in `PROJECT_DESCRIPTION.md` verbatim.
   improves boundary localization (F1 +17 %) when the travel budget cannot
   densely cover the site; the uncertainty-aware screening produced zero
   wrong conclusive results in 320 evaluations.
-- Controlled acoustic-visibility study on the official simulator (documented
-  limitation: runtime-spawned props are not in the acoustic octree; official
-  stock structures validated as sonar targets), plus an offline detector
-  evaluation harness on recorded sonar missions with real-frame test fixtures.
+- Controlled acoustic-visibility study: on the OFFICIAL simulator
+  runtime-spawned props are not in the acoustic octree (documented), but a
+  CUSTOM HoloOcean fork rebuilds the octree at runtime so the generated
+  outfall IS sonar-visible and is localized by real sonar with no ground
+  truth. Plus an offline detector evaluation harness on recorded sonar
+  missions with real-frame test fixtures.
 - Automated terrain calibration (range-finder sounding grid + robust plane
   fit), terrain-placed configurable outfall scene, collision recovery and
   survey-safety logic — all exercised in live simulator missions.

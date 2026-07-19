@@ -18,7 +18,13 @@ benchmark experiments.
 - An autonomous `LOCATE -> BASELINE -> SURVEY -> REPORT` mission workflow.
 - Fixed lawnmower and adaptive informative-sampling planners.
 - A fast kinematic backend for reproducible experiments.
-- An optional HoloOcean backend using a simulated BlueROV2 Heavy.
+- An optional HoloOcean backend using a simulated BlueROV2.
+- A **custom HoloOcean fork** backend (`holoocean_custom`) that rebuilds the
+  sonar octree at runtime, so the **generated outfall is visible to sonar** and
+  can be localized by real sonar with no ground truth (the unmodified official
+  engine cannot see runtime-spawned geometry). See
+  [SONAR_VALIDATION](brinewatch/docs/application/pfh2026/SONAR_VALIDATION.md)
+  and [FINAL_REPORT](brinewatch/docs/application/pfh2026/FINAL_REPORT.md).
 - Gaussian-process salinity reconstruction and compliance metrics.
 - Automated figures, JSON/CSV artifacts, and self-contained HTML reports.
 - Tests that run without HoloOcean or a GPU.
@@ -39,8 +45,13 @@ benchmark experiments.
 `-- README.md
 ```
 
-Generated mission and benchmark results are written to `brinewatch/outputs/`
-and are intentionally excluded from version control.
+Generated mission and benchmark results are written to `brinewatch/outputs/`.
+Most of that directory is local-only, but a curated set of **committed
+evidence packages** (sonar-visibility truth test, visual scene, localization,
+full mission, video) is version-controlled and indexed in
+[brinewatch/outputs/README.md](brinewatch/outputs/README.md). The custom
+HoloOcean engine itself lives at `engine/` and is gitignored (it is large and
+machine-local; auto-discovered at runtime).
 
 ## Quick start
 
@@ -97,6 +108,25 @@ environment and launch a mission with:
 ```bash
 python scripts/inspect_holoocean.py --launch
 python scripts/run_mission.py --config configs/holoocean_live.yaml
+```
+
+## Custom-engine sonar demos (Windows)
+
+The custom fork engine is auto-discovered at `<repo>/engine`; only the UE 5.3
+editor path is needed. See
+[CUSTOM_ENGINE](brinewatch/docs/application/pfh2026/CUSTOM_ENGINE.md).
+
+```powershell
+$env:UNREAL_EDITOR_EXE = "C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe"
+
+# prove a runtime-spawned object appears in the sonar (BOX / CYL / OUTFALL)
+powershell -File brinewatch\scripts\run_sonar_truth_test.ps1 -OutDir outputs\sonar_truth_run1 -SkipOfficial
+
+# full custom-engine mission: real sonar LOCATE of the spawned outfall + survey
+powershell -File brinewatch\scripts\run_custom_demo.ps1
+
+# cinematic flythrough of the accepted (official-engine) scene
+python brinewatch\scripts\capture_cinematic_inspection.py
 ```
 
 See the [implementation README](brinewatch/README.md) for experiment results,

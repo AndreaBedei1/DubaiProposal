@@ -27,6 +27,7 @@ from ..utils.config import MissionConfig
 from ..utils.geometry import dist3, expanding_square
 from ..utils.logging_utils import MissionLogger
 from ..utils.types import (
+    Detection,
     MissionBudget,
     MissionPhase,
     MissionResult,
@@ -107,6 +108,7 @@ class MissionRunner:
         mapper: GPMapper,
         logger: Optional[MissionLogger] = None,
         sonar_recorder=None,  # optional brinewatch.sensors.sonar_recorder.SonarRecorder
+        estimate_override: Optional[Tuple[float, float]] = None,
     ):
         self.cfg = cfg
         self.backend = backend
@@ -117,6 +119,13 @@ class MissionRunner:
         self.mapper = mapper
         self.logger = logger
         self.sonar_recorder = sonar_recorder
+        # When set, LOCATE returns this pre-computed estimate instead of running
+        # its own search. Used when the outfall is localized by a dedicated
+        # sonar pass BEFORE the survey (e.g. the custom-engine background-
+        # subtraction LOCATE), so BASELINE/SURVEY anchor at the real estimate.
+        self._estimate_override = (None if estimate_override is None
+                                   else (float(estimate_override[0]),
+                                         float(estimate_override[1])))
         self._rng = np.random.default_rng(cfg.seed)
         self.result = MissionResult(planner_name=planner.name)
         self.budget = MissionBudget(cfg.budget.max_distance_m)
@@ -158,6 +167,15 @@ class MissionRunner:
     def _phase_locate(self) -> Tuple[float, float]:
         """Search for the diffuser around the a-priori outfall position."""
         self._set_phase(MissionPhase.LOCATE)
+        if self._estimate_override is not None:
+            # Estimate supplied by an external sonar pass (no ground truth):
+            # BASELINE/SURVEY anchor here. Marked as sonar-localized.
+            est = self._estimate_override
+            self.result.outfall_estimate = est
+            self.result.detections.append(Detection(
+                t=0.0, range_m=0.0, bearing_rad=0.0, est_x=est[0], est_y=est[1]))
+            self._log("outfall_found", estimate=est, source="external_sonar_locate")
+            return est
         if self.cfg.locator.prior_x is not None and self.cfg.locator.prior_y is not None:
             # Explicit chart prior from configuration: the official no-leakage
             # path — nothing here reads the true outfall position.
@@ -398,11 +416,13 @@ def create_mission(
     seed_offset: int = 0,
     backend: Optional[SimulatorBackend] = None,
     sonar_recorder=None,
+    estimate_override: Optional[Tuple[float, float]] = None,
 ) -> MissionRunner:
     """Wire up a full mission from config. ``seed_offset`` lets benchmarks run
     several statistically independent missions from one config. Passing an
     existing ``backend`` reuses a live simulator (e.g. after a terrain-probe
-    and scene-build pass in the same engine session)."""
+    and scene-build pass in the same engine session). ``estimate_override``
+    injects an externally computed sonar outfall estimate (skips LOCATE)."""
     import dataclasses
 
     if seed_offset:
@@ -426,4 +446,5 @@ def create_mission(
         backend = make_backend(backend_name, cfg.backend, cfg.environment, cfg.outfall,
                                start, seed=cfg.seed + 41)
     return MissionRunner(cfg, backend, planner, plume, ctd, locator, mapper, logger,
-                         sonar_recorder=sonar_recorder)
+                         sonar_recorder=sonar_recorder,
+                         estimate_override=estimate_override)

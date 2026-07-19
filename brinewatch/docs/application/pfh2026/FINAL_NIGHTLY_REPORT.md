@@ -1,5 +1,14 @@
 # Final nightly report — autonomous PFH 2026 preparation session (2026-07-16)
 
+> **SUPERSEDED for sonar/custom-engine claims.** This report predates the
+> custom-engine consolidation (2026-07-19). Its statement that runtime-spawned
+> props are sonar-invisible is true only for the *unmodified official* engine;
+> the *custom fork* rebuilds the octree at runtime and the generated outfall
+> IS sonar-visible and localized by real sonar. See
+> [FINAL_REPORT.md](FINAL_REPORT.md) and
+> [SONAR_VALIDATION.md](SONAR_VALIDATION.md) §0 for the current status. Test
+> counts below (88) are historical; the current engine-free suite is 116.
+
 ## 1. Executive summary
 
 The repository moved from a simulation-led prototype with an oracle-fed
