@@ -33,8 +33,14 @@ end-to-end in a mission.
 5. **Custom-engine scientific mission** (`run_custom_pfh2026_demo.py`): real
    custom-engine sonar LOCATE of the spawned outfall (no GT), then survey /
    GP / screening / report anchored at the sonar estimate.
-6. **Cinematic capture + video** (`capture_cinematic_inspection.py`,
-   `make_demo_video.py`): smooth flythrough of the accepted scene.
+6. **Video package** (`outputs/video_demo/storyboard.md`,
+   `capture_cinematic_inspection.py`, `make_demo_video.py`): two-demo
+   storyboard + OpenCV MP4 assembly (no ffmpeg). The primary reviewed visual
+   assets are the committed hero stills (`outputs/visual/selected_world/`, 10
+   framed RGB views of the accepted Dam scene) and the sonar-visibility panels
+   (`outputs/sonar_truth/`); the automatic free-camera flythrough tooling is
+   provided but its structure framing still needs per-site keyframe tuning
+   (documented in the storyboard).
 
 ## Is the spawned outfall sonar-visible? Where?
 
