@@ -6,16 +6,35 @@ Gaussian multiplicative noise in missions). Sections 1+ use only the
 unmodified official package; section 0 documents the CUSTOM fork engine
 (runtime octree rebuild), clearly separated.
 
-## 0. Custom fork engine: runtime geometry IS acoustically visible (proven)
+## 0. Custom fork engine: runtime-spawned objects ARE sonar-visible (proven)
 
-With the custom ALAR fork (see [CUSTOM_ENGINE.md](CUSTOM_ENGINE.md)),
-`scripts/smoke_custom_engine.py` attached to the fork engine (UE 5.3 -game,
-ExampleLevel), captured a sonar frame, spawned a cylinder via `SpawnAsset` at
-runtime, and captured again from the same pose: **frames differ**
-(mean |after−before| = 2.26e-4 > 0), and the engine log shows
+**Minimal truth test (2026-07-19, `scripts/sonar_truth_test.py`, evidence
+`outputs/sonar_truth/custom_run1/`).** One runtime-spawned object placed
+dead-ahead of the sonar at a controlled pose; one fresh engine session per
+condition; the on-disk octree cache cleared before each boot so every octree
+is built from that session's actual geometry. Difference vs the no-object
+baseline A:
+
+| object | changed sonar bins (head-on) | visible? |
+|---|---|---|
+| 2 m cube (BOX) | 33,498 | **YES** |
+| 0.5 m x 4 m cylinder (CYL) | 33,652 | **YES** |
+| full 105-component OUTFALL | 30,665 | **YES** |
+
+Every runtime-spawned object — the simplest cube through the full generated
+outfall — is unambiguously visible: tens of thousands of sonar bins change vs
+the empty baseline, with a bright compact return and an acoustic shadow at
+the object's range/bearing (`custom_BOX_headon.png`, `custom_OUTFALL_headon.png`).
+The engine used here is the in-project fork, auto-discovered at `<repo>/engine`;
+the installed HoloOcean 2.3.0 client attaches (self-contained). This is the
+definitive answer to "are spawned props visible to sonar in the custom
+engine": **yes**.
+
+Earlier corroboration: `scripts/smoke_custom_engine.py` spawned a single
+cylinder and saw the frame change, with the engine log
 `HolodeckSonar: world geometry changed, rebuilding octree.` on both spawn and
-`ClearSpawned`. The same runtime-spawn experiment on the OFFICIAL engine
-gives bit-identical frames (section 1).
+`ClearSpawned`. The same runtime-spawn on the OFFICIAL engine gives
+bit-identical frames (section 1).
 
 **A/B/C/D experiment on the ACTUAL generated outfall**
 (`scripts/validate_custom_sonar.py`, run 2026-07-16, output

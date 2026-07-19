@@ -27,23 +27,38 @@ Source evidence: `engine/Source/Holodeck/ClientCommands/Private/SpawnAssetComman
 `ConsumeWorldGeometryDirty`, `ClearCacheForCurrentWorld`),
 `HolodeckCore/Private/HolodeckSonar.cpp` (rebuild in `Tick`).
 
-## Setup (no user-specific paths are committed)
+## Setup (self-contained; no user-specific paths are committed)
+
+The fork engine is placed at `<repo>/engine` (the Unreal project +
+`Holodeck.uproject`; gitignored — it is huge and machine-local). It is
+**auto-discovered** — no path env var needed. Only the editor is required:
 
 ```powershell
-$env:HOLOOCEAN_CUSTOM_ENGINE_PATH = "<path to the fork checkout>"   # contains client/ and engine/
 $env:UNREAL_EDITOR_EXE = "C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe"
 ```
+
+`discover_custom_engine()` finds the uproject in this order: (1)
+`HOLOOCEAN_CUSTOM_ENGINE_PATH` if set (an engine dir *or* a fork root); (2)
+the in-project `<repo>/engine`; (3) an `engine/` sibling of the repo.
 
 The fork ships **no packaged binary** (`engine/Binaries/Win64` holds editor
 DLLs only), so the engine runs through the UE 5.3 editor:
 
 ```powershell
 # terminal 1 — engine (stays up; first run compiles shaders)
-python scripts\launch_custom_engine.py --level ExampleLevel
+python scripts\launch_custom_engine.py --clear-cache
 
-# terminal 2 — experiments attach to it
-python scripts\smoke_custom_engine.py
+# terminal 2 — experiments attach to it (self-contained)
+python scripts\sonar_truth_test.py --engine custom --condition BOX --out outputs\demo
 ```
+
+**Client:** the installed **official HoloOcean 2.3.0 client attaches to the
+fork engine** in `-game` mode (`holoocean.make(..., start_world=False)`) —
+verified working. `SpawnAsset`/`ClearSpawned` are engine-side world commands
+sent through the generic `Command` API, so no separate fork client is needed.
+If a fork client is preferred it can be pinned with
+`HOLOOCEAN_CUSTOM_CLIENT_PATH`; otherwise `client_src` is `None` and the
+official client is used.
 
 `launch_custom_engine.py` passes the flags the engine parses at octree init:
 `-OctreeMin/-OctreeMax` (meters) and `-EnvMinX..-EnvMaxZ` (meters, client
@@ -59,14 +74,19 @@ acoustically visible.
   the shared-memory semaphore pair is left mid-protocol and the next client
   blocks at its first `acquire`. Restart the engine between client runs.
 
-The Python side then attaches with the FORK client
-(`holoocean.make(..., start_world=False)`, shared memory, empty UUID); the
-BrineWatch backend does this automatically for `backend.name:
+The BrineWatch backend does this automatically for `backend.name:
 holoocean_custom` (`brinewatch/simulation/custom_engine.py` +
-`holoocean_backend.py`). The fork client is activated by prepending
-`<fork>/client/src` to `sys.path` — custom-engine scripts must run in a fresh
-process (a loud `CustomEngineError` is raised if the official package is
-already imported, and there is **no silent fallback** to the official engine).
+`holoocean_backend.py`): it activates the client (official, or a pinned fork
+client) and attaches. Custom-engine scripts run in a fresh process; a loud
+`CustomEngineError` is raised on misconfiguration, with **no silent fallback**
+to the official engine for acoustic claims.
+
+`clear_octree_cache()` / `launch_custom_engine.py --clear-cache` deletes the
+on-disk octree cache for the level before boot, so the sonar octree is
+rebuilt from scratch — this rules out a stale cache leaking a previous
+session's spawned geometry (the cause of the earlier cross-session REMOVED
+anomaly). Every rigorous experiment clears the cache and uses one fresh
+engine session per condition.
 
 ## Geometry mapping
 
