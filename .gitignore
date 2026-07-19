@@ -38,6 +38,10 @@ htmlcov/
 build/
 dist/
 
+# Custom HoloOcean engine (Unreal project + built binaries): NEVER committed
+# (huge; auto-discovered at runtime). It lives at <repo>/engine.
+/engine/
+
 # Generated BrineWatch mission and benchmark artifacts, EXCEPT the curated
 # committed evidence packages (see brinewatch/outputs/README.md)
 brinewatch/outputs/*
@@ -46,6 +50,8 @@ brinewatch/outputs/*
 !brinewatch/outputs/sonar_visibility/
 !brinewatch/outputs/localization/
 !brinewatch/outputs/full_mission/
+!brinewatch/outputs/sonar_truth/
+!brinewatch/outputs/video_demo/
 
 # LaTeX build artifacts (keep source files and the published PDF)
 *.aux
