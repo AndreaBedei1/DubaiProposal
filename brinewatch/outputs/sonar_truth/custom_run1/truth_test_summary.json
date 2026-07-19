@@ -1,0 +1,139 @@
+{
+  "engines": {
+    "custom": {
+      "A": {
+        "headon": {
+          "max": 0.47124,
+          "mean": 0.040243,
+          "nonzero_bins": 45942,
+          "nonzero_frac": 0.35051,
+          "mad_vs_A": 0.0,
+          "identical_to_A": true,
+          "changed_bins": 0
+        },
+        "left45": {
+          "max": 0.4705,
+          "mean": 0.048943,
+          "nonzero_bins": 59335,
+          "nonzero_frac": 0.45269,
+          "mad_vs_A": 0.0,
+          "identical_to_A": true,
+          "changed_bins": 0
+        },
+        "right45": {
+          "max": 0.47065,
+          "mean": 0.037272,
+          "nonzero_bins": 49686,
+          "nonzero_frac": 0.37907,
+          "mad_vs_A": 0.0,
+          "identical_to_A": true,
+          "changed_bins": 0
+        }
+      },
+      "BOX": {
+        "headon": {
+          "max": 0.47124,
+          "mean": 0.042402,
+          "nonzero_bins": 49655,
+          "nonzero_frac": 0.37884,
+          "mad_vs_A": 0.006367,
+          "identical_to_A": false,
+          "changed_bins": 33498
+        },
+        "left45": {
+          "max": 0.4705,
+          "mean": 0.049675,
+          "nonzero_bins": 60503,
+          "nonzero_frac": 0.4616,
+          "mad_vs_A": 0.004426,
+          "identical_to_A": false,
+          "changed_bins": 5763
+        },
+        "right45": {
+          "max": 0.47065,
+          "mean": 0.039,
+          "nonzero_bins": 52228,
+          "nonzero_frac": 0.39847,
+          "mad_vs_A": 0.005334,
+          "identical_to_A": false,
+          "changed_bins": 5326
+        }
+      },
+      "CYL": {
+        "headon": {
+          "max": 0.47124,
+          "mean": 0.042748,
+          "nonzero_bins": 49437,
+          "nonzero_frac": 0.37717,
+          "mad_vs_A": 0.006506,
+          "identical_to_A": false,
+          "changed_bins": 33652
+        },
+        "left45": {
+          "max": 0.4705,
+          "mean": 0.051122,
+          "nonzero_bins": 62001,
+          "nonzero_frac": 0.47303,
+          "mad_vs_A": 0.004573,
+          "identical_to_A": false,
+          "changed_bins": 6109
+        },
+        "right45": {
+          "max": 0.47065,
+          "mean": 0.03997,
+          "nonzero_bins": 52393,
+          "nonzero_frac": 0.39973,
+          "mad_vs_A": 0.005751,
+          "identical_to_A": false,
+          "changed_bins": 6276
+        }
+      },
+      "OUTFALL": {
+        "headon": {
+          "max": 0.47124,
+          "mean": 0.037472,
+          "nonzero_bins": 43740,
+          "nonzero_frac": 0.33371,
+          "mad_vs_A": 0.004566,
+          "identical_to_A": false,
+          "changed_bins": 30665
+        },
+        "left45": {
+          "max": 0.4705,
+          "mean": 0.046243,
+          "nonzero_bins": 55764,
+          "nonzero_frac": 0.42545,
+          "mad_vs_A": 0.005445,
+          "identical_to_A": false,
+          "changed_bins": 7281
+        },
+        "right45": {
+          "max": 0.47065,
+          "mean": 0.035596,
+          "nonzero_bins": 47905,
+          "nonzero_frac": 0.36549,
+          "mad_vs_A": 0.004259,
+          "identical_to_A": false,
+          "changed_bins": 5526
+        }
+      }
+    }
+  },
+  "verdicts": {
+    "custom:BOX": {
+      "visible": true,
+      "changed_bins_headon": 33498,
+      "mad_headon": 0.006367
+    },
+    "custom:CYL": {
+      "visible": true,
+      "changed_bins_headon": 33652,
+      "mad_headon": 0.006506
+    },
+    "custom:OUTFALL": {
+      "visible": true,
+      "changed_bins_headon": 30665,
+      "mad_headon": 0.004566
+    }
+  }
+}

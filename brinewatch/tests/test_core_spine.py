@@ -286,16 +286,29 @@ class TestApplicationConfigs:
 
     REPO = Path(__file__).resolve().parents[1]
 
-    def test_pfh2026_config_valid(self):
+    def test_pfh2026_official_config_valid(self):
+        # Official-engine demo (Dam): spawned props are sonar-invisible, so it
+        # proceeds from the chart prior (locator.mode synthetic). The scene is
+        # still built and the survey anchored at the configured prior.
         cfg = load_config(self.REPO / "configs" / "pfh2026_holoocean.yaml")
+        assert cfg.backend.name == "holoocean"
+        assert cfg.backend.holoocean.defer_scene_build
+        assert cfg.locator.prior_x is not None and cfg.locator.prior_y is not None
+        assert cfg.survey.x_min <= cfg.locator.prior_x <= cfg.survey.x_max
+        assert cfg.survey.y_min <= cfg.locator.prior_y <= cfg.survey.y_max
+        assert cfg.survey.max_z_m < -1.0
+
+    def test_pfh2026_custom_config_valid(self):
+        # Custom-engine demo (fork, runtime octree rebuild): the spawned outfall
+        # IS sonar-visible, so LOCATE uses real sonar (mode sonar) with no oracle.
+        cfg = load_config(self.REPO / "configs" / "pfh2026_custom.yaml")
+        assert cfg.backend.name == "holoocean_custom"
         assert cfg.locator.mode == "sonar"
         assert cfg.backend.holoocean.sonar_enabled
         assert cfg.backend.holoocean.defer_scene_build
         assert cfg.locator.prior_x is not None and cfg.locator.prior_y is not None
-        # chart prior must be inside the survey box
         assert cfg.survey.x_min <= cfg.locator.prior_x <= cfg.survey.x_max
         assert cfg.survey.y_min <= cfg.locator.prior_y <= cfg.survey.y_max
-        # survey never above the safety ceiling
         assert cfg.survey.max_z_m < -1.0
 
     def test_benchmark_configs_valid(self):

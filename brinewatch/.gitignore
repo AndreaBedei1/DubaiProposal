@@ -14,3 +14,5 @@ outputs/*
 !outputs/sonar_visibility/
 !outputs/localization/
 !outputs/full_mission/
+!outputs/sonar_truth/
+!outputs/video_demo/

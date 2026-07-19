@@ -14,11 +14,17 @@ from brinewatch.simulation.custom_engine import (
     CustomEngineError,
     PROP_MESHES,
     direction_to_rpy,
+    discover_custom_engine,
     editor_launch_args,
     make_asset_spawner,
+    repo_root,
     resolve_custom_engine,
 )
 from brinewatch.simulation.outfall_scene import prop_rotation_for_axis
+
+# The custom engine (Unreal project) is gitignored and only present on a dev
+# machine that has it checked out at <repo>/engine; CI runs without it.
+_HAS_IN_PROJECT_ENGINE = (repo_root() / "engine" / "Holodeck.uproject").is_file()
 
 
 # --------------------------------------------------------------------------- #
@@ -101,27 +107,48 @@ def test_direction_to_rpy_zero_vector_is_identity():
 # --------------------------------------------------------------------------- #
 # resolve_custom_engine failure modes (loud, actionable)
 # --------------------------------------------------------------------------- #
-def test_resolve_requires_env_var(monkeypatch):
+@pytest.mark.skipif(not _HAS_IN_PROJECT_ENGINE,
+                    reason="in-project engine not checked out")
+def test_discover_finds_in_project_engine(monkeypatch):
+    # no env var -> auto-discovery finds <repo>/engine/Holodeck.uproject
     monkeypatch.delenv(ENV_VAR, raising=False)
-    with pytest.raises(CustomEngineError, match=ENV_VAR):
-        resolve_custom_engine()
+    eng = discover_custom_engine()
+    assert eng.uproject.name == "Holodeck.uproject"
+    assert eng.uproject.is_file()
+    assert eng.octrees_dir.name == "Octrees"
 
 
-def test_resolve_rejects_bad_layout(tmp_path, monkeypatch):
+def test_env_var_override_engine_dir(tmp_path, monkeypatch):
+    # env var pointing directly at an engine dir wins
+    (tmp_path / "Holodeck.uproject").write_text("{}")
     monkeypatch.setenv(ENV_VAR, str(tmp_path))
-    with pytest.raises(CustomEngineError, match="does not look like"):
-        resolve_custom_engine()
-
-
-def test_resolve_accepts_valid_layout(tmp_path, monkeypatch):
-    (tmp_path / "client" / "src" / "holoocean").mkdir(parents=True)
-    (tmp_path / "client" / "src" / "holoocean" / "__init__.py").write_text("")
-    (tmp_path / "engine").mkdir()
-    (tmp_path / "engine" / "Holodeck.uproject").write_text("{}")
-    monkeypatch.setenv(ENV_VAR, str(tmp_path))
-    eng = resolve_custom_engine(level="TestWorld")
+    eng = discover_custom_engine(level="TestWorld")
+    assert eng.root == tmp_path
     assert eng.level == "TestWorld"
     assert eng.uproject.name == "Holodeck.uproject"
+
+
+def test_env_var_override_fork_root(tmp_path, monkeypatch):
+    # env var pointing at a fork root (engine/ + client/) is also accepted
+    (tmp_path / "engine").mkdir()
+    (tmp_path / "engine" / "Holodeck.uproject").write_text("{}")
+    (tmp_path / "client" / "src" / "holoocean").mkdir(parents=True)
+    (tmp_path / "client" / "src" / "holoocean" / "__init__.py").write_text("")
+    monkeypatch.setenv(ENV_VAR, str(tmp_path))
+    eng = discover_custom_engine()
+    assert eng.uproject == tmp_path / "engine" / "Holodeck.uproject"
+    assert eng.client_src == tmp_path / "client" / "src"
+
+
+def test_discovery_without_engine_raises(tmp_path, monkeypatch):
+    # env var at a dir with no uproject; falls through to the in-project
+    # engine if present, else raises a clear error
+    monkeypatch.setenv(ENV_VAR, str(tmp_path))
+    if _HAS_IN_PROJECT_ENGINE:
+        assert discover_custom_engine().uproject.is_file()
+    else:
+        with pytest.raises(CustomEngineError, match="not found"):
+            discover_custom_engine()
 
 
 def test_editor_launch_args_include_env_bounds(tmp_path, monkeypatch):

@@ -1,0 +1,103 @@
+# PFH 2026 CUSTOM-ENGINE demonstration: BlueROV2 in the custom HoloOcean fork
+# (runtime octree rebuild), locating the ACTUAL spawned outfall by real sonar.
+#
+# Unlike the official demo (configs/pfh2026_holoocean.yaml), here the spawned
+# multiport outfall IS acoustically visible: the fork's SpawnAsset command
+# marks the octree dirty and HolodeckSonar rebuilds it, so the ImagingSonar
+# sees the generated structure. Localization uses pose-matched background
+# subtraction (a pre-installation baseline pass) to separate the outfall from
+# the level's native clutter (see docs/application/pfh2026/CUSTOM_LOCALIZATION_STUDY.md).
+#
+# The engine is AUTO-DISCOVERED at <repo>/engine (no path committed); the
+# installed HoloOcean 2.3.0 client attaches to it. The plume/CTD/GP/screening
+# stack is the same validated synthetic model as every other BrineWatch demo;
+# only the LOCATE stage consumes real custom-engine sonar.
+name: brinewatch_pfh2026_custom
+seed: 7
+planner: adaptive
+
+environment:
+  ambient_salinity_psu: 39.5
+  salinity_stratification_per_m: 0.005
+  ambient_temperature_c: 24.0
+  seabed_z0: -73.5              # recalibrated from a RangeFinder probe at start
+  seabed_slope_x: 0.0
+  seabed_slope_y: 0.0
+  current_dir_deg: 0.0          # plume spreads +x, along the diffuser axis
+  tide_amplitude_m: 2.5
+  tide_period_s: 2400.0
+
+# Outfall origin = diffuser start (local s=0); the 16 m diffuser runs +x, so
+# the diffuser centre (the localization target) is at ~(38, 0). Matches the
+# custom-engine sonar-visibility and localization studies.
+outfall:
+  x: 30.0
+  y: 0.0
+  axis_deg: 0.0
+  n_ports: 6
+  port_spacing_m: 3.2
+  riser_height_m: 1.35
+  discharge_salinity_psu: 68.0
+  discharge_temperature_c: 27.5
+
+# Survey box centred on the diffuser + near-field mixing zone.
+survey:
+  x_min: 18.0
+  x_max: 66.0
+  y_min: -26.0
+  y_max: 26.0
+  altitude_m: 2.2
+  grid_resolution_m: 3.0
+
+budget:
+  # modest budget: LOCATE is a dedicated sonar ring pass (background
+  # subtraction) done before the survey, so the mission budget covers only
+  # the real-ROV BASELINE + adaptive survey in the custom engine.
+  max_distance_m: 480.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+  locate_fraction: 0.05
+
+locator:
+  mode: sonar                   # REAL custom-engine ImagingSonar; no oracle
+  prior_x: 48.0                 # chart prior ~14 m NE of the diffuser centre
+  prior_y: 12.0
+  n_confirm: 4
+  max_range_m: 25.0
+
+adaptive:
+  weight_turn: 0.35
+  min_leg_m: 12.0
+
+compliance:
+  mixing_zone_radius_m: 40.0
+  threshold_increment_pct: 5.0
+  eval_altitude_m: 1.0
+
+backend:
+  name: holoocean_custom
+  holoocean:
+    world: ExampleLevel
+    package_name: Ocean
+    ticks_per_sec: 30
+    control_ticks: 15
+    frames_per_sec: false
+    show_viewport: true
+    window_width: 1280
+    window_height: 720
+    spawn_outfall_props: true
+    defer_scene_build: true
+    draw_debug: false
+    min_altitude_m: 1.0
+    sonar_enabled: true
+    sonar_hz: 1.0
+    sonar_range_min_m: 1.0
+    sonar_range_max_m: 40.0
+    sonar_azimuth_deg: 120.0
+    sonar_elevation_deg: 20.0
+    sonar_range_bins: 512
+    sonar_azimuth_bins: 256
+    sonar_add_sigma: 0.0
+    sonar_mult_sigma: 0.0
+    sonar_init_octree_range_m: 50.0
+    octree_min_m: 0.05
+    octree_max_m: 5.0
