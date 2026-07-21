@@ -109,6 +109,7 @@ class MissionRunner:
         logger: Optional[MissionLogger] = None,
         sonar_recorder=None,  # optional brinewatch.sensors.sonar_recorder.SonarRecorder
         estimate_override: Optional[Tuple[float, float]] = None,
+        hazard_field=None,  # optional brinewatch.planning.safe_nav.HazardField
     ):
         self.cfg = cfg
         self.backend = backend
@@ -119,6 +120,11 @@ class MissionRunner:
         self.mapper = mapper
         self.logger = logger
         self.sonar_recorder = sonar_recorder
+        # Collision-safe navigation: when set, BASELINE/SURVEY legs are routed
+        # around the localized structure with a standoff (see planning.safe_nav).
+        self.hazard_field = hazard_field
+        self._detours = 0
+        self._min_structure_clearance_m = float("inf")
         # When set, LOCATE returns this pre-computed estimate instead of running
         # its own search. Used when the outfall is localized by a dedicated
         # sonar pass BEFORE the survey (e.g. the custom-engine background-
@@ -155,9 +161,18 @@ class MissionRunner:
         self.result.wall_time_s = time.perf_counter() - t_start
         if self._collision_count:
             self.result.notes.append(f"{self._collision_count} collision event(s) detected")
+        min_clear = (None if self._min_structure_clearance_m == float("inf")
+                     else round(self._min_structure_clearance_m, 2))
+        if self.hazard_field is not None:
+            self.result.notes.append(
+                f"collision-safe nav: {self._detours} detour(s), min believed "
+                f"structure clearance {min_clear} m "
+                f"(standoff {self.hazard_field.cfg.clearance_m} m)")
         self._log("mission_end", n_samples=len(self.result.samples),
                   budget_used_m=round(self.budget.used_m, 1),
                   collisions=self._collision_count,
+                  safe_detours=self._detours,
+                  min_structure_clearance_m=min_clear,
                   wall_time_s=round(self.result.wall_time_s, 2))
         return self.result
 
@@ -250,7 +265,7 @@ class MissionRunner:
         for wx, wy in legs:
             if self.budget.exhausted:
                 return
-            self._navigate(self._survey_waypoint(wx, wy))
+            self._navigate_safe(self._survey_waypoint(wx, wy))
 
     STALL_BLACKLIST_RADIUS_M = 8.0
     MAX_CONSECUTIVE_SKIPS = 25
@@ -277,7 +292,7 @@ class MissionRunner:
             draw = getattr(self.backend, "draw_waypoint", None)
             if callable(draw):
                 draw(wp)
-            if self._navigate(wp) == "stalled":
+            if self._navigate_safe(wp) == "stalled":
                 self._stalled_xy.append((wp.x, wp.y))
 
     def _near_stalled(self, wp: Waypoint) -> bool:
@@ -297,10 +312,17 @@ class MissionRunner:
         wp: Waypoint,
         ping_locator: bool = False,
         stop_after_detections: Optional[int] = None,
+        strict_z: bool = False,
     ) -> str:
         """Drive toward ``wp`` until reached / budget out / stalled.
 
-        Returns "reached", "budget", "stalled" or "detected"."""
+        Returns "reached", "budget", "stalled" or "detected". With ``strict_z``
+        the leg only counts as reached once the vehicle's ALTITUDE above the
+        seabed also matches the waypoint's intended altitude — required for the
+        vertical climb / descent legs of a collision-safe detour (a pure
+        vertical move has zero horizontal error and would otherwise 'arrive'
+        instantly). Altitude, not absolute z, is compared so terrain-following
+        backends are not penalised for real-vs-analytic seabed differences."""
         assert self._state is not None
         dist = self._state.distance_to(wp)
         # Hard cap: assume at least ~0.15 m/s effective progress
@@ -325,6 +347,13 @@ class MissionRunner:
                           count=self._collision_count)
             self._was_colliding = self._state.collided
 
+            # Believed clearance to the (localized) structure — a real-world
+            # feasibility metric, distinct from the backend's true collision flag.
+            if self.hazard_field is not None:
+                sc = self.hazard_field.structure_clearance(self._state.position)
+                if sc < self._min_structure_clearance_m:
+                    self._min_structure_clearance_m = sc
+
             sample = self.ctd.maybe_sample(self._state)
             if sample is not None:
                 self.result.samples.append(sample)
@@ -343,12 +372,17 @@ class MissionRunner:
                             and len(self.result.detections) >= stop_after_detections):
                         return "detected"
 
-            # Arrival is HORIZONTAL-only: the waypoint z is advisory — depth is
-            # delegated to the backend's terrain following (real terrain can
-            # differ from the analytic plane by metres), and the CTD samples
+            # Arrival is HORIZONTAL-only by default: the waypoint z is advisory —
+            # depth is delegated to the backend's terrain following (real terrain
+            # can differ from the analytic plane by metres), and the CTD samples
             # are georeferenced at the *actual* depth, so no bias is introduced.
+            # ``strict_z`` additionally requires the altitude to match (detours).
             horiz = math.hypot(self._state.x - wp.x, self._state.y - wp.y)
-            if horiz <= wp.tolerance:
+            z_ok = True
+            if strict_z and self._state.altitude is not None:
+                intended_alt = wp.z - float(self.plume.seabed_z(wp.x, wp.y))
+                z_ok = abs(self._state.altitude - intended_alt) <= max(wp.tolerance, 1.0)
+            if horiz <= wp.tolerance and z_ok:
                 return "reached"
 
             # Reactive stall detection: no meaningful progress for a while
@@ -364,6 +398,33 @@ class MissionRunner:
         self.result.notes.append(f"stalled while navigating to ({wp.x:.1f}, {wp.y:.1f})")
         self._log("navigation_stalled", wp=(wp.x, wp.y, wp.z))
         return "stalled"
+
+    def _navigate_safe(self, wp: Waypoint) -> str:
+        """Drive to ``wp`` respecting the structure standoff. Without a hazard
+        field this is plain ``_navigate``; with one, the straight leg is
+        replaced by a collision-safe sequence (escape / climb-over / descend)
+        and each intermediate leg holds its commanded altitude."""
+        if self.hazard_field is None:
+            return self._navigate(wp)
+        pos = self._state.position
+        pts, ok = self.hazard_field.safe_path(pos, np.array([wp.x, wp.y, wp.z]))
+        if len(pts) > 1:
+            self._detours += 1
+            self._log("safe_detour", to=(round(wp.x, 1), round(wp.y, 1)),
+                      n_legs=len(pts), resolved=ok)
+        if not ok:
+            self.result.notes.append(
+                f"safe route to ({wp.x:.1f}, {wp.y:.1f}) not fully resolved")
+        status = "reached"
+        for i, p in enumerate(pts):
+            last = i == len(pts) - 1
+            z = min(float(p[2]), self.cfg.survey.max_z_m)
+            sub = Waypoint(float(p[0]), float(p[1]), z,
+                           wp.tolerance if last else 1.5)
+            status = self._navigate(sub, strict_z=not last)
+            if status in ("budget", "stalled"):
+                return status
+        return status
 
     def _observation(self) -> Optional[dict]:
         """Fetch the backend's observation bundle (None for backends without
@@ -417,6 +478,7 @@ def create_mission(
     backend: Optional[SimulatorBackend] = None,
     sonar_recorder=None,
     estimate_override: Optional[Tuple[float, float]] = None,
+    hazard_field=None,
 ) -> MissionRunner:
     """Wire up a full mission from config. ``seed_offset`` lets benchmarks run
     several statistically independent missions from one config. Passing an
@@ -447,4 +509,5 @@ def create_mission(
                                start, seed=cfg.seed + 41)
     return MissionRunner(cfg, backend, planner, plume, ctd, locator, mapper, logger,
                          sonar_recorder=sonar_recorder,
-                         estimate_override=estimate_override)
+                         estimate_override=estimate_override,
+                         hazard_field=hazard_field)
