@@ -1,0 +1,68 @@
+{
+  "planner": "adaptive",
+  "n_samples": 271,
+  "budget_used_m": 220.0,
+  "budget_max_m": 220.0,
+  "outfall_estimate": [
+    39.416521060454805,
+    -1.6010432428024008
+  ],
+  "n_detections": 1,
+  "phase_history": [
+    [
+      65.53333333333333,
+      "locate"
+    ],
+    [
+      65.53333333333333,
+      "baseline"
+    ],
+    [
+      266.03333333333336,
+      "survey"
+    ],
+    [
+      336.53333333333336,
+      "done"
+    ]
+  ],
+  "wall_time_s": 330.11,
+  "notes": [
+    "stalled while navigating to (43.4, -24.0)",
+    "collision-safe nav: 2 detour(s), min believed structure clearance 3.49 m (standoff 2.0 m)"
+  ],
+  "custom_engine_used": true,
+  "in_engine_survey": true,
+  "spawned_outfall_sonar_visible": true,
+  "localized_by_sonar": true,
+  "locate_backend": "holoocean_custom (native simulated ImagingSonar, background subtraction)",
+  "survey_backend": "holoocean_custom (BlueROV2 driven in-engine, collision-safe)",
+  "plume_note": "analytic simulation surrogate sampled along the engine trajectory",
+  "raw_sonar_contacts": 47,
+  "consensus_estimate": [
+    39.416521060454805,
+    -1.6010432428024008
+  ],
+  "mission_detection_events": 1,
+  "localization_error_m_vs_diffuser_centre": 1.65,
+  "sonar_estimate": [
+    39.416521060454805,
+    -1.6010432428024008
+  ],
+  "chart_prior": [
+    42.0,
+    2.0
+  ],
+  "collision_safe_nav": true,
+  "collisions": 0,
+  "safe_detours": 2,
+  "min_structure_clearance_m": 3.49,
+  "standoff_m": 2.0,
+  "screening": "REVIEW",
+  "screening_outcome_vs_gt": "inconclusive",
+  "gt_verdict": "PASS",
+  "scene_components_ok": 105,
+  "terrain_plane_rmse_m": 1.294,
+  "rmse_plume": 2.4544,
+  "boundary_f1": 0.686
+}

@@ -1,0 +1,23 @@
+{
+  "prior": [
+    42.0,
+    2.0
+  ],
+  "ring_radius_m": 22.0,
+  "ring_poses": 16,
+  "residual_contacts": 47,
+  "method": "background subtraction + in-situ diffuser-line fit",
+  "estimate": [
+    39.416521060454805,
+    -1.6010432428024008
+  ],
+  "axis_deg": 10.8,
+  "n_inliers": 22,
+  "sigma_radius_m": 4.33,
+  "aspect_span_deg": 270.0,
+  "fallback": false,
+  "background_only_estimate": [
+    44.27915862234142,
+    0.7201247381572892
+  ]
+}

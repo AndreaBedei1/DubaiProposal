@@ -17,3 +17,5 @@ outputs/*
 !outputs/sonar_truth/
 !outputs/video_demo/
 !outputs/volumetric/
+!outputs/custom_holoocean_mission/
+!outputs/dashboard/

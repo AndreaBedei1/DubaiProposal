@@ -53,6 +53,8 @@ brinewatch/outputs/*
 !brinewatch/outputs/sonar_truth/
 !brinewatch/outputs/video_demo/
 !brinewatch/outputs/volumetric/
+!brinewatch/outputs/custom_holoocean_mission/
+!brinewatch/outputs/dashboard/
 
 # LaTeX build artifacts (keep source files and the published PDF)
 *.aux

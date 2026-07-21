@@ -1,0 +1,10 @@
+{"kind": "mission_start", "planner": "adaptive", "backend": "holoocean_custom", "seed": 7, "budget_m": 220.0}
+{"kind": "phase", "phase": "locate", "budget_used_m": 0.0}
+{"kind": "outfall_found", "estimate": [39.416521060454805, -1.6010432428024008], "source": "external_sonar_locate"}
+{"kind": "phase", "phase": "baseline", "budget_used_m": 0.0}
+{"kind": "safe_detour", "to": [43.4, -24.0], "n_legs": 3, "resolved": true}
+{"kind": "navigation_stalled", "wp": [43.416521060454805, -24.0, -64.95646011689198]}
+{"kind": "phase", "phase": "survey", "budget_used_m": 151.9}
+{"kind": "safe_detour", "to": [36.0, 16.3], "n_legs": 3, "resolved": true}
+{"kind": "phase", "phase": "done", "budget_used_m": 220.0}
+{"kind": "mission_end", "n_samples": 271, "budget_used_m": 220.0, "collisions": 0, "safe_detours": 2, "min_structure_clearance_m": 3.49, "wall_time_s": 330.11}

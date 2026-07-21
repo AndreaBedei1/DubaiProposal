@@ -52,9 +52,13 @@ from brinewatch.evaluation.metrics import compute_metrics
 from brinewatch.evaluation.screening import screen, screening_outcome
 from brinewatch.mapping.grid_map import EvalGrid
 from brinewatch.mission.runner import boundary_salinity_psu, create_mission
+from brinewatch.perception.insitu_locator import (
+    InSituDiffuserLocator, InSituLocatorConfig)
 from brinewatch.perception.sonar_background_locator import (
     BackgroundLocatorConfig, SonarBackgroundLocator)
+from brinewatch.perception.sonar_diffuser_detector import DetectorConfig
 from brinewatch.planning.safe_nav import HazardField, SafeNavConfig
+from brinewatch.sensors.sonar_types import SonarFrame
 from brinewatch.simulation import make_backend
 from brinewatch.simulation.outfall_scene import OutfallSceneConfig
 from brinewatch.utils.config import load_config, save_config
@@ -105,6 +109,9 @@ def main() -> int:
                          "kinematic demo to keep the live run tractable")
     ap.add_argument("--clearance", type=float, default=2.0,
                     help="collision-safe standoff from the structure (m)")
+    ap.add_argument("--prior-x", type=float, default=None,
+                    help="override the chart prior x (else config)")
+    ap.add_argument("--prior-y", type=float, default=None)
     args = ap.parse_args()
 
     cfg = load_config(args.config)
@@ -118,7 +125,8 @@ def main() -> int:
     run_dir = make_run_dir(args.out, "custom_holoocean_mission")
     print(f"[custom-mission] run dir: {run_dir}")
     save_config(cfg, run_dir / "config_used.yaml")
-    prior = (float(cfg.locator.prior_x), float(cfg.locator.prior_y))
+    prior = (float(args.prior_x if args.prior_x is not None else cfg.locator.prior_x),
+             float(args.prior_y if args.prior_y is not None else cfg.locator.prior_y))
 
     start = (0.5 * (cfg.survey.x_min + cfg.survey.x_max),
              0.5 * (cfg.survey.y_min + cfg.survey.y_max),
@@ -176,21 +184,47 @@ def main() -> int:
         np.savez_compressed(run_dir / "locate_inspection_frames.npz",
                             **{k: v.image for k, v in live.items()})
 
-        # ---- 6. background-subtraction LOCATE (no GT) -------------------- #
+        # ---- 6. LOCATE (no GT): background subtraction + diffuser-line fit --
+        # Background subtraction cancels clutter common to the baseline and
+        # inspection passes; feeding the RESIDUAL frames to the in-situ diffuser
+        # LINE locator additionally rejects off-axis spawned scene elements
+        # (rock berm / scatter) that a plain densest-cluster consensus would
+        # lock onto. The chart axis (pipeline bearing) constrains the fit; the
+        # centre is the along-track midpoint of the inlier risers.
         blc = SonarBackgroundLocator(BackgroundLocatorConfig(
             prior_xy=prior, prior_gate_m=30.0))
         loc_ncontacts = 0
+        insitu = InSituDiffuserLocator(InSituLocatorConfig(
+            detector=DetectorConfig(min_range_m=6.0, z_threshold=3.5, min_area_bins=8),
+            prior_xy=prior, prior_gate_m=30.0, prior_axis_deg=cfg.outfall.axis_deg,
+            corridor_halfwidth_m=10.0, line_inlier_m=4.0, min_inliers=6,
+            min_aspect_span_deg=25.0, bootstrap=200), seed=cfg.seed + 7)
         for key in sorted(set(baseline) & set(live)):
             loc_ncontacts += blc.ingest(baseline[key], live[key])
-        loc = blc.localize()
+            b, lv_ = baseline[key], live[key]
+            res_img = np.clip(np.asarray(lv_.image, np.float32)
+                              - np.asarray(b.image, np.float32), 0.0, None)
+            insitu.ingest(SonarFrame(
+                t=lv_.t, image=res_img, range_min_m=lv_.range_min_m,
+                range_max_m=lv_.range_max_m, azimuth_fov_deg=lv_.azimuth_fov_deg,
+                elevation_fov_deg=lv_.elevation_fov_deg,
+                vehicle_xyz=lv_.vehicle_xyz, vehicle_rpy=lv_.vehicle_rpy,
+                extrinsics=lv_.extrinsics))
+        bg_loc = blc.localize()
+        loc = insitu.localize()               # diffuser-line estimate (primary)
         sonar_visible = not loc.fallback
         estimate = loc.estimate
         (run_dir / "locate_result.json").write_text(json.dumps({
             "prior": prior, "ring_radius_m": args.ring_radius,
             "ring_poses": len(ring), "residual_contacts": loc_ncontacts,
+            "method": "background subtraction + in-situ diffuser-line fit",
             "estimate": list(estimate) if estimate else None,
-            "core_size": loc.core_size, "aspect_span_deg": loc.aspect_span_deg,
-            "fallback": loc.fallback}, indent=2), encoding="utf-8")
+            "axis_deg": loc.axis_deg, "n_inliers": loc.n_inliers,
+            "sigma_radius_m": loc.sigma_radius_m,
+            "aspect_span_deg": loc.aspect_span_deg, "fallback": loc.fallback,
+            "background_only_estimate": (list(bg_loc.estimate)
+                                         if bg_loc.estimate else None)},
+            indent=2), encoding="utf-8")
         if not sonar_visible:
             print("[custom-mission] WARNING: LOCATE fell back; anchoring survey "
                   "at the prior (NOT valid sonar-localization evidence).")
