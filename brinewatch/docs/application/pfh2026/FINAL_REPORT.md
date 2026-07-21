@@ -14,6 +14,50 @@ the acoustic octree at runtime and sees spawned geometry. This is now proven
 by a minimal truth test (a single spawned cube lights up the sonar) and used
 end-to-end in a mission.
 
+## Update — 8-phase completion (2026-07-21)
+
+An 8-phase completion pass took the prototype from "custom-engine sonar LOCATE +
+kinematic survey" to a genuinely end-to-end, collision-safe, in-engine mission
+with a full evidence and reporting stack. Every item is tested (143 engine-free
+tests) and curated under `outputs/`. See
+[PROPOSAL_PHASE1_CHECKLIST.md](PROPOSAL_PHASE1_CHECKLIST.md) for the
+promise → evidence map and `outputs/experiments/README.md` for consolidated
+results.
+
+1. **Honesty/consistency** — wording ("native simulated sonar", not "real
+   sonar"), corrected outfall geometry (diffuser 19.6 m, centre (39.8, 0)),
+   Python-path auto-discovery in `.ps1`, hard-capped travel budget.
+2. **In-engine collision-safe mission** (`run_custom_holoocean_mission.py`,
+   `outputs/custom_holoocean_mission/run1/`): BlueROV2 driven through BASELINE +
+   adaptive SURVEY *inside* the fork; sonar LOCATE **1.65 m**, 271 CTD samples,
+   **0 collisions**, min structure clearance 3.49 m. Collision-safe navigation
+   (`planning/safe_nav.py`): a capsule hazard field from the estimate + chart,
+   climb-over / go-around detours, altitude floor.
+3. **In-situ single-mission localization** (`perception/insitu_locator.py`):
+   no-baseline mode (chart prior + diffuser-line RANSAC + multi-aspect
+   persistence + bootstrap uncertainty); compared to background subtraction
+   under a clutter sweep (`outputs/localization/compare/`).
+4. **3-D volumetric plume** (`mapping/volumetric.py`, `outputs/volumetric/`):
+   multi-altitude survey → terrain-following x-y-z GP → slices, iso-surface,
+   volume/area/uncertainty.
+5. **Digital-twin dashboard** (`visualization/dashboard.py`,
+   `outputs/dashboard/index.html`): one self-contained HTML — verdict banner,
+   per-mission maps + KPIs, site trends; also the exportable report.
+6. **Final experiments** (`outputs/experiments/`): equal-budget
+   adaptive-vs-lawnmower on 12 held-out validation seeds, static + dynamic,
+   full metric set. Honest headline: adaptive is a **sample-efficiency** win
+   (boundary-F1 at low budget), not a universal error reduction.
+7. **Demonstration MP4** (`outputs/video_demo/mission_movie/`): ~28 s
+   walk-through assembled from the real mission outputs (`make_mission_movie.py`).
+8. **Consolidation** — README with exact one-command reproductions, this
+   report, the proposal Phase-1 checklist, and a recorded-frame integration
+   test of the custom-mission LOCATE path (`tests/test_custom_mission_locate.py`).
+
+Honest coupling documented: collision-safe navigation is only as good as the
+localization — a far-off prior once localized an off-axis scene rock (25 m) and
+misplaced the hazard field; a realistic ring centre + the diffuser-line fit fix
+it (1.65 m). The plume remains the declared analytic surrogate throughout.
+
 ## What was fixed / added this phase
 
 1. **Self-contained custom engine.** `discover_custom_engine()` auto-finds the

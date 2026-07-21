@@ -23,19 +23,33 @@ certification. The full honesty ledger lives in
 # inside the conda env (HoloOcean 2.x + Ocean package for the live demos)
 pip install -e .
 
-python -m pytest tests -q                                   # 88 tests, no GPU needed
-python scripts/run_mission.py --config configs/mission_default.yaml   # kinematic demo (~1 min)
-python scripts/run_benchmark.py --config configs/benchmark_static.yaml --seeds 20 --seed-start 100
-python scripts/run_pfh2026_demo.py                          # official HoloOcean mission (~20 min, GPU)
+# --- engine-free (no GPU, seconds to ~1 min) ------------------------------
+python -m pytest tests -q                                   # 142 tests, no GPU needed
+python scripts/run_mission.py --config configs/mission_default.yaml          # kinematic demo
+python scripts/run_benchmark.py --config configs/benchmark_static.yaml  --seeds 12 --seed-start 100
+python scripts/run_benchmark.py --config configs/benchmark_dynamic.yaml --seeds 12 --seed-start 100
+python scripts/run_volumetric_mission.py --planner adaptive                  # 3-D plume reconstruction
+python scripts/compare_localization_modes.py                                 # in-situ vs background sonar
+python scripts/build_site_history_demo.py                                    # simulated repeated-mission campaign
+python scripts/build_dashboard.py                                            # self-contained digital-twin dashboard
+python scripts/make_mission_movie.py --run outputs/<custom_run> --rgb outputs/<cinematic>/frames  # demo MP4
+
+# --- custom HoloOcean fork (GPU; launch the engine first) -----------------
+export UNREAL_EDITOR_EXE=".../UE_5.3/Engine/Binaries/Win64/UnrealEditor.exe"
+python scripts/launch_custom_engine.py --clear-cache --level ExampleLevel    # terminal 1
+python scripts/run_custom_holoocean_mission.py \
+    --ring-poses 16 --budget 220 --prior-x 42 --prior-y 2                     # terminal 2: in-engine, collision-safe
+python scripts/run_custom_pfh2026_demo.py                                     # custom sonar LOCATE + kinematic survey
+
+# --- official HoloOcean (GPU) ---------------------------------------------
+python scripts/run_pfh2026_demo.py                          # official HoloOcean mission (~20 min)
 python scripts/validate_sonar_visibility.py                 # acoustic-visibility experiment
-python scripts/evaluate_sonar_detector.py --recording outputs/<run>/sonar_recording --target-x 456.5 --target-y -630.5
-python scripts/build_site_history_demo.py                   # simulated 6-mission campaign
-python scripts/analyze_motion.py                            # motion-quality report for the latest run
 ```
 
-The Prototypes-for-Humanity demonstration is `scripts/run_pfh2026_demo.py`
-with `configs/pfh2026_holoocean.yaml`; all application material is under
-[docs/application/pfh2026/](docs/application/pfh2026/).
+The flagship end-to-end demonstration is `scripts/run_custom_holoocean_mission.py`
+(motion + sonar in the custom fork, collision-safe survey); the demonstration
+video is `outputs/video_demo/mission_movie/mission_movie.mp4`. All application
+material is under [docs/application/pfh2026/](docs/application/pfh2026/).
 
 ## Current evidence (verified on this repository)
 
@@ -62,6 +76,33 @@ with `configs/pfh2026_holoocean.yaml`; all application material is under
   CLEAR → REVIEW → POSSIBLE EXCEEDANCE
   ([trend](docs/application/pfh2026/assets/results/site_history_trend.png),
   clearly labelled simulated).
+
+### Custom-fork engine (runtime octree rebuild)
+
+The official acoustic octree is static, so runtime-spawned props are invisible
+to it (finding above). A custom HoloOcean fork rebuilds the octree on spawn,
+making the **actual** spawned outfall sonar-visible — which unlocks a genuinely
+end-to-end mission:
+
+- **In-engine collision-safe mission** (`outputs/custom_holoocean_mission/`):
+  the BlueROV2 is driven through the whole survey *inside* the fork; sonar
+  LOCATE **1.65 m** (background subtraction + diffuser-line fit, no GT),
+  271 in-engine CTD samples, **0 collisions**, min structure clearance 3.49 m
+  (2 m standoff from a hazard field built from the estimate + design chart).
+- **In-situ single-mission localization** (`outputs/localization/compare/`): a
+  no-baseline mode robust to clutter (2–6 m where background subtraction blows
+  out to 10.8 m), with bootstrap uncertainty.
+- **3-D volumetric plume** (`outputs/volumetric/`): multi-altitude survey →
+  terrain-following x-y-z GP → slices + iso-surface + volume.
+- **Digital-twin dashboard** (`outputs/dashboard/index.html`): a single
+  self-contained HTML page — latest verdict, per-mission maps + KPIs, site
+  trends; also the exportable report.
+- **Demonstration MP4** (`outputs/video_demo/mission_movie/`): a ~28 s
+  walk-through assembled from the real mission outputs.
+
+See [CUSTOM_ENGINE](docs/application/pfh2026/CUSTOM_ENGINE.md),
+[CUSTOM_LOCALIZATION_STUDY](docs/application/pfh2026/CUSTOM_LOCALIZATION_STUDY.md)
+and `outputs/experiments/README.md` (consolidated validation results).
 
 ## What is simulated
 
@@ -93,7 +134,7 @@ brinewatch/
 │                        visualization/, utils/)
 ├── configs/             mission, benchmark and PFH-2026 scenario configs
 ├── scripts/             demos, benchmarks, sonar experiments, scene tools
-├── tests/               88 tests incl. real recorded-sonar fixtures
+├── tests/               142 tests incl. real recorded-sonar fixtures
 ├── docs/                architecture, assumptions, HoloOcean notes, sim-to-real
 ├── docs/application/pfh2026/   application evidence package
 └── site_history/        longitudinal screening ledger (simulated demo)
