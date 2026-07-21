@@ -1,0 +1,61 @@
+{
+  "planner": "adaptive",
+  "altitudes_m": [
+    1.5,
+    3.5,
+    6.0
+  ],
+  "n_samples": 1770,
+  "per_band": [
+    {
+      "altitude_m": 1.5,
+      "samples": 590,
+      "budget_used_m": 533.3
+    },
+    {
+      "altitude_m": 3.5,
+      "samples": 591,
+      "budget_used_m": 533.3
+    },
+    {
+      "altitude_m": 6.0,
+      "samples": 589,
+      "budget_used_m": 533.3
+    }
+  ],
+  "threshold_psu": 41.651,
+  "reconstruction": {
+    "rmse_psu": 2.3095,
+    "mae_psu": 1.162,
+    "volume_iou": 0.399
+  },
+  "estimated": {
+    "threshold_psu": 41.651,
+    "plume_volume_m3": 5476.9,
+    "plume_area_bottom_m2": 1391.0,
+    "peak_salinity_psu": 69.791,
+    "mean_altitude_of_plume_m": 3.06,
+    "plume_top_height_m": 8.0,
+    "uncertain_volume_m3": 46014.4,
+    "mean_std_in_plume_psu": 0.409,
+    "n_plume_cells": 630
+  },
+  "ground_truth": {
+    "threshold_psu": 41.651,
+    "plume_volume_m3": 3755.6,
+    "plume_area_bottom_m2": 1941.5,
+    "peak_salinity_psu": 68.0,
+    "mean_altitude_of_plume_m": 2.73,
+    "plume_top_height_m": 8.0,
+    "uncertain_volume_m3": 0.0,
+    "mean_std_in_plume_psu": 0.0,
+    "n_plume_cells": 432
+  },
+  "grid": {
+    "nx": 32,
+    "ny": 32,
+    "nz": 14,
+    "z_above_bed_max_m": 8.0
+  },
+  "plume_note": "analytic simulation surrogate, not CFD ground truth"
+}

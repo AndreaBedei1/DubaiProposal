@@ -102,10 +102,13 @@ class BrinePlume:
         r_down = rel_x * self._e_current[0] + rel_y * self._e_current[1]
         s_cross = rel_x * self._e_cross[0] + rel_y * self._e_cross[1]
 
+        # np.where evaluates both branches, so guard the downstream denominator
+        # with max(r_down, 0) to avoid a divide-by-zero when r_down = -dilution
+        # (the result there is discarded in favour of the upstream-tail branch).
         amp_down = np.where(
             r_down >= 0.0,
-            1.0 / (1.0 + r_down / p.dilution_length_m),
-            np.exp(r_down / p.upstream_tail_m),
+            1.0 / (1.0 + np.maximum(r_down, 0.0) / p.dilution_length_m),
+            np.exp(np.minimum(r_down, 0.0) / p.upstream_tail_m),
         )
         width = p.farfield_initial_width_m + p.farfield_spread_rate * np.maximum(r_down, 0.0)
         cross = np.exp(-0.5 * (s_cross / width) ** 2)

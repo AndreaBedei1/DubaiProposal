@@ -16,3 +16,4 @@ outputs/*
 !outputs/full_mission/
 !outputs/sonar_truth/
 !outputs/video_demo/
+!outputs/volumetric/
