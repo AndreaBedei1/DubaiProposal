@@ -1,0 +1,128 @@
+{
+  "acquisition": "acq_r18_p0000_s101",
+  "true_diffuser_centre": [
+    39.8,
+    0.0
+  ],
+  "chart_prior_xy": [
+    44.0,
+    5.0
+  ],
+  "prior_axis_deg": 0.0,
+  "modes": {
+    "background": "pre-installation baseline subtraction (historical; needs a structure-free pass at the same poses)",
+    "insitu": "single inspection pass, no baseline; chart prior + diffuser-line RANSAC + multi-aspect persistence + bootstrap uncertainty"
+  },
+  "clutter_sweep": [
+    {
+      "clutter_level": 0,
+      "insitu": {
+        "estimate": [
+          36.49,
+          1.7
+        ],
+        "error_m": 3.72,
+        "fallback": false,
+        "sigma_radius_m": 2.78,
+        "n_inliers": 7,
+        "aspect_span_deg": 247.5,
+        "axis_deg": 4.7,
+        "truth_within_1sigma": false,
+        "truth_within_2sigma": true
+      },
+      "background": {
+        "estimate": [
+          38.04,
+          -1.42
+        ],
+        "error_m": 2.27,
+        "fallback": false,
+        "n_contacts": 48
+      }
+    },
+    {
+      "clutter_level": 1,
+      "insitu": {
+        "estimate": [
+          38.67,
+          -3.27
+        ],
+        "error_m": 3.46,
+        "fallback": false,
+        "sigma_radius_m": 2.62,
+        "n_inliers": 16,
+        "aspect_span_deg": 315.0,
+        "axis_deg": -5.0,
+        "truth_within_1sigma": false,
+        "truth_within_2sigma": true
+      },
+      "background": {
+        "estimate": [
+          37.88,
+          -2.26
+        ],
+        "error_m": 2.96,
+        "fallback": false,
+        "n_contacts": 47
+      }
+    },
+    {
+      "clutter_level": 2,
+      "insitu": {
+        "estimate": [
+          37.83,
+          -6.12
+        ],
+        "error_m": 6.43,
+        "fallback": false,
+        "sigma_radius_m": 2.24,
+        "n_inliers": 18,
+        "aspect_span_deg": 292.5,
+        "axis_deg": 9.1,
+        "truth_within_1sigma": false,
+        "truth_within_2sigma": false
+      },
+      "background": {
+        "estimate": [
+          37.66,
+          -6.46
+        ],
+        "error_m": 6.8,
+        "fallback": false,
+        "n_contacts": 47
+      }
+    },
+    {
+      "clutter_level": 3,
+      "insitu": {
+        "estimate": [
+          39.48,
+          -2.14
+        ],
+        "error_m": 2.16,
+        "fallback": false,
+        "sigma_radius_m": 1.5,
+        "n_inliers": 18,
+        "aspect_span_deg": 315.0,
+        "axis_deg": 7.9,
+        "truth_within_1sigma": false,
+        "truth_within_2sigma": true
+      },
+      "background": {
+        "estimate": [
+          29.51,
+          -3.33
+        ],
+        "error_m": 10.82,
+        "fallback": false,
+        "n_contacts": 48
+      }
+    }
+  ],
+  "clean_result": {
+    "insitu_error_m": 3.72,
+    "insitu_sigma_radius_m": 2.78,
+    "background_error_m": 2.27
+  },
+  "note": "truth used ONLY for scoring; both modes run on the identical committed recorded frames; clutter is synthetic speckle + false blobs added to the LIVE frames"
+}

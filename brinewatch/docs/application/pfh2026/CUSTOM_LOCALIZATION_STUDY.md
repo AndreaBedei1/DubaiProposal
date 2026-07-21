@@ -37,7 +37,66 @@ along-axis ambiguity of collapsing a 19.6 m diffuser to a single point.
 Boundary: the method assumes a pre-installation baseline over the same
 waypoints exists — realistic for planned-infrastructure monitoring (the
 BrineWatch use case) but not for unknown-site search, where the v1
-clutter-limited result below still applies.
+clutter-limited result below still applies. Because of that baseline
+requirement, this mode is the **historical / pre-installation-baseline**
+mode; the in-situ mode below removes the requirement.
+
+## v3 — in-situ single-mission, no baseline (2026-07-21)
+
+Method (`brinewatch/perception/insitu_locator.py`,
+`InSituDiffuserLocator`): a SINGLE inspection pass with the structure already
+in place — the operational case where no clean baseline exists. Native
+clutter is rejected by four structure-aware priors, none of which is
+simulator truth:
+
+1. **chart prior** — an approximate outfall position and pipeline bearing
+   from the design chart gate contacts to a plausible box + axis corridor;
+2. **multi-aspect persistence** — a real structure returns echoes from every
+   orbit heading, so a candidate is trusted only once its supporting contacts
+   span a wide aspect range (a clutter band, seen specularly from few
+   aspects, is rejected even at similar contact count);
+3. **geometric consistency with the diffuser line** — the across-track offset
+   is a 1-D robust mode along the chart bearing (refined within ±30°), so the
+   elongated diffuser is fitted as a line and off-line rocks are dropped; the
+   centre is the along-track MIDPOINT of the inlier extent;
+4. **robust clustering + bootstrap uncertainty** — the estimate carries a
+   stated 1-σ radius from a bootstrap over the inliers.
+
+Ground truth is used only to score. Evidence: `outputs/localization/compare/`
+(runs on the SAME committed recorded frames as v2; truth (39.8, 0)).
+
+## Mode comparison (clutter-sensitivity sweep)
+
+`scripts/compare_localization_modes.py` runs BOTH modes on the identical
+committed acquisition (`acq_r18_p0000_s101`, one orbit radius). Synthetic
+speckle + bright false blobs are added to the LIVE frames at increasing
+levels (the background pass is left clean — clutter that post-dates the
+baseline is exactly what defeats change detection in the field):
+
+| clutter | in-situ error (± 1σ) | background error |
+|---|---|---|
+| 0 (clean) | 3.7 m ± 2.8 | **2.3 m** |
+| 1 | 3.5 m | 3.0 m |
+| 2 | 6.4 m | 6.8 m |
+| 3 | 2.2 m | 10.8 m |
+
+- **Accuracy (clean):** background subtraction is best (2.3 m) — a clean
+  pose-matched baseline is near-optimal. In-situ is competitive (3.7 m) with
+  **no baseline at all**.
+- **Fallback rate:** 0/4 for both on this data (both always produced an
+  estimate); the in-situ fallback triggers only on too-few / aspect-poor
+  contacts (unit-tested).
+- **Clutter sensitivity:** background subtraction degrades monotonically to
+  10.8 m as unmodelled clutter survives subtraction; in-situ stays 2–6 m
+  because its RANSAC line + aspect-diversity + corridor gate reject the
+  random blobs. The curves cross at ≈ 1 clutter unit.
+- **Uncertainty:** only the in-situ mode reports one; the true centre lies
+  within ≈ 1–2 σ of the estimate across the sweep (see `comparison.json`).
+
+Practical guidance: use background subtraction where a trustworthy
+pre-installation baseline exists and the scene is stable; use the in-situ
+mode for first surveys, changed scenes, or when transient clutter is
+expected. Both place the 62×60 m survey box on the structure.
 
 ## v1 — single-orbit, no background model (PRELIMINARY, superseded)
 
