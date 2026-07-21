@@ -3,7 +3,7 @@
 Two complementary demos, both from genuine HoloOcean output:
 
 1. **Scientific mission** (custom fork engine) — the ROV locates the ACTUAL
-   spawned outfall by real sonar (runtime octree rebuild), then surveys and
+   spawned outfall by native simulated sonar (runtime octree rebuild), then surveys and
    maps the brine plume. Produces trajectory/map/report figures.
 2. **Cinematic inspection** (official engine, accepted Dam scene) — a smooth
    free-camera flythrough of the outfall for presentation.

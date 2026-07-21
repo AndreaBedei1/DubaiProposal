@@ -8,7 +8,7 @@ world coordinates and combined with a robust weighted mode cluster.
 
 This isolates the outfall from native level clutter that defeats a raw
 detector (see docs/application/pfh2026/CUSTOM_LOCALIZATION_STUDY.md: raw gates
-were clutter-limited to ~9 m; background subtraction reaches ~1.5 m over
+were clutter-limited to ~9 m; background subtraction reaches ~2.3 m over
 independent acquisitions).
 
 No ground truth is used: the locator consumes only sonar frames and vehicle

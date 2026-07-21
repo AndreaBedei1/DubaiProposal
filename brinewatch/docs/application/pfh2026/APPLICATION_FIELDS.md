@@ -28,7 +28,7 @@ Use the text in `PROJECT_DESCRIPTION.md` verbatim.
 - Controlled acoustic-visibility study: on the OFFICIAL simulator
   runtime-spawned props are not in the acoustic octree (documented), but a
   CUSTOM HoloOcean fork rebuilds the octree at runtime so the generated
-  outfall IS sonar-visible and is localized by real sonar with no ground
+  outfall IS sonar-visible and is localized by native simulated (non-oracle) sonar with no ground
   truth. Plus an offline detector evaluation harness on recorded sonar
   missions with real-frame test fixtures.
 - Automated terrain calibration (range-finder sounding grid + robust plane

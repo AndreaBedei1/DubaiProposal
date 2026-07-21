@@ -1,7 +1,7 @@
 """PFH 2026 CUSTOM-ENGINE scientific mission (Demo 1).
 
 End-to-end BlueROV2 mission in the custom HoloOcean fork, locating the ACTUAL
-spawned outfall by REAL sonar (runtime octree rebuild), then surveying and
+spawned outfall by native simulated (non-oracle) sonar (runtime octree rebuild), then surveying and
 mapping the brine plume.
 
 Stages (single fork-engine session; the engine must already be running, see
@@ -15,11 +15,17 @@ scripts/launch_custom_engine.py):
  6. LOCATE: pose-matched background subtraction isolates the outfall from
     native clutter -> robust consensus estimate. No ground truth. If it
     falls back, the run is flagged NOT sonar-localized (disqualifying).
- 7. full mission BASELINE + adaptive SURVEY driving the REAL ROV in the
-    custom engine, anchored at the sonar ESTIMATE, sampling the synthetic
-    plume + CTD;
+ 7. full mission BASELINE + adaptive SURVEY on the VALIDATED KINEMATIC model,
+    anchored at the sonar ESTIMATE, sampling the synthetic plume + CTD (the
+    custom engine is released after LOCATE; driving the real ROV through the
+    spawned structure collides -- see run_custom_holoocean_mission.py for the
+    collision-safe in-HoloOcean survey);
  8. GP reconstruction, three-state screening, report; post-mission
     evaluation (ground truth used ONLY here): localization error, metrics.
+
+This is honestly a "custom-HoloOcean sonar LOCATE + kinematic survey" demo.
+The genuinely end-to-end in-HoloOcean mission (motion + sensing in the engine)
+is scripts/run_custom_holoocean_mission.py.
 
 Usage (engine first):
     python scripts/launch_custom_engine.py --clear-cache        # terminal 1
@@ -277,10 +283,13 @@ def main() -> int:
         "spawned_outfall_sonar_visible": sonar_visible,
         "sonar_octree_refreshed": True,
         "localized_by_sonar": bool(sonar_visible and estimate is not None),
-        "locate_backend": "holoocean_custom (real sonar, background subtraction)",
+        "locate_backend": "holoocean_custom (native simulated ImagingSonar, background subtraction)",
         "survey_backend": "kinematic (validated model; collision-free), anchored at the sonar estimate",
         "acoustic_target": "the ACTUAL spawned multiport outfall (custom fork)",
-        "residual_contacts": loc_ncontacts,
+        # three distinct quantities, kept separate:
+        "raw_sonar_contacts": loc_ncontacts,          # detector-level residual contacts
+        "consensus_estimate": list(estimate) if estimate else None,  # single mode-cluster fix
+        "mission_detection_events": len(result.detections),  # Detection objects logged
         "aspect_span_deg": loc_aspect,
         "localization_error_m_vs_diffuser_centre": round(loc_error_centre, 2),
         "localization_error_m_vs_scene_origin": round(loc_error_origin, 2),

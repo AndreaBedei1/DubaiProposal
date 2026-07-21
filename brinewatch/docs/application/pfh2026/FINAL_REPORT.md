@@ -7,7 +7,7 @@ FINAL_NIGHTLY_REPORT.md for the sonar/custom-engine claims.
 ## Headline
 
 **The generated outfall is sonar-visible in the custom HoloOcean engine, and
-BrineWatch localizes it by real sonar with no ground truth.** The central
+BrineWatch localizes it by native simulated (non-oracle) sonar with no ground truth.** The central
 prior-documentation claim ("runtime-spawned props are invisible to sonar")
 was true only for the *unmodified official* engine; the *custom fork* rebuilds
 the acoustic octree at runtime and sees spawned geometry. This is now proven
@@ -57,12 +57,15 @@ only; the official engine is unchanged and still cannot see runtime props.**
 
 ## Localization of the actual outfall (no ground truth)
 
+All errors are scored against the ACTUAL generated diffuser centre
+**(39.8, 0)** (origin 30 + diffuser_length/2, diffuser_length = 19.6 m).
+
 - **Validated study** (`outputs/localization/v2_run1/`): pose-matched
   background subtraction, 4 independent engine acquisitions (radius 18/22 m ×
-  phase 0/11.25°, sensor noise σ=0.05) → **median error 1.52 m**, mean 1.31 m,
-  p95 1.63 m, fallback 0/4.
+  phase 0/11.25°, sensor noise σ=0.05) → **median error 2.28 m**, mean 2.03 m,
+  p95 2.31 m, fallback 0/4.
 - **In-mission LOCATE** (custom demo): estimate (38.08, 3.72) vs the true
-  diffuser centre (38.0, 0.0) → **3.7 m error**, 54 residual contacts, 316°
+  diffuser centre (39.8, 0.0) → **4.1 m error**, 54 residual contacts, 316°
   aspect diversity, no fallback. `<run>/locate_result.json`.
 - Native clutter is handled by background subtraction; tuning (v1 gate sweep)
   and validation (v2 independent acquisitions) use separate datasets; ground
@@ -71,7 +74,7 @@ only; the official engine is unchanged and still cannot see runtime props.**
 ## Full mission (custom engine)
 
 `outputs/full_mission/` (see that README). LOCATE runs on the custom fork
-engine with real sonar of the spawned outfall; the BASELINE + adaptive survey,
+engine with native simulated ImagingSonar of the spawned outfall; the BASELINE + adaptive survey,
 CTD sampling, GP reconstruction and three-state screening run on the validated
 kinematic model **anchored at the sonar estimate** (driving the real ROV
 through the spawned structure risks collisions; the plume/CTD/GP stack is
@@ -115,7 +118,7 @@ it flagged for review — the honest three-state behaviour).
 Classification: **B — partial success (strong).**
 Visual and sonar success are unambiguous: an official-level attractive scene,
 and the actual generated outfall proven sonar-visible and localized by real
-sonar to ~1.5 m (validated) / 3.7 m (in-mission). The full mission runs on the
+sonar to ~2.3 m (validated) / 4.1 m (in-mission). The full mission runs on the
 custom backend from the sonar estimate. It is **not A** because the acoustic
 mission runs on the fork's ExampleLevel rather than an official Ocean world
 (Ocean worlds cannot run under the fork — a hard distribution constraint), and
@@ -130,4 +133,4 @@ real ROV through the structure. Both are documented, not hidden.
   structure-avoiding path planning to replace the kinematic survey.
 - Physical-sonar validation (real Omniscan) remains outstanding.
 - Optional: oracle vs estimated vs prior mission comparison to quantify the
-  regulatory-zone impact of the 1.5–3.7 m localization error.
+  regulatory-zone impact of the 2.3–4.1 m localization error.

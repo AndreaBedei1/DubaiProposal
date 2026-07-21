@@ -15,17 +15,24 @@ Campaign (`scripts/run_localization_v2_campaign.ps1`, evidence
 each in its OWN fresh engine session with sensor noise enabled
 (add/mult σ = 0.05), radius ∈ {18, 22} m × phase ∈ {0°, 11.25°}:
 
-| acquisition | estimate | error to diffuser centre | dist to axis | aspect span |
-|---|---|---|---|---|
-| r18 φ0 | (38.04, −1.42) | 1.42 m | 1.42 m | 315° |
-| r18 φ11.25 | (37.52, −0.34) | **0.59 m** | 0.34 m | 315° |
-| r22 φ0 | (39.42, −0.75) | 1.61 m | 0.75 m | 292° |
-| r22 φ11.25 | (37.59, −1.57) | 1.63 m | 1.57 m | 315° |
+Errors are scored against the ACTUAL generated diffuser centre
+**(39.8, 0)** = origin (30, 0) + diffuser_length/2, where the generated
+`diffuser_length_m` = 19.6 m (`OutfallSceneConfig`). (An earlier version of
+this table used a wrong 16 m length → (38, 0), which understated the error;
+the numbers below are corrected and match `outputs/localization/v2_run1/analysis.json`.)
 
-**Summary: 4/4 independent acquisitions succeed; median error 1.52 m,
-mean 1.31 m, p95 1.63 m, max 1.63 m; fallback rate 0.0.** Cross-session
+| acquisition | estimate | error to diffuser centre (39.8, 0) | dist to axis | aspect span |
+|---|---|---|---|---|
+| r18 φ0 | (38.04, −1.42) | 2.26 m | 1.42 m | 315° |
+| r18 φ11.25 | (37.52, −0.34) | 2.31 m | 0.34 m | 315° |
+| r22 φ0 | (39.42, −0.75) | **0.84 m** | 0.75 m | 292° |
+| r22 φ11.25 | (37.59, −1.57) | 2.71 m | 1.57 m | 315° |
+
+**Summary: 4/4 independent acquisitions succeed; median error 2.28 m,
+mean 2.03 m, p95 2.31 m, max 2.71 m; fallback rate 0.0.** Cross-session
 pose repeatability ≤ 0.1 mm (measured in the conditions campaign), so the
-background subtraction is exact up to sensor noise.
+background subtraction is exact up to sensor noise; the residual error is the
+along-axis ambiguity of collapsing a 19.6 m diffuser to a single point.
 
 Boundary: the method assumes a pre-installation baseline over the same
 waypoints exists — realistic for planned-infrastructure monitoring (the

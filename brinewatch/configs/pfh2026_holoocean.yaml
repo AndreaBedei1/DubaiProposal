@@ -29,7 +29,7 @@ environment:
   tide_period_s: 2400.0
 
 # Outfall origin = diffuser start (local s=0); the approach pipeline runs
-# 30 m toward -15 deg (NE) behind it, the 16 m diffuser with 6 risers runs
+# 30 m toward -15 deg (NE) behind it, the 19.6 m diffuser with 6 risers runs
 # toward 165 deg (SW). Axis frozen from the auto-orient of the level
 # evaluation (LEVEL_SELECTION.md) for reproducibility.
 outfall:

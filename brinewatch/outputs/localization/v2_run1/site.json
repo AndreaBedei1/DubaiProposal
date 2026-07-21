@@ -1,1 +1,23 @@
-{"bed_z": -73.46761703491211, "site": [30.0, 0.0], "yaw_deg": 0.0, "true_diffuser_centre": [38.0, 0.0], "radii": [18.0, 22.0], "phases": [0.0, 11.25], "n_poses": 16}
+{
+  "bed_z": -73.46761703491211,
+  "site": [
+    30.0,
+    0.0
+  ],
+  "yaw_deg": 0.0,
+  "true_diffuser_centre": [
+    39.8,
+    0.0
+  ],
+  "radii": [
+    18.0,
+    22.0
+  ],
+  "phases": [
+    0.0,
+    11.25
+  ],
+  "n_poses": 16,
+  "diffuser_length_m": 19.6,
+  "_correction": "diffuser centre corrected to origin + diffuser_length/2 = (39.8,0); earlier runs used a wrong 16 m length (38,0)."
+}

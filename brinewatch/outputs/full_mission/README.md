@@ -1,7 +1,7 @@
 # Full custom-engine scientific mission (Demo 1)
 
 `custom_run1/` — end-to-end BrineWatch mission: the outfall is localized by
-**real sonar in the custom fork engine** (no ground truth), then surveyed and
+**native simulated ImagingSonar in the custom fork engine** (no ground truth), then surveyed and
 mapped.
 
 Reproduce:
@@ -16,13 +16,13 @@ python scripts/run_custom_pfh2026_demo.py --reuse-locate <prior_run_dir>
 
 | stage | backend | notes |
 |---|---|---|
-| terrain probe, spawn outfall, BASELINE + INSPECTION sonar rings, **LOCATE** | **custom fork** (real sonar, runtime octree rebuild) | the ACTUAL spawned 105-component outfall; no ground truth |
+| terrain probe, spawn outfall, BASELINE + INSPECTION sonar rings, **LOCATE** | **custom fork** (native simulated ImagingSonar, runtime octree rebuild) | the ACTUAL spawned 105-component outfall; no ground truth |
 | BASELINE + adaptive SURVEY, CTD, GP reconstruction, screening, report | kinematic (validated model; collision-free) | anchored at the sonar estimate; the plume/CTD/GP stack is synthetic in every BrineWatch demo |
 
 Driving the real ROV through the spawned structure collides (the diffuser +
 risers sit in the survey area), so the survey uses the collision-free
 kinematic backend, clearly labelled. The novel part — localizing the spawned
-outfall by real sonar — runs on the custom engine.
+outfall by native simulated sonar — runs on the custom engine.
 
 ## Result (`custom_run1/summary.json`, `CUSTOM_DEMO_OK`)
 

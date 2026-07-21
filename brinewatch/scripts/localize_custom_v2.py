@@ -38,7 +38,8 @@ sys.path.insert(0, str(REPO))
 AGENT = "rov"
 SITE = (30.0, 0.0)
 YAW_DEG = 0.0
-L_DIFF = 16.0
+from brinewatch.simulation.outfall_scene import OutfallSceneConfig  # noqa: E402
+L_DIFF = OutfallSceneConfig().diffuser_length_m   # actual generated length (19.6 m)
 SONAR = {"rmin": 1.0, "rmax": 40.0, "az": 120.0, "elev": 20.0,
          "range_bins": 512, "az_bins": 256}
 N_POSES = 16

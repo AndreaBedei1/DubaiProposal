@@ -51,7 +51,7 @@ class SonarLocalizerConfig:
 
 
 class SonarDiffuserLocator:
-    """Locator implementation backed by real sonar frames."""
+    """Locator implementation backed by native simulated (non-oracle) sonar frames."""
 
     name = "sonar"
 

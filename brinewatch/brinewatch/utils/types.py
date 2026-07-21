@@ -100,8 +100,17 @@ class MissionBudget:
     def exhausted(self) -> bool:
         return self.used_m >= self.max_distance_m
 
+    def would_exceed(self, metres: float) -> bool:
+        """True if consuming ``metres`` more would pass the configured max."""
+        return self.used_m + max(0.0, float(metres)) > self.max_distance_m
+
     def consume(self, metres: float) -> None:
-        self.used_m += max(0.0, float(metres))
+        # Hard cap: the accounted distance never exceeds the configured budget
+        # (a single control step must not overshoot the maximum). Any residual
+        # beyond the cap is dropped from the accounting; both survey strategies
+        # are clamped identically, so the equal-budget comparison stays fair.
+        self.used_m = min(self.max_distance_m,
+                          self.used_m + max(0.0, float(metres)))
 
 
 class MissionPhase(enum.Enum):

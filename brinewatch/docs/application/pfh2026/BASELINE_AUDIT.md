@@ -57,7 +57,7 @@ introduces the three-state CLEAR / REVIEW / POSSIBLE EXCEEDANCE screening.
    current margin; superseded by three-state screening (to implement).
 3. Any implication that localization is "sonar-like" — the locator is an
    oracle-fed detection model; must be renamed/refactored and replaced by a
-   real sonar pipeline in the official demo.
+   native simulated ImagingSonar pipeline in the official demo.
 4. `planning/adaptive.py` docstring references "information gain" — the
    score is a heuristic weighted acquisition; wording must become
    "boundary-aware adaptive acquisition".

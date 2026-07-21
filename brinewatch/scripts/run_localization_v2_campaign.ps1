@@ -8,8 +8,11 @@
 param([Parameter(Mandatory = $true)][string]$OutDir)
 
 $ErrorActionPreference = "Stop"
-$py = "C:\Users\andrea.bedei3\.conda\envs\ocean\python.exe"
-if ($env:BRINEWATCH_PYTHON) { $py = $env:BRINEWATCH_PYTHON }
+# Resolve Python: BRINEWATCH_PYTHON > active conda env > python on PATH
+$py = $env:BRINEWATCH_PYTHON
+if (-not $py) { if ($env:CONDA_PREFIX -and (Test-Path (Join-Path $env:CONDA_PREFIX 'python.exe'))) { $py = Join-Path $env:CONDA_PREFIX 'python.exe' } }
+if (-not $py) { $c = Get-Command python -ErrorAction SilentlyContinue; if ($c) { $py = $c.Source } }
+if (-not $py) { throw 'No Python found: set BRINEWATCH_PYTHON or activate an environment.' }
 $repo = Split-Path -Parent $PSScriptRoot
 $log = Join-Path $env:HOLOOCEAN_CUSTOM_ENGINE_PATH "engine\Saved\Logs\HolodeckCustom.log"
 

@@ -1,5 +1,5 @@
 # PFH 2026 CUSTOM-ENGINE demonstration: BlueROV2 in the custom HoloOcean fork
-# (runtime octree rebuild), locating the ACTUAL spawned outfall by real sonar.
+# (runtime octree rebuild), locating the ACTUAL spawned outfall by native simulated (non-oracle) sonar.
 #
 # Unlike the official demo (configs/pfh2026_holoocean.yaml), here the spawned
 # multiport outfall IS acoustically visible: the fork's SpawnAsset command
@@ -11,7 +11,7 @@
 # The engine is AUTO-DISCOVERED at <repo>/engine (no path committed); the
 # installed HoloOcean 2.3.0 client attaches to it. The plume/CTD/GP/screening
 # stack is the same validated synthetic model as every other BrineWatch demo;
-# only the LOCATE stage consumes real custom-engine sonar.
+# only the LOCATE stage consumes native simulated custom-engine sonar (no oracle).
 name: brinewatch_pfh2026_custom
 seed: 7
 planner: adaptive
@@ -29,8 +29,8 @@ environment:
   tide_amplitude_m: 0.0
   tide_period_s: 2400.0
 
-# Outfall origin = diffuser start (local s=0); the 16 m diffuser runs +x, so
-# the diffuser centre (the localization target) is at ~(38, 0). Matches the
+# Outfall origin = diffuser start (local s=0); the 19.6 m diffuser runs +x, so
+# the diffuser centre (the localization target) is at (39.8, 0). Matches the
 # custom-engine sonar-visibility and localization studies.
 outfall:
   x: 30.0
