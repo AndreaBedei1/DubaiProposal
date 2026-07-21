@@ -1,0 +1,130 @@
+name: brinewatch_benchmark_static
+seed: 7
+planner: adaptive
+environment:
+  ambient_salinity_psu: 39.5
+  salinity_stratification_per_m: 0.005
+  ambient_temperature_c: 24.0
+  temperature_gradient_per_m: -0.01
+  seabed_z0: -34.0
+  seabed_slope_x: -0.015
+  seabed_slope_y: 0.0
+  current_dir_deg: 0.0
+  tide_amplitude_m: 0.0
+  tide_period_s: 2400.0
+outfall:
+  x: -30.0
+  y: 0.0
+  axis_deg: 90.0
+  n_ports: 4
+  port_spacing_m: 3.0
+  riser_height_m: 1.0
+  discharge_salinity_psu: 68.0
+  discharge_temperature_c: 27.5
+plume:
+  rise_height_m: 4.0
+  nearfield_offset_m: 6.0
+  nearfield_sigma_xy_m: 4.0
+  nearfield_sigma_z_m: 1.5
+  nearfield_peak_anomaly_psu: 12.0
+  farfield_peak_anomaly_psu: 8.0
+  farfield_initial_width_m: 6.0
+  farfield_spread_rate: 0.18
+  layer_thickness_m: 1.6
+  dilution_length_m: 35.0
+  upstream_tail_m: 4.0
+  temperature_anomaly_ratio: 0.25
+ctd:
+  rate_hz: 1.0
+  salinity_sigma_psu: 0.05
+  temperature_sigma_c: 0.02
+  depth_sigma_m: 0.1
+locator:
+  mode: synthetic
+  max_range_m: 25.0
+  detect_prob: 0.9
+  range_sigma_m: 0.4
+  bearing_sigma_deg: 4.0
+  prior_sigma_m: 12.0
+  prior_x: null
+  prior_y: null
+  n_confirm: 3
+survey:
+  x_min: -60.0
+  x_max: 60.0
+  y_min: -60.0
+  y_max: 60.0
+  altitude_m: 2.0
+  grid_resolution_m: 3.0
+  max_z_m: -3.0
+budget:
+  max_distance_m: 1600.0
+  checkpoints:
+  - 0.25
+  - 0.5
+  - 0.75
+  - 1.0
+  locate_fraction: 0.25
+lawnmower:
+  line_spacing_m: 10.0
+  along_x: true
+adaptive:
+  n_candidates: 250
+  weight_std: 0.7
+  weight_boundary: 1.2
+  weight_travel: 0.25
+  weight_turn: 0.0
+  boundary_scale_psu: 0.6
+  min_leg_m: 8.0
+  max_leg_m: 45.0
+  min_separation_m: 4.0
+  warmup_samples: 25
+gp:
+  length_xy_m: 12.0
+  length_z_m: 1.8
+  signal_sigma_psu: 2.5
+  noise_sigma_psu: 0.08
+  max_train_points: 800
+  jitter: 1.0e-06
+  predict_chunk: 4000
+compliance:
+  mixing_zone_radius_m: 40.0
+  threshold_increment_pct: 5.0
+  eval_altitude_m: 1.0
+  p_exceed_min: 0.5
+  p_clear_max: 0.1
+  max_posterior_std_psu: 0.75
+backend:
+  name: kinematic
+  dt_control_s: 0.5
+  kinematic:
+    max_speed_h_mps: 0.9
+    max_speed_v_mps: 0.4
+    accel_tau_s: 1.5
+    position_noise_sigma_m: 0.05
+  holoocean:
+    package_name: Ocean
+    world: SimpleUnderwater
+    ticks_per_sec: 30
+    control_ticks: 15
+    frames_per_sec: false
+    show_viewport: true
+    window_width: 1024
+    window_height: 576
+    spawn_outfall_props: true
+    defer_scene_build: false
+    draw_debug: true
+    min_altitude_m: 1.0
+    sonar_enabled: false
+    sonar_hz: 2.0
+    sonar_range_min_m: 1.0
+    sonar_range_max_m: 40.0
+    sonar_azimuth_deg: 120.0
+    sonar_elevation_deg: 20.0
+    sonar_range_bins: 512
+    sonar_azimuth_bins: 256
+    sonar_add_sigma: 0.05
+    sonar_mult_sigma: 0.05
+    sonar_init_octree_range_m: 50.0
+    octree_min_m: 0.05
+    octree_max_m: 5.0

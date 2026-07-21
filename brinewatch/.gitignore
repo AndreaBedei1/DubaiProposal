@@ -19,3 +19,4 @@ outputs/*
 !outputs/volumetric/
 !outputs/custom_holoocean_mission/
 !outputs/dashboard/
+!outputs/experiments/
