@@ -1,0 +1,82 @@
+{
+  "upload_this_video": "BrineWatch_PFH2026_Public_1080p.mp4",
+  "optional_short_cut": "BrineWatch_PFH2026_Public_Short_1080p.mp4",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30,
+  "duration_s": 43.933,
+  "short_duration_s": 29.667,
+  "codec": "H.264 High Profile / yuv420p (libx264)",
+  "encoding": {
+    "crf": 10,
+    "preset": "medium",
+    "faststart": true
+  },
+  "cinematic_caption": {
+    "position": "top-right",
+    "rectangle_px": [
+      1180,
+      44,
+      1868,
+      208
+    ],
+    "frame_coverage_percent": 5.4
+  },
+  "continuous_holoocean": {
+    "frames": 625,
+    "duration_s": 20.833,
+    "source": "C:\\bwrt\\bwp26-cin1\\outputs\\cinematic_1080p\\BrineWatch_HoloOcean_Continuous_1080p_Source.mp4",
+    "ken_burns_or_static_substitution": false,
+    "camera_path": "dedicated cinematic, not telemetry-synchronised replay"
+  },
+  "scientific_pan_or_zoom": false,
+  "scientific_transition": "fixed frame with short fade/cut only",
+  "scenes": [
+    {
+      "name": "continuous_holoocean",
+      "start_s": 0.0,
+      "end_s": 20.833333333333332,
+      "motion": "625 consecutive genuine custom-HoloOcean RGB frames"
+    },
+    {
+      "name": "locate",
+      "start_s": 20.833333333333332,
+      "end_s": 24.633333333333333,
+      "motion": "fixed image; fade only"
+    },
+    {
+      "name": "adapt_+_reconstruct",
+      "start_s": 24.633333333333333,
+      "end_s": 28.433333333333334,
+      "motion": "fixed image; fade only"
+    },
+    {
+      "name": "progressive_3d",
+      "start_s": 28.433333333333334,
+      "end_s": 34.43333333333333,
+      "motion": "fixed camera; progressive scientific reconstruction"
+    },
+    {
+      "name": "act",
+      "start_s": 34.43333333333333,
+      "end_s": 38.733333333333334,
+      "motion": "fixed image; fade only"
+    },
+    {
+      "name": "closing",
+      "start_s": 38.733333333333334,
+      "end_s": 43.93333333333333,
+      "motion": "fixed background; fade only"
+    }
+  ],
+  "public_story": [
+    "continuous mission",
+    "sonar",
+    "2-D map",
+    "3-D volume",
+    "digital twin",
+    "next validation gate"
+  ]
+}

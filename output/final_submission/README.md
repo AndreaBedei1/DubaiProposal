@@ -1,54 +1,80 @@
-# BrineWatch — final competition package
+# BrineWatch - redesigned competition package
 
 Status: **Initial Prototype or Model**  
 Package date: 22 July 2026
 
+This directory separates the simple public story from the full technical evidence.
+
 ## Upload these files
 
-- **Report:** `BrineWatch_PFH2026_Report.pdf` — 13 pages, 2.7 MB. This is the primary PDF to upload.
-- **Main video:** `BrineWatch_PFH2026_Final_1080p.mp4` — 1920 × 1080, 30 fps, 51.0 s. This is the video to publish or link in the application.
-- **Optional short cut:** `BrineWatch_PFH2026_Short_1080p.mp4` — 1920 × 1080, 30 fps, 34.0 s.
-- **Lead image:** `hero_structure.png`.
+1. **Primary PDF:** `UPLOAD/BrineWatch_PFH2026_Public_Competition_Report.pdf`
+   - 10 pages, 6.8 MB.
+   - Rebuilt from zero for technical and non-technical reviewers.
+   - The first three pages explain the problem, goal, robot and workflow before introducing metrics.
 
-The main video opens with 20.8 seconds / 625 consecutive RGB frames captured in the real custom-HoloOcean scene. The dedicated cinematic camera follows a smooth path and is not presented as a telemetry-synchronised replay. The outfall is visible from the first second. A separate eight-second sequence progressively reveals the 3-D samples, altitude bands, trajectory, Gaussian-process volume and uncertainty.
+2. **Primary video:** `UPLOAD/BrineWatch_PFH2026_Public_1080p.mp4`
+   - 43.9 seconds, 1920 x 1080, 30 fps, 77.1 MB.
+   - H.264 High Profile master at CRF 10, with a compact top-right caption panel.
+   - Uses 625 consecutive genuine custom-HoloOcean frames for the continuous approach and inspection.
+   - Shows only sonar, one 2-D result, one progressive 3-D result, the digital twin and the next validation step.
 
-## Best presentation assets
+3. **Optional short video:** `UPLOAD/BrineWatch_PFH2026_Public_Short_1080p.mp4`
+   - 29.7 seconds, 1920 x 1080, 30 fps, 45.1 MB.
 
-- `sonar_localization.png` — Omniscan 450 FS forward-looking imaging-sonar concept and multi-radius confirmation.
-- `mission_reconstruction.png` — flagship 2-D truth, reconstruction, boundary and uncertainty.
-- `plume_3d.png` — four altitude bands, trajectory, reconstructed plume and confidence bounds.
-- `digital_twin_dashboard.png` — latest site map, uncertainty, verdict, history and recommended action.
-- `benchmark_comparison.png` — equal-evidence comparison with sparse fixed stations and a regular survey.
+Do not upload the technical ledger as the primary project PDF. Use it only if the application allows a supporting technical document.
 
-## Headline numbers to use
+## Supporting technical evidence
 
-- **Real custom-HoloOcean mission:** 395 m travelled, 564 simulated CT readings, zero collisions, minimum measured structure clearance 1.85 m. Use this as vehicle, native-sonar and safety evidence.
-- **Sonar localisation:** 2.35 m centre error, 1.67 m uncertainty radius, two search radii confirmed, 5/5 non-fallback prior-perturbation fits. Truth was used only after estimation for scoring.
-- **Flagship 2-D demo:** 0.342 PSU plume RMSE, 0.947 boundary F1, 0.900 boundary IoU, correct conclusive **POSSIBLE EXCEEDANCE**.
-- **Equal-evidence benchmark:** eight seeds, 48 readings and a 300 m cap per method. Adaptive RMSE 0.758 PSU and IoU 0.656, versus 1.661 / 0.177 for the regular survey and 1.151 / 0.000 for sparse fixed stations. Adaptive was conclusive and correct in 8/8 runs; the regular survey was conclusive in 4/8; sparse fixed stations returned REVIEW in 8/8.
-- **3-D demo:** 0.477 PSU RMSE, 0.805 volume IoU, 2,051 m³ reconstructed versus 2,448 m³ surrogate truth (16.2% underestimation).
+- `TECHNICAL/BrineWatch_PFH2026_Technical_Evidence_Ledger.pdf` - six-page appendix with complete metrics, screening counts, assumptions and claims boundary.
+- `TECHNICAL/TECHNICAL_EVIDENCE_LEDGER.md` - searchable source version.
+- `TECHNICAL/PUBLIC_VIDEO_MANIFEST.json` - exact scene timings, footage disclosure and fixed-figure motion policy.
 
-All values above are simulation results. The flagship is an explicitly labelled, demo-optimised high-contrast analytic plume surrogate; it is not CFD or field truth.
+## Source scripts
 
-## What not to emphasise
+Rebuild copies are included in `SOURCE_SCRIPTS/`:
 
-- Do not headline the 912 volumetric samples without the RMSE and volume IoU.
-- Do not use the custom-HoloOcean reconstruction as the scientific result: that difficult run returned REVIEW and had 2.72 PSU RMSE and zero boundary F1/IoU. It is retained as honest vehicle/sensor/safety evidence.
-- Do not present plume volume as measured environmental truth.
-- Do not claim regulatory certification, CFD validation, guaranteed cost savings or universal replacement of accredited monitoring.
-- Do not describe the imaging-sonar concept using another sonar class. The planned sensor is the **Omniscan 450 FS forward-looking imaging sonar**.
+- `build_public_competition_assets.py`
+- `build_public_competition_report.py`
+- `build_technical_evidence_appendix.py`
+- `make_public_competition_video.py`
 
-## Supported claim
+The maintained source files remain under `brinewatch/scripts/`.
 
-> BrineWatch provides more informative spatial evidence under constrained survey time and helps direct certified/manual sampling toward the locations that matter.
+## Public story in one sentence
 
-The current prototype supports simulation-led feasibility, adaptive-planning and digital-twin claims. The next gate is a calibrated CT payload, controlled-water validation and then a supervised nearshore pilot with independent reference samples.
+> BrineWatch turns one robotic outfall inspection into an uncertainty-aware plume map that directs certified sampling to the locations that matter.
 
-## Supporting material outside this upload folder
+## What the public report communicates
 
-- Video manifest and key frames: `../fasttrack/video/`
-- Continuous and progressive-reconstruction source clips: `../fasttrack/video_sources/`
-- Isolation manifests: `C:\bwrt\bwp26-fa3\run_manifest.json` and `C:\bwrt\bwp26-cin1\run_manifest.json`
-- Full numerical details: `TECHNICAL_RESULTS.md`
-- Paste-ready application copy: `SUBMISSION_FIELDS.md`
+- The problem: isolated measurements can miss the spatial plume boundary.
+- The system: BlueROV2, Omniscan 450 FS forward-looking imaging sonar and a planned calibrated conductivity-temperature payload.
+- The workflow: Locate -> Sense -> Adapt -> Reconstruct -> Act.
+- The twin: an evolving site record containing the latest map, uncertainty, route, sonar location, mission history and recommended next action.
+- What works: sonar localisation, collision-free in-engine motion, flagship 2-D reconstruction and coherent 3-D reconstruction.
+- What comes next: calibrated CT integration, controlled-water validation and a supervised nearshore pilot.
 
+## Headline evidence
+
+- Sonar localisation: 2.35 m scored centre error; no oracle input.
+- Custom-HoloOcean mission: 395 m travelled; 564 simulated CT readings; zero collisions.
+- Flagship 2-D reconstruction: 0.900 boundary IoU with a correct conclusive screen.
+- Volumetric reconstruction: 0.805 volume IoU across four altitude bands.
+- Equal-evidence comparison: 48 readings and a 300 m cap per method; adaptive sampling was conclusive in 8/8 runs, regular survey in 4/8 and sparse fixed sampling in 0/8.
+
+These are simulation results. The flagship plume is an explicitly disclosed demo-optimised analytic surrogate, not CFD or field truth.
+
+## Final quality checks
+
+- Public PDF: all 10 pages rendered and visually inspected at normal laptop scale.
+- Technical ledger: all six pages rendered and visually inspected.
+- Main video: 1,318 / 1,318 frames decoded; zero black frames.
+- Short video: 890 / 890 frames decoded; zero black frames.
+- First 10 seconds: all 300 frames checked; high-contrast caption panel remains inside safe margins.
+- Sonar, 2-D and digital-twin scenes: fixed frame with cuts/fades only; no pan or zoom.
+- Final card: fixed underwater background, high-contrast panel and minimal text.
+
+## Claims boundary
+
+Supported: simulation-led feasibility, isolated in-engine integration, sonar localisation, relative adaptive-sampling performance in the stated benchmark, uncertainty-aware screening and a digital-twin workflow.
+
+Do not claim: regulatory certification, field or CFD validation, guaranteed savings, universal replacement of accredited monitoring or unsupervised field readiness.
