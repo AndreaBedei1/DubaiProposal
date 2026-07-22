@@ -89,6 +89,47 @@ def ring_poses(center, radius, n, bed_fn, height=3.0):
     return poses
 
 
+def residual_frame(baseline: SonarFrame, live: SonarFrame) -> SonarFrame:
+    """Return the positive, pose-matched sonar change image."""
+    image = np.clip(np.asarray(live.image, np.float32)
+                    - np.asarray(baseline.image, np.float32), 0.0, None)
+    return SonarFrame(
+        t=live.t, image=image, range_min_m=live.range_min_m,
+        range_max_m=live.range_max_m, azimuth_fov_deg=live.azimuth_fov_deg,
+        elevation_fov_deg=live.elevation_fov_deg,
+        vehicle_xyz=live.vehicle_xyz, vehicle_rpy=live.vehicle_rpy,
+        extrinsics=live.extrinsics)
+
+
+def fit_diffuser(residuals, prior, cfg, seed):
+    """Fit the diffuser line from residual frames without ground-truth input."""
+    locator = InSituDiffuserLocator(InSituLocatorConfig(
+        detector=DetectorConfig(min_range_m=6.0, z_threshold=3.5,
+                                min_area_bins=8),
+        prior_xy=prior, prior_gate_m=30.0,
+        prior_axis_deg=cfg.outfall.axis_deg,
+        corridor_halfwidth_m=10.0, line_inlier_m=4.0, min_inliers=6,
+        min_aspect_span_deg=25.0, bootstrap=200), seed=seed)
+    for frame in residuals:
+        locator.ingest(frame)
+    return locator.localize()
+
+
+def uncertainty_weighted_estimate(locations):
+    """Fuse non-fallback fits using inverse posterior-variance weights."""
+    valid = [loc for loc in locations if not loc.fallback and loc.estimate]
+    if not valid:
+        return None, None
+    weights = np.asarray([
+        1.0 / max(float(loc.sigma_radius_m or 5.0), 0.5) ** 2
+        for loc in valid
+    ])
+    points = np.asarray([loc.estimate for loc in valid], dtype=float)
+    estimate = np.average(points, axis=0, weights=weights)
+    sigma = float(math.sqrt(1.0 / weights.sum()))
+    return (float(estimate[0]), float(estimate[1])), sigma
+
+
 def drive_to(backend, wp, max_steps=400, tol=2.5):
     """Drive the live ROV toward ``wp`` (used to position it at a safe start
     before the mission runner takes over)."""
@@ -108,6 +149,8 @@ def main() -> int:
                                str(REPO_ROOT / "outputs")),
     )
     ap.add_argument("--ring-radius", type=float, default=22.0)
+    ap.add_argument("--ring-radii", type=float, nargs="+", default=None,
+                    help="confirmation radii; default uses 22 m and 15 m")
     ap.add_argument("--ring-poses", type=int, default=18)
     ap.add_argument("--budget", type=float, default=260.0,
                     help="in-engine survey travel budget (m); smaller than the "
@@ -119,7 +162,10 @@ def main() -> int:
     ap.add_argument("--prior-y", type=float, default=None)
     args = ap.parse_args()
 
-    cfg = load_config(args.config)
+    config_path = Path(args.config)
+    if not config_path.is_absolute() and not config_path.exists():
+        config_path = REPO_ROOT / config_path
+    cfg = load_config(config_path)
     if cfg.backend.name != "holoocean_custom":
         return fail("this mission requires backend.name: holoocean_custom")
     if cfg.locator.mode != "sonar":
@@ -160,7 +206,11 @@ def main() -> int:
         def bed_fn(x, y):
             return terrain.z(x, y)
 
-        ring = ring_poses(prior, args.ring_radius, args.ring_poses, bed_fn)
+        radii = args.ring_radii or [args.ring_radius, 15.0]
+        radii = list(dict.fromkeys(round(float(r), 3) for r in radii))
+        ring = [pose for radius in radii
+                for pose in ring_poses(prior, radius, args.ring_poses,
+                                       bed_fn)]
 
         # ---- 3. BASELINE sonar ring (no outfall) ------------------------- #
         print(f"[custom-mission] baseline sonar ring ({len(ring)} poses)...")
@@ -199,44 +249,118 @@ def main() -> int:
         blc = SonarBackgroundLocator(BackgroundLocatorConfig(
             prior_xy=prior, prior_gate_m=30.0))
         loc_ncontacts = 0
-        insitu = InSituDiffuserLocator(InSituLocatorConfig(
-            detector=DetectorConfig(min_range_m=6.0, z_threshold=3.5, min_area_bins=8),
-            prior_xy=prior, prior_gate_m=30.0, prior_axis_deg=cfg.outfall.axis_deg,
-            corridor_halfwidth_m=10.0, line_inlier_m=4.0, min_inliers=6,
-            min_aspect_span_deg=25.0, bootstrap=200), seed=cfg.seed + 7)
+        residuals = {}
         for key in sorted(set(baseline) & set(live)):
             loc_ncontacts += blc.ingest(baseline[key], live[key])
-            b, lv_ = baseline[key], live[key]
-            res_img = np.clip(np.asarray(lv_.image, np.float32)
-                              - np.asarray(b.image, np.float32), 0.0, None)
-            insitu.ingest(SonarFrame(
-                t=lv_.t, image=res_img, range_min_m=lv_.range_min_m,
-                range_max_m=lv_.range_max_m, azimuth_fov_deg=lv_.azimuth_fov_deg,
-                elevation_fov_deg=lv_.elevation_fov_deg,
-                vehicle_xyz=lv_.vehicle_xyz, vehicle_rpy=lv_.vehicle_rpy,
-                extrinsics=lv_.extrinsics))
+            residuals[key] = residual_frame(baseline[key], live[key])
         bg_loc = blc.localize()
-        loc = insitu.localize()               # diffuser-line estimate (primary)
-        sonar_visible = not loc.fallback
-        estimate = loc.estimate
-        (run_dir / "locate_result.json").write_text(json.dumps({
-            "prior": prior, "ring_radius_m": args.ring_radius,
+        loc = fit_diffuser(list(residuals.values()), prior, cfg, cfg.seed + 7)
+
+        # Independent per-radius fits form the confirmation pass. The final
+        # estimate is valid only if two aspects/radii agree; a failed check is
+        # reported explicitly and never promoted as sonar localization.
+        radius_fits = {}
+        radius_locations = []
+        for idx, radius in enumerate(radii):
+            prefix = f"r{int(radius):02d}_"
+            frames = [frame for key, frame in residuals.items()
+                      if key.startswith(prefix)]
+            radius_loc = fit_diffuser(frames, prior, cfg, cfg.seed + 70 + idx)
+            radius_fits[str(radius)] = {
+                "estimate": (list(radius_loc.estimate)
+                             if radius_loc.estimate else None),
+                "sigma_radius_m": radius_loc.sigma_radius_m,
+                "aspect_span_deg": radius_loc.aspect_span_deg,
+                "n_inliers": radius_loc.n_inliers,
+                "fallback": radius_loc.fallback,
+            }
+            if not radius_loc.fallback and radius_loc.estimate:
+                radius_locations.append(radius_loc)
+
+        estimate, consensus_sigma = uncertainty_weighted_estimate(
+            radius_locations)
+        valid_radius_estimates = [radius_loc.estimate
+                                  for radius_loc in radius_locations]
+        confirmation_spread = None
+        if estimate and valid_radius_estimates:
+            confirmation_spread = max(dist2(estimate, xy)
+                                      for xy in valid_radius_estimates)
+        localization_confirmed = bool(
+            not loc.fallback and estimate
+            and len(valid_radius_estimates) >= 2
+            and confirmation_spread is not None
+            and confirmation_spread <= 5.0)
+        sonar_visible = localization_confirmed
+
+        # Robustness audit: rerun the same non-oracle residual evidence with
+        # five plausible chart priors. Ground truth is not used by these fits.
+        prior_offsets = [(0.0, 0.0), (-4.0, 0.0), (4.0, 0.0),
+                         (0.0, -4.0), (0.0, 4.0)]
+        robustness_trials = []
+        for idx, (dx, dy) in enumerate(prior_offsets):
+            test_prior = (prior[0] + dx, prior[1] + dy)
+            test_radius_locations = []
+            for r_idx, radius in enumerate(radii):
+                prefix = f"r{int(radius):02d}_"
+                frames = [frame for key, frame in residuals.items()
+                          if key.startswith(prefix)]
+                test_radius_locations.append(fit_diffuser(
+                    frames, test_prior, cfg,
+                    cfg.seed + 170 + idx * 10 + r_idx))
+            test_estimate, test_sigma = uncertainty_weighted_estimate(
+                test_radius_locations)
+            test_fallback = test_estimate is None
+            test_inliers = sum(loc_.n_inliers or 0
+                               for loc_ in test_radius_locations)
+            test_aspect = min((loc_.aspect_span_deg or 0.0)
+                              for loc_ in test_radius_locations)
+            robustness_trials.append({
+                "prior": list(test_prior),
+                "estimate": list(test_estimate) if test_estimate else None,
+                "fallback": test_fallback,
+                "sigma_radius_m": test_sigma,
+                "aspect_span_deg": test_aspect,
+                "n_inliers": test_inliers,
+            })
+        locate_payload = {
+            "sensor_concept": "Omniscan 450 FS forward-looking imaging sonar",
+            "prior": prior, "ring_radii_m": radii,
             "ring_poses": len(ring), "residual_contacts": loc_ncontacts,
-            "method": "background subtraction + in-situ diffuser-line fit",
+            "method": ("pose-matched background subtraction + independent "
+                       "multi-radius diffuser-line fits + inverse-uncertainty "
+                       "consensus + confirmation pass"),
             "estimate": list(estimate) if estimate else None,
             "axis_deg": loc.axis_deg, "n_inliers": loc.n_inliers,
-            "sigma_radius_m": loc.sigma_radius_m,
+            "sigma_radius_m": consensus_sigma,
             "aspect_span_deg": loc.aspect_span_deg, "fallback": loc.fallback,
+            "localization_confirmed": localization_confirmed,
+            "confirmation_limit_m": 5.0,
+            "confirmation_spread_m": confirmation_spread,
+            "per_radius_fits": radius_fits,
+            "prior_perturbation_trials": robustness_trials,
             "background_only_estimate": (list(bg_loc.estimate)
-                                         if bg_loc.estimate else None)},
-            indent=2), encoding="utf-8")
+                                         if bg_loc.estimate else None),
+        }
+        (run_dir / "locate_result.json").write_text(
+            json.dumps(locate_payload, indent=2), encoding="utf-8")
         if not sonar_visible:
             print("[custom-mission] WARNING: LOCATE fell back; anchoring survey "
                   "at the prior (NOT valid sonar-localization evidence).")
         else:
-            print(f"[custom-mission] SONAR LOCATE: estimate {estimate} "
-                  f"({loc_ncontacts} residual contacts)")
-        survey_anchor = estimate if sonar_visible else prior
+            print(f"[custom-mission] CONFIRMED SONAR LOCATE: estimate {estimate} "
+                  f"({loc_ncontacts} residual contacts; multi-radius spread "
+                  f"{confirmation_spread:.2f} m)")
+        # The line estimator returns the physical diffuser midpoint. The scene
+        # chart origin and plume coordinate are the diffuser start, so apply
+        # the documented half-length offset along the chart axis. This uses
+        # only known design geometry, never simulation truth.
+        axis_rad = math.radians(cfg.outfall.axis_deg)
+        half_diffuser = 0.5 * OutfallSceneConfig().diffuser_length_m
+        survey_anchor = (
+            (estimate[0] - half_diffuser * math.cos(axis_rad),
+             estimate[1] - half_diffuser * math.sin(axis_rad))
+            if sonar_visible else prior)
+        locate_payload["derived_diffuser_start_estimate"] = list(survey_anchor)
 
         # ---- 7. build hazard field + drive to a safe start --------------- #
         field = HazardField.from_outfall(
@@ -279,14 +403,46 @@ def main() -> int:
     ambient_bottom = float(plume.ambient_salinity(bed_out))
     threshold = boundary_salinity_psu(cfg_cal, plume)
     true_xy = plume.outfall_xy()
-    diffuser_centre = (cfg_cal.outfall.x + OutfallSceneConfig().diffuser_length_m / 2.0,
-                       cfg_cal.outfall.y)
+    axis_rad = math.radians(cfg_cal.outfall.axis_deg)
+    half_diffuser = 0.5 * OutfallSceneConfig().diffuser_length_m
+    diffuser_centre = (
+        cfg_cal.outfall.x + half_diffuser * math.cos(axis_rad),
+        cfg_cal.outfall.y + half_diffuser * math.sin(axis_rad))
     verdict = evaluate_compliance(mean, std, grid, true_xy, cfg_cal.compliance, ambient_bottom)
     gt_verdict = evaluate_compliance(truth, None, grid, true_xy, cfg_cal.compliance, ambient_bottom)
     metrics = compute_metrics(mean, truth, grid, result.samples, threshold, plume=plume)
     screening = screen(verdict, cfg_cal.compliance)
     outcome = screening_outcome(screening, gt_verdict.compliant)
     loc_error_centre = (dist2(estimate, diffuser_centre) if estimate else float("nan"))
+    loc_error_origin = dist2(survey_anchor,
+                             (cfg_cal.outfall.x, cfg_cal.outfall.y))
+
+    # Post-hoc evaluation only: attach truth errors after every localization
+    # decision has already been made and frozen.
+    robust_errors = []
+    for trial in locate_payload["prior_perturbation_trials"]:
+        trial["posthoc_error_m_vs_diffuser_centre"] = (
+            round(dist2(trial["estimate"], diffuser_centre), 3)
+            if trial["estimate"] and not trial["fallback"] else None)
+        if trial["posthoc_error_m_vs_diffuser_centre"] is not None:
+            robust_errors.append(trial["posthoc_error_m_vs_diffuser_centre"])
+    for radius_fit in locate_payload["per_radius_fits"].values():
+        radius_fit["posthoc_error_m_vs_diffuser_centre"] = (
+            round(dist2(radius_fit["estimate"], diffuser_centre), 3)
+            if radius_fit["estimate"] and not radius_fit["fallback"] else None)
+    locate_payload["posthoc_ground_truth_diffuser_centre"] = list(diffuser_centre)
+    locate_payload["posthoc_error_m_vs_diffuser_centre"] = round(
+        loc_error_centre, 3) if math.isfinite(loc_error_centre) else None
+    locate_payload["robustness_summary"] = {
+        "valid_trials": len(robust_errors),
+        "total_trials": len(locate_payload["prior_perturbation_trials"]),
+        "median_error_m": (round(float(np.median(robust_errors)), 3)
+                           if robust_errors else None),
+        "max_error_m": (round(float(np.max(robust_errors)), 3)
+                        if robust_errors else None),
+    }
+    (run_dir / "locate_result.json").write_text(
+        json.dumps(locate_payload, indent=2), encoding="utf-8")
 
     save_samples_csv(result.samples, result.budget_at_sample, run_dir / "samples.csv")
     np.savez_compressed(
@@ -314,9 +470,14 @@ def main() -> int:
         "plume_note": "analytic simulation surrogate sampled along the engine trajectory",
         "raw_sonar_contacts": loc_ncontacts,
         "consensus_estimate": list(estimate) if estimate else None,
+        "localization_confirmed": localization_confirmed,
+        "localization_confirmation_spread_m": confirmation_spread,
+        "localization_robustness": locate_payload["robustness_summary"],
         "mission_detection_events": len(result.detections),
         "localization_error_m_vs_diffuser_centre": round(loc_error_centre, 2),
+        "derived_origin_error_m": round(loc_error_origin, 2),
         "sonar_estimate": list(estimate) if estimate else None,
+        "derived_diffuser_start_estimate": list(survey_anchor),
         "chart_prior": list(prior),
         "collision_safe_nav": True,
         "collisions": collisions,
@@ -330,6 +491,9 @@ def main() -> int:
         "terrain_plane_rmse_m": round(fit.rmse_m, 3),
         "rmse_plume": round(metrics.rmse_plume, 4),
         "boundary_f1": round(metrics.boundary_f1, 3),
+        "boundary_iou": round(metrics.boundary_iou, 3),
+        "coverage_frac": round(metrics.coverage_frac, 3),
+        "useful_sample_frac": round(metrics.in_plume_frac, 3),
     }
     save_result_summary(result, run_dir / "summary.json", extra=extra)
     report = render_html_report(

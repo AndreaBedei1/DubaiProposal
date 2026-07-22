@@ -29,7 +29,7 @@ properties virtual and everything else — planning, mapping, screening,
 reporting — implemented and benchmarked (20-seed equal-budget studies; zero
 wrong conclusive screening results). The architecture isolates the simulator
 behind one interface, so the physical transfer is a backend swap: the team's
-own BlueROV2 and side-scan sonar are the target hardware, with a written
+own BlueROV2 and Omniscan 450 FS forward-looking imaging sonar are the target hardware, with a written
 one-day water-test protocol as the next step. Robotic plume mapping is not
 new; BrineWatch's aim is making it repeatable, honest about uncertainty, and
 affordable for utilities, municipalities, regulators and university labs.

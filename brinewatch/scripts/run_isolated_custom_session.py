@@ -150,9 +150,16 @@ def main() -> int:
         try:
             if loading is not None:
                 import win32event
-                response = win32event.WaitForSingleObject(
-                    loading, int(args.startup_timeout * 1000))
-                if response != win32event.WAIT_OBJECT_0:
+                deadline = time.time() + args.startup_timeout
+                while time.time() < deadline:
+                    response = win32event.WaitForSingleObject(loading, 500)
+                    if response == win32event.WAIT_OBJECT_0:
+                        break
+                    if engine_proc.poll() is not None:
+                        raise RuntimeError(
+                            "private custom engine exited during startup; "
+                            f"inspect {engine_log}")
+                else:
                     raise TimeoutError("private HoloOcean loading semaphore timed out")
             else:
                 deadline = time.time() + args.startup_timeout

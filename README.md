@@ -11,16 +11,17 @@ benchmark experiments.
 
 ## Competition submission package
 
-The polished 2026 submission package is indexed in
-[output/submission/README.md](output/submission/README.md). The recommended
-upload is the 11-page
-[competition report](output/pdf/BrineWatch_PFH2026_Competition_Report.pdf)
-(6.9 MB) together with the 48-second
-[final video](output/submission/video/BrineWatch_PFH2026_Final.mp4).
+The final fast-track 2026 package is indexed in
+[output/final_submission/README.md](output/final_submission/README.md). The
+recommended upload is the 13-page
+[competition report](output/final_submission/BrineWatch_PFH2026_Report.pdf)
+(2.7 MB) together with the 51-second Full-HD
+[final video](output/final_submission/BrineWatch_PFH2026_Final_1080p.mp4).
 
-The package also contains hero images, a contact sheet, sonar/localization,
-mission, 3-D plume and digital-twin figures, plus paste-ready form text. All
-headline performance values are explicitly identified as simulation results.
+The package also contains a hero image, sonar/localisation, mission, 3-D plume,
+digital-twin and equal-evidence comparison figures, plus paste-ready form text
+and a technical claim ledger. All headline performance values are explicitly
+identified as simulation results.
 
 > **Research status:** BrineWatch is a simulation-led prototype, not a
 > certified environmental monitoring or regulatory compliance system. The

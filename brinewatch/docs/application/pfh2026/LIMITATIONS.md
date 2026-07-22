@@ -29,7 +29,7 @@ application material.
    localization) is validated against that official static target.
 
 4. **Simulated-sonar-to-real-sonar domain gap.** HoloOcean's ray-cast
-   ImagingSonar is not a physical Omniscan SS450. The detector's
+   ImagingSonar is not a physical Omniscan 450 FS. The detector's
    normalization and gating were tuned on simulated returns; thresholds will
    need re-tuning on real acoustics. What transfers is the architecture:
    frame geometry, recording/replay, detection→fusion→localization, and the
@@ -60,5 +60,5 @@ application material.
    with the responsible authority.
 
 10. **Physical tests not completed.** The team owns a BlueROV2 and a
-    Cerulean Omniscan SS450; the CT payload integration, tank test and
+    Cerulean Omniscan 450 FS forward-looking imaging sonar; the CT payload integration, tank test and
     harbour trial are planned (protocol written) but not yet executed.

@@ -54,6 +54,6 @@ planned or in-progress is listed as achieved.
   alongside the code.
 
 **Hardware readiness (not yet integrated — listed for context, not claimed)**
-- Team owns a BlueROV2 and a Cerulean Omniscan SS450 side-scan sonar; the
+- Team owns a BlueROV2 and a Cerulean Omniscan 450 FS forward-looking imaging sonar; the
   CT-payload retrofit BOM and a one-day controlled water-test protocol are
   specified (PHYSICAL_VALIDATION_PROTOCOL.md).

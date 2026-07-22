@@ -11,7 +11,7 @@ or large tank; it has NOT been executed yet.
 | Item | Status |
 |---|---|
 | BlueROV2 (team-owned) + tether + topside laptop | available |
-| Cerulean Omniscan SS450 side-scan sonar | available (not needed for this test) |
+| Cerulean Omniscan 450 FS forward-looking imaging sonar | available (not needed for this test) |
 | Conductivity+temperature probe (I2C EC board + probe, e.g. Atlas Scientific EZO-EC K1.0) | to purchase — `[COST TO VERIFY, indicative 200–400 EUR]` |
 | Calibration solutions: 12.88 mS/cm and 80 mS/cm KCl standards | to purchase |
 | 3 reference containers (fresh, brackish ~20 g/L, saline ~40 g/L NaCl) | prepare on site |

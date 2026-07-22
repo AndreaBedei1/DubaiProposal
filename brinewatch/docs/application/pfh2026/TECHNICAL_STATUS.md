@@ -24,4 +24,4 @@ Statuses: **verified** (evidence exists on disk), **partially verified**,
 | Reporting | self-contained HTML: screening banner, stats, maps, approximations ledger | every mission | Sim | verified | — | PDF export |
 | Physical backend (MAVLink) | interface plan only (backend swap by design) | sim_to_real.md | Phys | planned | — | ArduSub SITL first |
 | Physical CT payload | BOM + one-day protocol | PHYSICAL_VALIDATION_PROTOCOL.md | Phys | planned | sensor not purchased | purchase + bench cal |
-| Physical sonar | team owns Omniscan SS450 | hardware exists; no BrineWatch integration yet | Phys | planned | domain gap | replay-driven port |
+| Physical sonar | team owns Omniscan 450 FS forward-looking imaging sonar | hardware exists; no BrineWatch integration yet | Phys | planned | domain gap | replay-driven port |

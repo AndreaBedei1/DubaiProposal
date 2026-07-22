@@ -66,7 +66,7 @@ with a one-day experiment.
 
 ## Step 3 — Sonar-based diffuser localization (replaces `DiffuserLocator`)
 
-- Real vehicle: the Cerulean **Omniscan SS450** side-scan already on the ROV;
+- Real vehicle: the Cerulean **Omniscan 450 FS** forward-looking imaging sonar already owned by the team;
   a pipeline/diffuser is a strong, straight acoustic target — detection can
   start as operator-assisted (click the target in the waterfall; the code
   path only needs a `Detection(range, bearing)`).

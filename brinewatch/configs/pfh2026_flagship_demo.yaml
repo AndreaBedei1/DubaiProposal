@@ -1,0 +1,117 @@
+# PFH 2026 flagship demonstration scenario.
+#
+# This is a DEMO-OPTIMIZED analytic simulation surrogate: compact site,
+# static tide, high salinity contrast and a deliberately non-compliant plume
+# outside a 22 m demonstration mixing zone. It exists to make the complete
+# Locate -> Sense -> Adapt -> Reconstruct -> Act workflow visually legible.
+# It is NOT CFD, field truth, or a claim about a specific real permit.
+name: brinewatch_pfh2026_flagship_demo
+seed: 17
+planner: adaptive
+
+environment:
+  ambient_salinity_psu: 38.8
+  salinity_stratification_per_m: 0.002
+  ambient_temperature_c: 24.0
+  temperature_gradient_per_m: -0.005
+  seabed_z0: -73.5
+  seabed_slope_x: 0.0
+  seabed_slope_y: 0.0
+  current_dir_deg: 0.0
+  tide_amplitude_m: 0.0
+  tide_period_s: 2400.0
+
+outfall:
+  x: 30.0
+  y: 0.0
+  axis_deg: 0.0
+  n_ports: 6
+  port_spacing_m: 3.2
+  riser_height_m: 1.35
+  discharge_salinity_psu: 70.0
+  discharge_temperature_c: 27.5
+
+plume:
+  rise_height_m: 3.2
+  nearfield_offset_m: 6.0
+  nearfield_sigma_xy_m: 3.2
+  nearfield_sigma_z_m: 1.0
+  nearfield_peak_anomaly_psu: 11.0
+  farfield_peak_anomaly_psu: 9.0
+  farfield_initial_width_m: 5.0
+  farfield_spread_rate: 0.16
+  layer_thickness_m: 1.25
+  dilution_length_m: 55.0
+  upstream_tail_m: 3.0
+  temperature_anomaly_ratio: 0.20
+
+ctd:
+  rate_hz: 1.0
+  salinity_sigma_psu: 0.03
+  temperature_sigma_c: 0.02
+  depth_sigma_m: 0.05
+
+survey:
+  x_min: 18.0
+  x_max: 78.0
+  y_min: -28.0
+  y_max: 28.0
+  altitude_m: 1.2
+  grid_resolution_m: 2.5
+
+budget:
+  max_distance_m: 520.0
+  checkpoints: [0.25, 0.5, 0.75, 1.0]
+  locate_fraction: 0.05
+
+locator:
+  mode: synthetic
+  max_range_m: 25.0
+  detect_prob: 0.95
+  range_sigma_m: 0.30
+  bearing_sigma_deg: 2.0
+  prior_sigma_m: 6.0
+  n_confirm: 4
+
+lawnmower:
+  line_spacing_m: 7.0
+  along_x: true
+
+adaptive:
+  n_candidates: 400
+  weight_std: 0.65
+  weight_boundary: 1.45
+  weight_travel: 0.20
+  weight_turn: 0.30
+  boundary_scale_psu: 0.85
+  min_leg_m: 7.0
+  max_leg_m: 34.0
+  min_separation_m: 3.0
+  warmup_samples: 20
+
+gp:
+  length_xy_m: 8.5
+  length_z_m: 1.25
+  signal_sigma_psu: 4.5
+  noise_sigma_psu: 0.05
+  max_train_points: 1200
+  jitter: 0.000001
+  predict_chunk: 4000
+
+compliance:
+  mixing_zone_radius_m: 22.0
+  threshold_increment_pct: 5.0
+  eval_altitude_m: 0.8
+  p_exceed_min: 0.65
+  p_clear_max: 0.08
+  max_posterior_std_psu: 0.70
+
+backend:
+  name: kinematic
+  dt_control_s: 0.5
+  kinematic:
+    max_speed_h_mps: 0.9
+    max_speed_v_mps: 0.4
+    accel_tau_s: 1.5
+    position_noise_sigma_m: 0.03
+

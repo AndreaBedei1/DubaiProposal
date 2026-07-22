@@ -43,7 +43,7 @@ Use the text in `PROJECT_DESCRIPTION.md` verbatim.
   discharge ramp-up (CLEAR → REVIEW → POSSIBLE EXCEEDANCE), each mission
   producing a self-contained digital report; 86 automated tests, fully
   reproducible from the public repository with standard HoloOcean.
-- Physical BlueROV2 and Omniscan SS450 side-scan sonar owned by the team;
+- Physical BlueROV2 and Omniscan 450 FS forward-looking imaging sonar owned by the team;
   CT-payload retrofit and one-day controlled water-test protocol specified.
 
 ## Awards, prizes and featured publications

@@ -81,3 +81,7 @@ brinewatch/outputs/*
 *.bak
 *.tmp
 *.temp
+
+# Fast-track build intermediates. The hand-curated deliverables in
+# output/final_submission remain intentionally visible to Git.
+/output/fasttrack/

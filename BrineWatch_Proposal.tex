@@ -149,7 +149,7 @@ Discharge permits are granted on \keyword{CFD predictions made once, on paper}, 
 
 % ================= 3 APPROACH =================
 \section{Our approach: a robot that follows the salt}
-BrineWatch turns a \$5k-class open-source ROV --- a \keyword{BlueROV2 Heavy} with low-light HD camera, side-scan sonar (Cerulean Omniscan SS450) and IMU --- plus a ${\approx}$\texteuro300 \keyword{conductivity--temperature payload} (I\textsuperscript{2}C on BlueOS) into an autonomous compliance instrument (Fig.~\ref{fig:concept}):
+BrineWatch turns a \$5k-class open-source ROV --- a \keyword{BlueROV2 Heavy} with low-light HD camera, Cerulean Omniscan 450 FS forward-looking imaging sonar and IMU --- plus a ${\approx}$\texteuro300 \keyword{conductivity--temperature payload} (I\textsuperscript{2}C on BlueOS) into an autonomous compliance instrument (Fig.~\ref{fig:concept}):
 \begin{enumerate}
   \item \keyword{Locate} --- the sonar finds the outfall pipe and diffuser on the seabed, anchoring the survey frame.
   \item \keyword{Sense} --- continuous salinity--temperature--depth sampling along baseline transects.
@@ -178,7 +178,7 @@ Adaptive sampling is itself a quantified gain: informative path planning reports
 
 % ================= 5 VALIDATION =================
 \section{Validation plan: honest and time-boxed}
-\textbf{Phase 1 --- by submission (simulation-complete).} Full-mission demonstration in \keyword{HoloOcean 2.x} [4] (Unreal Engine 5.3): official BlueROV2 Heavy model, ray-cast side-scan and forward-looking sonar, configurable currents. The plume is an analytic negatively-buoyant jet + seabed gravity current (Roberts-type parameterization [2]) advected by an idealized tide; a virtual CT sensor samples the field at the vehicle pose with realistic noise. Deliverables: mission video, lawnmower-vs-adaptive benchmark at equal battery, dashboard with automatic compliance verdict. We deliberately declare the analytic plume: in deployment, BrineWatch is precisely the instrument that \emph{validates CFD models against reality}.
+\textbf{Phase 1 --- by submission (simulation-complete).} Full-mission demonstration in \keyword{HoloOcean 2.x} [4] (Unreal Engine 5.3): official BlueROV2 Heavy model, simulated forward-looking imaging sonar and configurable currents. The plume is an analytic negatively-buoyant jet + seabed gravity current (Roberts-type parameterization [2]) advected by an idealized tide; a virtual CT sensor samples the field at the vehicle pose with realistic noise. Deliverables: mission video, lawnmower-vs-adaptive benchmark at equal battery, dashboard with automatic compliance verdict. We deliberately declare the analytic plume: in deployment, BrineWatch is precisely the instrument that \emph{validates CFD models against reality}.
 
 \textbf{Phase 2 --- with award support.} Integration of the CT payload on our physical BlueROV2 (${\approx}$\texteuro300 sensor), tank and harbour trials, then a pilot survey at a partner desalination outfall with a utility or environmental regulator --- the natural hosts are in the Gulf itself.
 

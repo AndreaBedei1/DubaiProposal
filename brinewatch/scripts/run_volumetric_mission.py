@@ -55,6 +55,7 @@ def main() -> int:
     # split the travel budget across altitude bands; each band is one survey
     band_budget = cfg.budget.max_distance_m / len(args.altitudes)
     all_samples = []
+    sample_bands = []
     trajectory = []
     per_band = []
     for i, alt in enumerate(args.altitudes):
@@ -66,6 +67,7 @@ def main() -> int:
         runner = create_mission(band_cfg, planner_name=args.planner)
         result = runner.run()
         all_samples.extend(result.samples)
+        sample_bands.extend([i] * len(result.samples))
         if trajectory:
             trajectory.append([np.nan, np.nan, np.nan, np.nan])  # break between band polylines
         trajectory.extend([list(p) for p in result.trajectory])
@@ -107,9 +109,15 @@ def main() -> int:
                              f"— est. volume {m.plume_volume_m3:.0f} m³",
                        trajectory=np.asarray(trajectory, dtype=float))
 
+    sample_array = np.asarray([
+        [s.t, s.x, s.y, s.z, s.salinity_psu] for s in all_samples
+    ], dtype=float)
     np.savez_compressed(run_dir / "volume.npz", mean=mean_vol, std=std_vol,
                         truth=truth_vol, X=grid.X, Y=grid.Y, Z=grid.Z,
-                        alts=grid.alts, threshold=threshold)
+                        alts=grid.alts, threshold=threshold,
+                        samples=sample_array,
+                        sample_bands=np.asarray(sample_bands, dtype=int),
+                        trajectory=np.asarray(trajectory, dtype=float))
     summary = {
         "planner": args.planner, "altitudes_m": args.altitudes,
         "n_samples": len(all_samples), "per_band": per_band,

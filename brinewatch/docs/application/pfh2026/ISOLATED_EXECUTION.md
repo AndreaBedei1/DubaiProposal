@@ -42,3 +42,14 @@ python scripts\launch_custom_engine.py --clear-cache
 Then use the same `BRINEWATCH_HOLOOCEAN_INSTANCE_ID` value in the client
 terminal. The one-command launcher is preferred because it guarantees PID
 ownership and directory consistency automatically.
+
+## PFH 2026 fast-track evidence
+
+The final mission and cinematic capture used the deliberately short private
+runtime roots `C:\bwrt\bwp26-fa3` and `C:\bwrt\bwp26-cin1`. The shorter path
+avoids Unreal derived-data-cache path-length failures while preserving the
+same separation of instance ID, shared memory, semaphores, octrees, temp,
+cache, logs, outputs and PID ownership. Both `run_manifest.json` files record
+empty before/after matching-process inventories and an empty
+`other_processes_terminated` list. The launcher closed only the Unreal PID it
+created. No global process-name kill command is used by the runner.

@@ -1,0 +1,65 @@
+# Borderline/under-sampled case intended to produce an honest REVIEW.
+# Analytic surrogate; not CFD or field truth.
+name: brinewatch_screening_review
+seed: 29
+planner: adaptive
+environment:
+  ambient_salinity_psu: 38.8
+  salinity_stratification_per_m: 0.002
+  ambient_temperature_c: 24.0
+  seabed_z0: -34.0
+  current_dir_deg: 0.0
+  tide_amplitude_m: 1.0
+  tide_period_s: 1800.0
+outfall:
+  x: 30.0
+  y: 0.0
+  axis_deg: 0.0
+  n_ports: 6
+  port_spacing_m: 3.2
+  riser_height_m: 1.35
+  discharge_salinity_psu: 66.0
+plume:
+  nearfield_peak_anomaly_psu: 8.0
+  farfield_peak_anomaly_psu: 5.0
+  farfield_initial_width_m: 5.0
+  farfield_spread_rate: 0.15
+  layer_thickness_m: 1.2
+  dilution_length_m: 34.0
+ctd:
+  salinity_sigma_psu: 0.08
+survey:
+  x_min: 18.0
+  x_max: 78.0
+  y_min: -28.0
+  y_max: 28.0
+  altitude_m: 1.2
+  grid_resolution_m: 2.5
+budget:
+  max_distance_m: 260.0
+  checkpoints: [1.0]
+  locate_fraction: 0.05
+adaptive:
+  weight_std: 0.7
+  weight_boundary: 1.2
+  weight_travel: 0.25
+  weight_turn: 0.3
+  min_leg_m: 8.0
+  max_leg_m: 35.0
+  warmup_samples: 25
+gp:
+  length_xy_m: 10.0
+  length_z_m: 1.4
+  signal_sigma_psu: 3.2
+  noise_sigma_psu: 0.10
+  max_train_points: 900
+compliance:
+  mixing_zone_radius_m: 31.0
+  threshold_increment_pct: 5.0
+  eval_altitude_m: 0.8
+  p_exceed_min: 0.70
+  p_clear_max: 0.08
+  max_posterior_std_psu: 0.60
+backend:
+  name: kinematic
+

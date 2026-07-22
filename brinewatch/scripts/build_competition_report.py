@@ -207,7 +207,7 @@ def page_feasibility(c: Canvas, n: int) -> None:
     rows=[
         ["Subsystem","Role","Indicative USD","Status / assumption"],
         ["BlueROV2 + control + tether","vehicle and live operator link","4,900 - 8,000","base price verified; exact options vary"],
-        ["Imaging / side-scan sonar","outfall acquisition","2,550 - 5,440","vendor options; sonar already owned"],
+        ["Forward-looking imaging sonar","outfall acquisition","2,550 - 5,440","Omniscan 450 FS concept; sonar already owned"],
         ["Calibrated CT payload","salinity + temperature","1,500 - 6,000","planning allowance; vendor quote required"],
         ["Skid, enclosure, interface","mechanical/electrical integration","750 - 2,000","includes payload fixture and wet-mate items"],
         ["Batteries, spares, compute","mission endurance + topside","1,850 - 4,000","one spare-battery cycle and laptop class"],
