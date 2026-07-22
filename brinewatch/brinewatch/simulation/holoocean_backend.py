@@ -99,10 +99,16 @@ class HoloOceanBackend(SimulatorBackend):
             # Fork engine with runtime octree rebuild: import the FORK client
             # (must happen before any official import) and attach to the
             # externally launched engine. Fails loudly, never falls back.
-            from .custom_engine import activate_fork_client, resolve_custom_engine
+            from .custom_engine import (
+                activate_fork_client,
+                attach_custom_environment,
+                isolated_instance_id,
+                resolve_custom_engine,
+            )
 
             self._engine_info = resolve_custom_engine()
             holoocean = activate_fork_client(self._engine_info)
+            self._instance_id = isolated_instance_id()
         else:
             import holoocean  # lazy: only needed for this backend
 
@@ -116,11 +122,12 @@ class HoloOceanBackend(SimulatorBackend):
         if self._custom:
             # world must be the level already running in the fork engine
             self._scenario["world"] = self._engine_info.level
-            self._env = holoocean.make(
-                scenario_cfg=self._scenario,
+            self._env = attach_custom_environment(
+                holoocean,
+                self._scenario,
                 show_viewport=self.ho.show_viewport,
                 verbose=False,
-                start_world=False,
+                instance_id=self._instance_id,
             )
         else:
             self._env = holoocean.make(

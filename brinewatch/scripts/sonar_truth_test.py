@@ -177,7 +177,8 @@ def _capture(env, agent, tx, ty, bed_z):
 # --------------------------------------------------------------------------- #
 def run_custom(args) -> int:
     from brinewatch.simulation.custom_engine import (
-        activate_fork_client, discover_custom_engine, make_asset_spawner)
+        activate_fork_client, attach_custom_environment,
+        discover_custom_engine, make_asset_spawner)
     engine = discover_custom_engine(level=SITES["custom"]["world"])
     holoocean = activate_fork_client(engine)
     tx, ty = SITES["custom"]["target"]
@@ -185,8 +186,8 @@ def run_custom(args) -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     scenario = _scenario(engine.level, SITES["custom"]["boot_z"])
-    env = holoocean.make(scenario_cfg=scenario, start_world=False,
-                         show_viewport=True, verbose=False)
+    env = attach_custom_environment(holoocean, scenario,
+                                    show_viewport=True, verbose=False)
     env.reset()
     agent = env.agents[AGENT]
     print(f"[custom {args.condition}] attached (client "

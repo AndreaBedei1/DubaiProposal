@@ -176,6 +176,9 @@ def test_editor_launch_args_require_editor(tmp_path, monkeypatch):
     (tmp_path / "engine" / "Holodeck.uproject").write_text("{}")
     monkeypatch.setenv(ENV_VAR, str(tmp_path))
     monkeypatch.delenv("UNREAL_EDITOR_EXE", raising=False)
+    # Keep this failure-mode test independent of whether the development
+    # machine has a standard Epic Games installation that can be auto-found.
+    monkeypatch.setenv("ProgramFiles", str(tmp_path / "no-editor-installed"))
     with pytest.raises(CustomEngineError, match="editor executable"):
         editor_launch_args(resolve_custom_engine())
 

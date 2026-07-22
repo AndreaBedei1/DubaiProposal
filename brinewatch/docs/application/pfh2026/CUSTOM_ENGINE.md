@@ -29,6 +29,12 @@ Source evidence: `engine/Source/Holodeck/ClientCommands/Private/SpawnAssetComman
 
 ## Setup (self-contained; no user-specific paths are committed)
 
+For competition-generation work, use the namespaced one-command launcher in
+[ISOLATED_EXECUTION.md](ISOLATED_EXECUTION.md). It assigns a unique UUID to
+all HoloOcean semaphores/shared-memory blocks and private work, temp, DDC,
+octree-cache, output, and log directories. This allows BrineWatch to coexist
+with another HoloOcean workflow without attaching to or stopping it.
+
 The fork engine is placed at `<repo>/engine` (the Unreal project +
 `Holodeck.uproject`; gitignored — it is huge and machine-local). It is
 **auto-discovered** — no path env var needed. Only the editor is required:
@@ -53,8 +59,8 @@ python scripts\sonar_truth_test.py --engine custom --condition BOX --out outputs
 ```
 
 **Client:** the installed **official HoloOcean 2.3.0 client attaches to the
-fork engine** in `-game` mode (`holoocean.make(..., start_world=False)`) —
-verified working. `SpawnAsset`/`ClearSpawned` are engine-side world commands
+fork engine** in `-game` mode through `attach_custom_environment(...)`, with
+an explicit per-session UUID - verified working. `SpawnAsset`/`ClearSpawned` are engine-side world commands
 sent through the generic `Command` API, so no separate fork client is needed.
 If a fork client is preferred it can be pinned with
 `HOLOOCEAN_CUSTOM_CLIENT_PATH`; otherwise `client_src` is `None` and the

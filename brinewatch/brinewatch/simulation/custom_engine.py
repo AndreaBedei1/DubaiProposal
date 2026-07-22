@@ -16,10 +16,10 @@ docs/application/pfh2026/SONAR_VALIDATION.md). The custom fork adds:
   becomes acoustically visible on the next sonar frame.
 
 Deployment model (no packaged binary ships with the fork): the engine runs
-from the UE 5.3 editor — either interactively (Play In Editor as standalone)
+from the UE 5.3 editor - either interactively (Play In Editor as standalone)
 or headless-ish via ``UnrealEditor.exe <uproject> <Level> -game``. The fork's
-Python client then attaches with ``holoocean.make(..., start_world=False)``
-(shared memory with an empty UUID suffix).
+Python client attaches through :func:`attach_custom_environment`, which passes
+the same explicit per-run UUID to the engine, semaphores and shared memory.
 
 Nothing here hard-codes user-specific paths: the fork checkout location comes
 from the ``HOLOOCEAN_CUSTOM_ENGINE_PATH`` environment variable and every
@@ -29,13 +29,18 @@ from __future__ import annotations
 
 import math
 import os
+import re
 import sys
+import json
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, List, Optional, Sequence
 
 ENV_VAR = "HOLOOCEAN_CUSTOM_ENGINE_PATH"
 CLIENT_ENV_VAR = "HOLOOCEAN_CUSTOM_CLIENT_PATH"
+INSTANCE_ENV_VAR = "BRINEWATCH_HOLOOCEAN_INSTANCE_ID"
+RUNTIME_ENV_VAR = "BRINEWATCH_RUNTIME_ROOT"
 DEFAULT_LEVEL = "ExampleLevel"
 
 #: UE basic-shape meshes used to mirror the official ``spawn_prop`` primitives.
@@ -67,6 +72,80 @@ class CustomEngine:
     client_src: Optional[Path]     # fork client's src dir, or None -> official client
     octrees_dir: Path              # <root>/Octrees (on-disk acoustic octree cache)
     level: str = DEFAULT_LEVEL
+
+
+@dataclass(frozen=True)
+class IsolatedRuntime:
+    """Filesystem and IPC namespace reserved for one BrineWatch engine run."""
+
+    instance_id: str
+    root: Path
+    work_dir: Path
+    output_dir: Path
+    temp_dir: Path
+    cache_dir: Path
+    octree_dir: Path
+    log_dir: Path
+
+
+def validate_instance_id(value: str) -> str:
+    """Validate a HoloOcean UUID suffix before it reaches named IPC objects."""
+    value = str(value).strip()
+    if not value or not re.fullmatch(r"[A-Za-z0-9_-]{6,64}", value):
+        raise CustomEngineError(
+            "invalid BrineWatch HoloOcean instance id. Use 6-64 ASCII letters, "
+            "digits, '_' or '-' (for example 'brinewatch-a1b2c3d4')."
+        )
+    return value
+
+
+def isolated_instance_id(required: bool = True) -> str:
+    """Return the IPC namespace shared by the custom engine and its client."""
+    raw = os.environ.get(INSTANCE_ENV_VAR, "").strip()
+    if raw:
+        return validate_instance_id(raw)
+    if required:
+        raise CustomEngineError(
+            f"{INSTANCE_ENV_VAR} is not set. Launch custom-engine work through "
+            "scripts/run_isolated_custom_session.py (recommended), or export a "
+            "unique instance id in both the engine and client terminals."
+        )
+    return ""
+
+
+def prepare_isolated_runtime(instance_id: str,
+                             root: Optional[Path] = None) -> IsolatedRuntime:
+    """Create per-instance work/output/temp/cache/octree/log directories."""
+    instance_id = validate_instance_id(instance_id)
+    configured_root = os.environ.get(RUNTIME_ENV_VAR, "").strip()
+    base = Path(root) if root is not None else (
+        Path(configured_root) if configured_root else repo_root() / ".runtime" / "holoocean")
+    runtime_root = base.expanduser().resolve() / instance_id
+    dirs = {
+        "work_dir": runtime_root / "work",
+        "output_dir": runtime_root / "outputs",
+        "temp_dir": runtime_root / "temp",
+        "cache_dir": runtime_root / "cache",
+        "octree_dir": runtime_root / "octrees",
+        "log_dir": runtime_root / "logs",
+    }
+    for directory in dirs.values():
+        directory.mkdir(parents=True, exist_ok=True)
+    runtime = IsolatedRuntime(instance_id=instance_id, root=runtime_root, **dirs)
+    manifest = {
+        "instance_id": instance_id,
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+        "ipc": {
+            "loading_semaphore": f"Global\\HOLODECK_LOADING_SEM{instance_id}",
+            "server_semaphore": f"Global\\HOLODECK_SEMAPHORE_SERVER{instance_id}",
+            "client_semaphore": f"Global\\HOLODECK_SEMAPHORE_CLIENT{instance_id}",
+            "shared_memory_prefix": f"/HOLODECK_MEM{instance_id}_",
+        },
+        "directories": {key: str(value) for key, value in dirs.items()},
+    }
+    (runtime_root / "session_manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8")
+    return runtime
 
 
 def repo_root() -> Path:
@@ -188,13 +267,14 @@ def activate_fork_client(engine: CustomEngine):
     return holoocean
 
 
-def clear_octree_cache(engine: CustomEngine) -> int:
+def clear_octree_cache(engine: CustomEngine,
+                       cache_root: Optional[Path] = None) -> int:
     """Delete on-disk cached octrees for the current level so the next boot
     rebuilds from scratch (guards against stale caches leaking a previous
     session's spawned geometry into a fresh run). Returns the number of files
     removed. Safe to call when the engine is not running."""
     removed = 0
-    cache = engine.octrees_dir / engine.level
+    cache = Path(cache_root or engine.octrees_dir) / engine.level
     if cache.is_dir():
         for f in cache.glob("*"):
             try:
@@ -215,14 +295,27 @@ def editor_launch_args(
     env_min: tuple = (-100.0, -100.0, -100.0),
     env_max: tuple = (100.0, 100.0, 10.0),
     frames_per_sec: Optional[int] = None,
+    instance_id: Optional[str] = None,
+    octree_cache_root: Optional[Path] = None,
+    absolute_log: Optional[Path] = None,
     extra: Sequence[str] = (),
 ) -> List[str]:
     """Command line to run the fork engine via the UE editor in -game mode.
 
-    The client attaches afterwards with ``make(..., start_world=False)``
-    (shared memory, empty UUID — the -game engine uses the same default).
+    The client attaches afterwards with :func:`attach_custom_environment` and
+    the exact ``instance_id`` used here. This keeps named IPC separate from
+    other HoloOcean sessions.
     """
     exe = editor_exe or os.environ.get("UNREAL_EDITOR_EXE", "").strip()
+    if not exe and os.name == "nt":
+        program_files = Path(os.environ.get("ProgramFiles", r"C:\Program Files"))
+        candidates = sorted(
+            program_files.glob(
+                "Epic Games/UE_5.*/Engine/Binaries/Win64/UnrealEditor.exe"),
+            reverse=True,
+        )
+        if candidates:
+            exe = str(candidates[0])
     if not exe:
         raise CustomEngineError(
             "no Unreal editor executable configured: pass editor_exe or set "
@@ -240,7 +333,6 @@ def editor_launch_args(
         f"-ResX={res[0]}",
         f"-ResY={res[1]}",
         "-ForceRes",
-        "-LOG=HolodeckCustom.log",
         # Octree::initOctree parses these in CLIENT units (meters); without
         # EnvMin/EnvMax the acoustic octree only covers +-10 m around origin.
         f"-OctreeMin={octree_min_m}",
@@ -248,10 +340,47 @@ def editor_launch_args(
         f"-EnvMinX={env_min[0]}", f"-EnvMinY={env_min[1]}", f"-EnvMinZ={env_min[2]}",
         f"-EnvMaxX={env_max[0]}", f"-EnvMaxY={env_max[1]}", f"-EnvMaxZ={env_max[2]}",
     ]
+    if instance_id:
+        args.append(f"--HolodeckUUID={validate_instance_id(instance_id)}")
+    if octree_cache_root is not None:
+        args.append(f"-OctreeCacheRoot={Path(octree_cache_root).resolve()}")
+    if absolute_log is not None:
+        args.append(f"-abslog={Path(absolute_log).resolve()}")
+    else:
+        args.append("-LOG=HolodeckCustom.log")
     if frames_per_sec:
         args.append(f"-FramesPerSec={int(frames_per_sec)}")
     args.extend(extra)
     return args
+
+
+def attach_custom_environment(holoocean_mod, scenario: dict,
+                              show_viewport: bool = True,
+                              verbose: bool = False,
+                              instance_id: Optional[str] = None):
+    """Attach to a custom engine with an explicit isolated IPC namespace.
+
+    HoloOcean 2.3.0's ``make(..., start_world=False)`` does not expose its
+    internal ``uuid`` argument and silently uses the global empty suffix.
+    Constructing ``HoloOceanEnvironment`` directly preserves the scenario
+    behavior while namespacing loading semaphores, lock-step semaphores, and
+    every shared-memory block.
+    """
+    iid = validate_instance_id(instance_id or isolated_instance_id())
+    env_cls = holoocean_mod.environments.HoloOceanEnvironment
+    ticks = scenario.get("ticks_per_sec", 30)
+    frames = scenario.get("frames_per_sec", 30)
+    return env_cls(
+        scenario=scenario,
+        start_world=False,
+        uuid=iid,
+        show_viewport=show_viewport,
+        verbose=verbose,
+        ticks_per_sec=ticks,
+        frames_per_sec=frames,
+        set_tps=True,
+        set_fps=True if frames is not False else None,
+    )
 
 
 # --------------------------------------------------------------------------- #

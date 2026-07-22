@@ -5,7 +5,7 @@ in another process) with the target level loaded.
 
 Checks, in order, each printed as PASS/FAIL:
  1. fork client import via HOLOOCEAN_CUSTOM_ENGINE_PATH
- 2. attach to the running engine (make(..., start_world=False)) + agent spawn
+ 2. attach to the named isolated engine session + agent spawn
  3. tick + LocationSensor readout
  4. SpawnAsset a cylinder (static mesh) + tick
  5. sonar frame BEFORE vs AFTER spawn differs near the asset (octree rebuild)
@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from brinewatch.simulation.custom_engine import (  # noqa: E402
     activate_fork_client,
+    attach_custom_environment,
     clear_spawned,
     make_asset_spawner,
     resolve_custom_engine,
@@ -63,8 +64,8 @@ def main() -> int:
         }],
     }
 
-    env = holoocean.make(scenario_cfg=scenario, start_world=False,
-                         show_viewport=True, verbose=False)
+    env = attach_custom_environment(holoocean, scenario,
+                                    show_viewport=True, verbose=False)
     print("PASS 2: attached to running engine")
 
     env.reset()

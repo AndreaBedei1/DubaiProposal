@@ -31,6 +31,7 @@ sys.path.insert(0, str(REPO))
 
 from brinewatch.simulation.custom_engine import (  # noqa: E402
     activate_fork_client,
+    attach_custom_environment,
     clear_spawned,
     make_asset_spawner,
     resolve_custom_engine,
@@ -86,8 +87,8 @@ def main() -> int:
         }],
     }
 
-    env = holoocean.make(scenario_cfg=scenario, start_world=False,
-                         show_viewport=True, verbose=False)
+    env = attach_custom_environment(holoocean, scenario,
+                                    show_viewport=True, verbose=False)
     env.reset()
     agent = env.agents[AGENT]
     print("[abc] attached; agent up")

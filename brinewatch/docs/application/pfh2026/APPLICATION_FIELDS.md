@@ -1,4 +1,9 @@
-# Application form fields — ready to paste (PFH 2026)
+# Application form fields - ready to paste (PFH 2026)
+
+The competition-ready canonical text is maintained in
+[`output/submission/SUBMISSION_FIELDS.md`](../../../../output/submission/SUBMISSION_FIELDS.md).
+That version supersedes the older draft below and uses the final 12-seed
+benchmark, custom-engine mission and 2026 submission assets.
 
 ## Project name
 

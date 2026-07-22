@@ -41,6 +41,8 @@ dist/
 # Custom HoloOcean engine (Unreal project + built binaries): NEVER committed
 # (huge; auto-discovered at runtime). It lives at <repo>/engine.
 /engine/
+.runtime/
+/tmp/
 
 # Generated BrineWatch mission and benchmark artifacts, EXCEPT the curated
 # committed evidence packages (see brinewatch/outputs/README.md)
@@ -79,4 +81,3 @@ brinewatch/outputs/*
 *.bak
 *.tmp
 *.temp
-

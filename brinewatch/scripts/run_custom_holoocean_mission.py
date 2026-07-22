@@ -39,6 +39,7 @@ import argparse
 import dataclasses
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -101,7 +102,11 @@ def drive_to(backend, wp, max_steps=400, tol=2.5):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", default=str(REPO_ROOT / "configs" / "pfh2026_custom.yaml"))
-    ap.add_argument("--out", default=str(REPO_ROOT / "outputs"))
+    ap.add_argument(
+        "--out",
+        default=os.environ.get("BRINEWATCH_SESSION_OUTPUT_DIR",
+                               str(REPO_ROOT / "outputs")),
+    )
     ap.add_argument("--ring-radius", type=float, default=22.0)
     ap.add_argument("--ring-poses", type=int, default=18)
     ap.add_argument("--budget", type=float, default=260.0,

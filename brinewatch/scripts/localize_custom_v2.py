@@ -60,7 +60,7 @@ def orbit_poses(radius: float, phase_deg: float, bed_z: float):
 
 def attach(noise_seed=None):
     from brinewatch.simulation.custom_engine import (
-        activate_fork_client, resolve_custom_engine,
+        activate_fork_client, attach_custom_environment, resolve_custom_engine,
     )
     engine = resolve_custom_engine()
     holoocean = activate_fork_client(engine)
@@ -90,8 +90,8 @@ def attach(noise_seed=None):
             "rotation": [0.0, 0.0, 45.0],
         }],
     }
-    env = holoocean.make(scenario_cfg=scenario, start_world=False,
-                         show_viewport=True, verbose=False)
+    env = attach_custom_environment(holoocean, scenario,
+                                    show_viewport=True, verbose=False)
     env.reset()
     return env, holoocean
 

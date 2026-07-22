@@ -64,7 +64,7 @@ def component_filter(condition):
 
 def run_condition(args) -> int:
     from brinewatch.simulation.custom_engine import (
-        activate_fork_client, clear_spawned, make_asset_spawner,
+        activate_fork_client, attach_custom_environment, clear_spawned, make_asset_spawner,
         resolve_custom_engine,
     )
 
@@ -98,8 +98,8 @@ def run_condition(args) -> int:
             "rotation": [0.0, 0.0, 45.0],
         }],
     }
-    env = holoocean.make(scenario_cfg=scenario, start_world=False,
-                         show_viewport=True, verbose=False)
+    env = attach_custom_environment(holoocean, scenario,
+                                    show_viewport=True, verbose=False)
     env.reset()
     agent = env.agents[AGENT]
     print(f"[cond {args.condition}] attached")

@@ -9,6 +9,19 @@ The repository includes both the project proposal prepared for **Prototypes
 for Humanity 2026** and the Python implementation used for the simulation and
 benchmark experiments.
 
+## Competition submission package
+
+The polished 2026 submission package is indexed in
+[output/submission/README.md](output/submission/README.md). The recommended
+upload is the 11-page
+[competition report](output/pdf/BrineWatch_PFH2026_Competition_Report.pdf)
+(6.9 MB) together with the 48-second
+[final video](output/submission/video/BrineWatch_PFH2026_Final.mp4).
+
+The package also contains hero images, a contact sheet, sonar/localization,
+mission, 3-D plume and digital-twin figures, plus paste-ready form text. All
+headline performance values are explicitly identified as simulation results.
+
 > **Research status:** BrineWatch is a simulation-led prototype, not a
 > certified environmental monitoring or regulatory compliance system. The
 > plume is an analytic surrogate rather than a CFD or field-validated model.
@@ -119,15 +132,19 @@ editor path is needed. See
 ```powershell
 $env:UNREAL_EDITOR_EXE = "C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe"
 
-# prove a runtime-spawned object appears in the sonar (BOX / CYL / OUTFALL)
-powershell -File brinewatch\scripts\run_sonar_truth_test.ps1 -OutDir outputs\sonar_truth_run1 -SkipOfficial
+# isolated smoke test: private UUID, IPC, octree cache, temp area and logs
+conda run -n ocean python brinewatch\scripts\run_isolated_custom_session.py --client brinewatch\scripts\smoke_custom_engine.py
 
-# full custom-engine mission: real sonar LOCATE of the spawned outfall + survey
-powershell -File brinewatch\scripts\run_custom_demo.ps1
+# isolated full mission: native sonar LOCATE + collision-safe survey
+conda run -n ocean python brinewatch\scripts\run_isolated_custom_session.py --client brinewatch\scripts\run_custom_holoocean_mission.py
 
-# cinematic flythrough of the accepted (official-engine) scene
-python brinewatch\scripts\capture_cinematic_inspection.py
+# rebuild the curated visuals and smooth competition video
+conda run -n ocean python brinewatch\scripts\build_competition_visuals.py
+conda run -n ocean python brinewatch\scripts\make_competition_video.py
 ```
+
+The isolation design and process-ownership rules are documented in
+[ISOLATED_EXECUTION](brinewatch/docs/application/pfh2026/ISOLATED_EXECUTION.md).
 
 See the [implementation README](brinewatch/README.md) for experiment results,
 output interpretation, simulator details, and the complete command reference.
@@ -161,4 +178,3 @@ document new assumptions, and include tests for behavioral changes.
 ## License
 
 Released under the [MIT License](LICENSE).
-
