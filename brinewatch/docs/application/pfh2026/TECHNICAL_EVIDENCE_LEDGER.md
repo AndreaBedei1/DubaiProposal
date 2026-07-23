@@ -115,7 +115,7 @@ If vessel, permits and accredited sampling remain unchanged, the economic benefi
 - The dedicated cinematic camera path is genuine to the simulated scene but is not a telemetry-synchronised replay of the scientific mission.
 - Scientific result images are fixed in frame with no pan/zoom transformation.
 - The progressive 3-D segment is generated from the validated volumetric result.
-- Native engine haze is retained; only restrained contrast and saturation grading are applied.
+- Grading disclosure: the continuous engine footage carries a stylistic underwater grade (highlight compression of the strong surface light, cool colour cast, a vertical depth-fog overlay denser towards the surface, restrained sharpening and a gentle vignette). The grade changes look only; scene content, geometry and camera path are unchanged. Scientific result images are never graded.
 
 ## 9. Claims boundary
 
@@ -142,4 +142,3 @@ Claims that must not be made:
 ## 10. Next validation gate
 
 Integrate a calibrated conductivity-temperature payload, establish traceable timing and calibration, validate against known gradients in controlled water and then run a supervised nearshore pilot with independent reference samples.
-

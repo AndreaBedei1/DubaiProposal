@@ -1,80 +1,78 @@
-# BrineWatch - redesigned competition package
+# BrineWatch — Prototypes for Humanity 2026 final submission package
 
-Status: **Initial Prototype or Model**  
+Status: **Initial Prototype or Model**
 Package date: 22 July 2026
-
-This directory separates the simple public story from the full technical evidence.
 
 ## Upload these files
 
-1. **Primary PDF:** `UPLOAD/BrineWatch_PFH2026_Public_Competition_Report.pdf`
-   - 10 pages, 6.8 MB.
-   - Rebuilt from zero for technical and non-technical reviewers.
-   - The first three pages explain the problem, goal, robot and workflow before introducing metrics.
+1. **Primary project PDF (the one to upload in the "Upload Project" form):**
+   `UPLOAD/BrineWatch_PFH2026_Final_Project_Proposal.pdf`
+   - 12 pages, portrait A4, 3.6 MB (limit: 20 MB).
+   - Editorial white/blue design rebuilt from the original proposal's visual language.
+   - Structure: cover → problem → monitoring gap → system → mission → digital twin →
+     evidence (in-engine mission, 2-D, 3-D) → adaptive benchmark → feasibility + risks →
+     costs + roadmap → applications, impact and request → references.
+   - Every number is reproduced deterministically from the repository (see
+     `proposal_final/README.md`) and matches the technical evidence ledger.
 
-2. **Primary video:** `UPLOAD/BrineWatch_PFH2026_Public_1080p.mp4`
-   - 43.9 seconds, 1920 x 1080, 30 fps, 77.1 MB.
-   - H.264 High Profile master at CRF 10, with a compact top-right caption panel.
-   - Uses 625 consecutive genuine custom-HoloOcean frames for the continuous approach and inspection.
-   - Shows only sonar, one 2-D result, one progressive 3-D result, the digital twin and the next validation step.
+2. **Primary video (link it in the "Project Video" field after uploading to YouTube/Vimeo):**
+   `UPLOAD/BrineWatch_PFH2026_Public_1080p.mp4`
+   - 43.9 s, 1920x1080, 30 fps, H.264 CRF 10, 61.8 MB.
+   - 625 consecutive genuine custom-HoloOcean frames for the approach/inspection,
+     then sonar → 2-D map → progressive 3-D → digital twin → closing.
+   - Engine footage carries a stylistic underwater grade (sun-glare roll-off, cool cast,
+     depth-fog gradient, vignette). Content, geometry and camera path unchanged;
+     scientific figures are never graded. Disclosed in the technical ledger, §8.
 
-3. **Optional short video:** `UPLOAD/BrineWatch_PFH2026_Public_Short_1080p.mp4`
-   - 29.7 seconds, 1920 x 1080, 30 fps, 45.1 MB.
+`UPLOAD/` deliberately contains only these two files — one PDF, one video.
+Do not upload the technical ledger as the project PDF; it is a supporting document.
 
-Do not upload the technical ledger as the primary project PDF. Use it only if the application allows a supporting technical document.
+## Supporting technical evidence (keep separate)
 
-## Supporting technical evidence
+- `TECHNICAL/BrineWatch_PFH2026_Technical_Evidence_Ledger.pdf` — complete metrics,
+  assumptions, screening counts, claims boundary, video disclosure.
+- `TECHNICAL/TECHNICAL_EVIDENCE_LEDGER.md` — searchable source.
+- `TECHNICAL/PUBLIC_VIDEO_MANIFEST.json` — exact scene timings and footage policy.
 
-- `TECHNICAL/BrineWatch_PFH2026_Technical_Evidence_Ledger.pdf` - six-page appendix with complete metrics, screening counts, assumptions and claims boundary.
-- `TECHNICAL/TECHNICAL_EVIDENCE_LEDGER.md` - searchable source version.
-- `TECHNICAL/PUBLIC_VIDEO_MANIFEST.json` - exact scene timings, footage disclosure and fixed-figure motion policy.
+## How to rebuild
 
-## Source scripts
+- **PDF:** `proposal_final/` holds the complete LaTeX source, all figures and
+  `make_figures.py` (regenerates every scientific figure from mission outputs).
+  Build: `python proposal_final/make_figures.py` then run `pdflatex` twice on
+  `proposal_final/BrineWatch_PFH2026_Final_Project_Proposal.tex`.
+- **Video:** the delivered MP4 is final. To rebuild:
+  `python brinewatch/scripts/make_public_competition_video.py` (source copy in
+  `SOURCE_SCRIPTS/`) — it reads the cinematic master from `C:\bwrt\bwp26-cin1`
+  and science assets that were pruned from `output/` during cleanup; restore
+  them first from git history (commits `434ac0d` / `f8838ef`) if needed.
+- **Figure sources:** static images used by `make_figures.py` are archived in
+  `proposal_final/figures_src/`.
+- **Ledger PDF:** `python brinewatch/scripts/build_technical_evidence_appendix.py`.
 
-Rebuild copies are included in `SOURCE_SCRIPTS/`:
+## Data and cost sources
 
-- `build_public_competition_assets.py`
-- `build_public_competition_report.py`
-- `build_technical_evidence_appendix.py`
-- `make_public_competition_video.py`
+- 2-D flagship and 3-D volumetric metrics: deterministic re-runs (seed 17) of
+  `configs/pfh2026_flagship_demo.yaml` and `configs/pfh2026_flagship_volumetric.yaml`
+  (four altitude bands 0.8/1.6/2.8/4.5 m) — outputs under `tmp/regen/`.
+- In-engine mission and sonar localisation: isolated run `bwp26-fa3`
+  (`C:\bwrt\bwp26-fa3\outputs\custom_holoocean_mission_20260722_093246`).
+- Equal-evidence benchmark: ledger §5 (8 seeds × 3 methods, 48 readings, 300 m cap).
+- Price anchors (22 July 2026): BlueROV2 from USD 4,900 (Blue Robotics);
+  Omniscan 450 FS from USD 2,490 (Cerulean Sonar). Other costs are planning
+  assumptions, flagged as such in the PDF.
 
-The maintained source files remain under `brinewatch/scripts/`.
+## Headline evidence (all simulation)
 
-## Public story in one sentence
+- Sonar localisation: 2.35 m scored centre error, no oracle input.
+- In-engine mission: 394.8 m travelled, 564 simulated CT readings, 0 collisions,
+  4 safe detours (min clearance 1.85 m vs 2.0 m standoff, disclosed).
+- Flagship 2-D: RMSE 0.3415 PSU, boundary F1 0.947, boundary IoU 0.900, correct
+  conclusive POSSIBLE EXCEEDANCE screen.
+- Volumetric 3-D: RMSE 0.477 PSU, volume IoU 0.805, reconstructed 2,051 m³ vs
+  surrogate truth 2,448 m³.
+- Equal-evidence benchmark: useful readings 17% / 23% / 70%, plume unresolved
+  100% / 82% / 28%, conclusive 0/8 / 4/8 / 8/8 (sparse / regular / adaptive).
 
-> BrineWatch turns one robotic outfall inspection into an uncertainty-aware plume map that directs certified sampling to the locations that matter.
-
-## What the public report communicates
-
-- The problem: isolated measurements can miss the spatial plume boundary.
-- The system: BlueROV2, Omniscan 450 FS forward-looking imaging sonar and a planned calibrated conductivity-temperature payload.
-- The workflow: Locate -> Sense -> Adapt -> Reconstruct -> Act.
-- The twin: an evolving site record containing the latest map, uncertainty, route, sonar location, mission history and recommended next action.
-- What works: sonar localisation, collision-free in-engine motion, flagship 2-D reconstruction and coherent 3-D reconstruction.
-- What comes next: calibrated CT integration, controlled-water validation and a supervised nearshore pilot.
-
-## Headline evidence
-
-- Sonar localisation: 2.35 m scored centre error; no oracle input.
-- Custom-HoloOcean mission: 395 m travelled; 564 simulated CT readings; zero collisions.
-- Flagship 2-D reconstruction: 0.900 boundary IoU with a correct conclusive screen.
-- Volumetric reconstruction: 0.805 volume IoU across four altitude bands.
-- Equal-evidence comparison: 48 readings and a 300 m cap per method; adaptive sampling was conclusive in 8/8 runs, regular survey in 4/8 and sparse fixed sampling in 0/8.
-
-These are simulation results. The flagship plume is an explicitly disclosed demo-optimised analytic surrogate, not CFD or field truth.
-
-## Final quality checks
-
-- Public PDF: all 10 pages rendered and visually inspected at normal laptop scale.
-- Technical ledger: all six pages rendered and visually inspected.
-- Main video: 1,318 / 1,318 frames decoded; zero black frames.
-- Short video: 890 / 890 frames decoded; zero black frames.
-- First 10 seconds: all 300 frames checked; high-contrast caption panel remains inside safe margins.
-- Sonar, 2-D and digital-twin scenes: fixed frame with cuts/fades only; no pan or zoom.
-- Final card: fixed underwater background, high-contrast panel and minimal text.
-
-## Claims boundary
-
-Supported: simulation-led feasibility, isolated in-engine integration, sonar localisation, relative adaptive-sampling performance in the stated benchmark, uncertainty-aware screening and a digital-twin workflow.
-
-Do not claim: regulatory certification, field or CFD validation, guaranteed savings, universal replacement of accredited monitoring or unsupervised field readiness.
+The plume is an explicitly disclosed demo-optimised analytic surrogate — not CFD,
+not field truth. No regulatory-certification, field-accuracy or guaranteed-savings
+claims are made anywhere in the public package.

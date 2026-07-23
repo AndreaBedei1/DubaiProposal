@@ -103,18 +103,60 @@ def text(frame, value, xy, size, color=WHITE, thickness=2):
     text_block(frame, [(value, xy, size, color, thickness)])
 
 
+def fit_size(value, size, bold, max_width):
+    """Shrink a label's scale until it fits max_width pixels (never below 60%)."""
+    for _ in range(24):
+        size_px = max(12, int(round(size * 46)))
+        if video_font(size_px, bold).getlength(value) <= max_width:
+            break
+        if size <= 0.36:
+            break
+        size -= 0.02
+    return size
+
+
+_FOG_CACHE = {}
+
+
 def grade_underwater(frame):
+    """Underwater look for genuine engine footage only (never scientific figures):
+    compress the strong surface-light highlights, cool the colour cast, add a
+    depth-fog gradient (denser towards the surface) and a gentle vignette.
+    Purely stylistic: geometry and content are unchanged."""
     x = frame.astype(np.float32) / 255.0
-    x = np.clip((x - .5) * 1.20 + .43, 0, 1)
-    x = np.power(x, 1.03)
-    out = np.uint8(np.clip(x * 255, 0, 255))
+    # 1. tame the sun glare: soft roll-off of the top of the tonal range
+    x = np.where(x > 0.55, 0.55 + (x - 0.55) * 0.50, x)
+    # 2. cool water cast (BGR gains)
+    x[..., 2] *= 0.78
+    x[..., 1] *= 0.99
+    x[..., 0] *= 1.06
+    # 3. restrained unsharp before fogging (counteracts TAA softness)
+    x = np.clip(x, 0, 1)
+    soft = cv2.GaussianBlur(x, (0, 0), .85)
+    x = np.clip(x * 1.10 - soft * 0.10, 0, 1)
+    # 4. blue depth fog, denser towards the surface (top of frame)
+    h, w = x.shape[:2]
+    key = (h, w)
+    if key not in _FOG_CACHE:
+        yy = np.linspace(1, 0, h, dtype=np.float32)[:, None]
+        _FOG_CACHE[key] = (0.10 + 0.50 * yy ** 1.5)[..., None]
+    fog_alpha = _FOG_CACHE[key]
+    fog = np.array([0.55, 0.42, 0.23], dtype=np.float32)  # BGR
+    x = x * (1 - fog_alpha) + fog * fog_alpha
+    # 5. gentle contrast and saturation
+    x = np.clip((x - 0.5) * 1.06 + 0.5, 0, 1)
+    out = (x * 255).astype(np.uint8)
     hsv = cv2.cvtColor(out, cv2.COLOR_BGR2HSV).astype(np.float32)
-    hsv[:, :, 1] = np.clip(hsv[:, :, 1] * 1.06, 0, 255)
+    hsv[:, :, 1] = np.clip(hsv[:, :, 1] * 1.10, 0, 255)
     out = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
-    # A restrained unsharp mask counteracts the source capture's TAA/haze softness.
-    # It is applied only to genuine underwater footage, never to scientific figures.
-    softened = cv2.GaussianBlur(out, (0, 0), .85)
-    return cv2.addWeighted(out, 1.16, softened, -.16, 0)
+    # 6. vignette
+    vkey = ("vig", h, w)
+    if vkey not in _FOG_CACHE:
+        Y, X = np.ogrid[:h, :w]
+        r = np.sqrt(((X - w / 2) / (w / 2)) ** 2 + ((Y - h / 2) / (h / 2)) ** 2)
+        _FOG_CACHE[vkey] = np.clip(
+            1 - 0.15 * np.clip(r - 0.6, 0, None) ** 1.5, 0, 1)[..., None].astype(np.float32)
+    return (out * _FOG_CACHE[vkey]).astype(np.uint8)
 
 
 def dark_panel(frame, rect, alpha=.92, radius=0):
@@ -189,10 +231,11 @@ def cinematic_overlay(frame, idx):
 
     # Compact top-right caption: readable without obscuring the approach or structure.
     dark_panel(frame, (1180, 44, 1868, 208), alpha=.88, radius=16)
+    inner = 1868 - 1210 - 26
     text_block(frame, [
-        (kicker, (1210, 82), .52, accent, 2),
-        (headline, (1210, 129), .80, WHITE, 2),
-        (sub, (1210, 177), .54, MUTED, 1),
+        (kicker, (1210, 82), fit_size(kicker, .52, True, inner), accent, 2),
+        (headline, (1210, 129), fit_size(headline, .80, True, inner), WHITE, 2),
+        (sub, (1210, 177), fit_size(sub, .54, False, inner), MUTED, 1),
     ])
 
 
@@ -215,10 +258,30 @@ def load_image(path):
     return image
 
 
+def autotrim(image, tol=14, pad=26):
+    """Trim uniform border margins (background-coloured) so the artwork can be
+    shown as large as possible. Keeps a small aesthetic padding."""
+    ref = image[2, 2].astype(np.int16)
+    diff = np.abs(image.astype(np.int16) - ref).sum(axis=2)
+    mask = diff > tol
+    if not mask.any():
+        return image
+    ys, xs = np.where(mask)
+    y0, y1 = max(0, ys.min() - pad), min(image.shape[0], ys.max() + pad)
+    x0, x1 = max(0, xs.min() - pad), min(image.shape[1], xs.max() + pad)
+    return image[y0:y1, x0:x1]
+
+
 def write_static(writer, image_path, seconds, kicker, headline, sub, scenes,
                  frame_cursor, accent=TEAL):
-    source = load_image(image_path)
-    base = contain(source)
+    source = autotrim(load_image(image_path))
+    # Fit the artwork entirely BELOW the opaque title band: nothing from the
+    # source figure is ever covered or clipped by the headline strip.
+    top_band, gap, bottom_margin = 240, 14, 18
+    art_h = H - top_band - gap - bottom_margin
+    inner = contain(source, W, art_h, pad=0)
+    base = np.full((H, W, 3), BG, dtype=np.uint8)
+    base[top_band + gap:top_band + gap + art_h] = inner
     n = int(seconds * FPS)
     for i in range(n):
         frame = base.copy()

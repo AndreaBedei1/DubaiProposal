@@ -1,0 +1,474 @@
+﻿This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(BrineWatch_PFH2026_Final_Project_Proposal.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cl
+s
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geomet
+ry.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval
+.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.
+sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.s
+ty))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geomet
+ry.cfg))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.st
+y)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.s
+ty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xcharter\XChart
+er.sty
+`XCharter' v1.25, 2023/07/21 Text macros for XCharter, an extension of Charter 
+(msharpe)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyv
+al.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvut
+ils.tex)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolb
+ox.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.s
+ty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstri
+ng.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/carlisle\scalef
+nt.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.st
+y)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontaxes\fontax
+es.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/figureversions\
+figureversions.sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\helvet.s
+ty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type-pdftex.def)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/microtype\micro
+type.cfg))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.s
+ty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\co
+lor.cfg)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pd
+ftex.def)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathco
+lor.ltx))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphi
+cx.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphi
+cs.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.s
+ty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\gr
+aphics.cfg)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlay
+er\tikz.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\
+pgf.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\p
+gfrcs.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfutil-common.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfutil-latex.def)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfrcs.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revis
+ion.tex)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\
+pgfcore.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer
+\pgfsys.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgfsys.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfkeys.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfkeyslibraryfiltered.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgf.cfg)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgfsys-pdftex.def
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgfsys-common-pdf.def)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgfsyssoftpath.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlay
+er\pgfsysprotocol.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcore.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+ath.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athutil.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athparser.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.basic.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.trigonometric.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.random.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.comparison.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.base.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.round.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.misc.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfunctions.integerarithmetics.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athcalc.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+athfloat.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfi
+nt.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorepoints.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorepathconstruct.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorepathusage.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorescopes.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoregraphicstate.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoretransformations.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorequick.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoreobjects.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorepathprocessing.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorearrows.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoreshade.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoreimage.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoreexternal.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorelayers.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcoretransparency.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorepatterns.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclaye
+r\pgfcorerdf.code.tex)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\p
+gfmoduleshapes.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\p
+gfmoduleplot.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibili
+ty\pgfcomp-version-0-65.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibili
+ty\pgfcomp-version-1-18.sty))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\p
+gffor.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\p
+gfkeys.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgfkeys.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmat
+h.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfm
+ath.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities
+\pgffor.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz\tikz.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries
+\pgflibraryplothandlers.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\p
+gfmodulematrix.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries
+\pgflibraryarrows.meta.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\p
+gfmoduledecorations.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries
+/decorations\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolo
+rbox.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.
+sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trim
+spaces.sty))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbra
+ster.code.tex
+Library (tcolorbox): 'tcbraster.code.tex' version '6.9.0'
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbsk
+ins.code.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfi
+ll.image.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzli
+braryfill.image.code.tex))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbsk
+insjigsaw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.9.0'
+))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbbr
+eakable.code.tex
+Library (tcolorbox): 'tcbbreakable.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/pdfcol\pdfcol.s
+ty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcm
+ds.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\inf
+warerr.sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbho
+oks.code.tex
+Library (tcolorbox): 'tcbhooks.code.tex' version '6.9.0'
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbth
+eorems.code.tex
+Library (tcolorbox): 'tcbtheorems.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath
+.sty
+For additional information on amsmath, use the `?' option.
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.
+sty))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.
+sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.
+sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbfi
+tting.code.tex
+Library (tcolorbox): 'tcbfitting.code.tex' version '6.9.0'
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbli
+stingsutf8.code.tex
+Library (tcolorbox): 'tcblistingsutf8.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbli
+stings.code.tex
+Library (tcolorbox): 'tcblistings.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/listings\listin
+gs.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpat
+ch.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmis
+c.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/listings\listin
+gs.cfg))
+==> First Aid for listings.sty no longer applied!
+    Expected:
+        2024/09/23 1.10c (Carsten Heinz)
+    but found:
+        2025/11/14 1.11b (Carsten Heinz)
+    so I'm assuming it got fixed.
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbli
+stingscore.code.tex
+Library (tcolorbox): 'tcblistingscore.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbpr
+ocessing.code.tex
+Library (tcolorbox): 'tcbprocessing.code.tex' version '6.9.0'
+)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/listingsutf8\li
+stingsutf8.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pd
+ftexcmds.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\str
+ingenc.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdf
+escape.sty))))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbex
+ternal.code.tex
+Library (tcolorbox): 'tcbexternal.code.tex' version '6.9.0'
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbma
+gazine.code.tex
+Library (tcolorbox): 'tcbmagazine.code.tex' version '6.9.0'
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbvi
+gnette.code.tex
+Library (tcolorbox): 'tcbvignette.code.tex' version '6.9.0'
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendl
+ayer/tikz/libraries\tikzlibraryfadings.code.tex
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries
+\pgflibraryfadings.code.tex)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbpo
+ster.code.tex
+Library (tcolorbox): 'tcbposter.code.tex' version '6.9.0'
+))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titles
+ec.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumit
+em.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\bookta
+bs.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.
+sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colort
+bl.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyh
+dr.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\fo
+ntawesome5.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.
+sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3bac
+kend-pdftex.def))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/l3ke
+ys2e\l3keys2e.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xpar
+se\xparse.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\fo
+ntawesome5-generic-helper.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\fo
+ntawesome5-mapping.def)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperr
+ef.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvset
+keys.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\
+kvdefinekeys.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor
+.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\namere
+f.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcou
+nt.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestrin
+g\gettitlestring.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvopt
+ions.sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc
+.def)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intca
+lc.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.
+def)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bi
+gintcalc.sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdfte
+x.def
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\
+rerunfilecheck.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter
+\uniquecounter.sty)))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption
+.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption
+3.sty))
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xcharter\t1xcha
+rter-tlf.fd) (BrineWatch_PFH2026_Final_Project_Proposal.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-bc
+h.cfg)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\sup
+p-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\ep
+stopdf-base.sty
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstop
+df-sys.cfg)) (BrineWatch_PFH2026_Final_Project_Proposal.out)
+(BrineWatch_PFH2026_Final_Project_Proposal.out)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1phv.fd
+)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cm
+r.cfg)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1phv.f
+d) [1{C:/Users/andrea.bedei3/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{
+C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.en
+c}{C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/xcharte
+r/xch_rydp4l.enc} <./figures/hero_wide.jpg>] [2]
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/xcharter\ts1xch
+arter-tlf.fd)
+Underfull \hbox (badness 10000) in paragraph at lines 284--287
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 297--300
+
+[3{C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/xcharte
+r/xch1_co4ru4.enc} <./figures/still_approach.jpg>]
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\uf
+ontawesomefree2.fd)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\uf
+ontawesomefree3.fd)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\uf
+ontawesomefree0.fd)
+(C:\Users\andrea.bedei3\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\uf
+ontawesomefree1.fd) [4{C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fon
+ts/enc/dvips/fontawesome5/fa5free2.enc}{C:/Users/andrea.bedei3/AppData/Local/Pr
+ograms/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free3.enc}{C:/Users/andrea.bedei3
+/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free0.enc}{C:/Us
+ers/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa
+5free1.enc} <./figures/hero_closeup.jpg>] [5 <./figures/still_descent.jpg> <./f
+igures/still_nozzles.jpg> <./figures/still_inspect.jpg> <./figures/sonar_residu
+al.png (PNG copy)>] [6 <./figures/dashboard.jpg>] [7 <./figures/mission_map.png
+>] [8 <./figures/flagship_2d.png> <./figures/vol3d.png (PNG copy)>] [9 <./figur
+es/benchmark.png>] [10] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 846--849
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 859--862
+
+[12 <./figures/closing_banner.jpg>]
+(BrineWatch_PFH2026_Final_Project_Proposal.aux) )
+(see the transcript file for additional information)<C:/Users/andrea.bedei3/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Sol
+id.pfb><C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/xcharter/XCharter-Bold.pfb><C:/Users/andrea.bedei3/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/xcharter/XCharter-BoldItalic.pfb><C:/Users/andrea.bedei3/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/xcharter/XCharter-Italic.pfb><
+C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/fonts/type1/public/xcharte
+r/XCharter-Roman.pfb><C:/Users/andrea.bedei3/AppData/Local/Programs/MiKTeX/font
+s/type1/urw/helvetic/uhvb8a.pfb><C:/Users/andrea.bedei3/AppData/Local/Programs/
+MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on BrineWatch_PFH2026_Final_Project_Proposal.pdf (12 pages, 3676
+092 bytes).
+Transcript written on BrineWatch_PFH2026_Final_Project_Proposal.log.

@@ -11,12 +11,14 @@ benchmark experiments.
 
 ## Competition submission package
 
-The redesigned public 2026 package is indexed in
+The final public 2026 package is indexed in
 [output/final_submission/README.md](output/final_submission/README.md). The
-recommended upload is the 10-page
-[competition report](output/final_submission/UPLOAD/BrineWatch_PFH2026_Public_Competition_Report.pdf)
-(6.8 MB) together with the 43.9-second Full-HD
-[final video](output/final_submission/UPLOAD/BrineWatch_PFH2026_Public_1080p.mp4).
+recommended upload is the 12-page editorial
+[final project proposal](output/final_submission/UPLOAD/BrineWatch_PFH2026_Final_Project_Proposal.pdf)
+(3.6 MB, LaTeX source in [proposal_final/](proposal_final/README.md)) together
+with the 43.9-second Full-HD
+[final video](output/final_submission/UPLOAD/BrineWatch_PFH2026_Public_1080p.mp4)
+(underwater-graded engine footage; disclosure in the technical ledger).
 
 The public package tells a simple purpose-first story. Complete metrics,
 screening counts, assumptions and limitations are separated into the

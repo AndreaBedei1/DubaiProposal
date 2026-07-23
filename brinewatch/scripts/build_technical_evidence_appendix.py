@@ -296,8 +296,10 @@ def page_limits(c):
         59, 166, 710, size=11.5, leading=16, color=WHITE)
     c.setFillColor(MUTED)
     c.setFont("Helvetica", 8.5)
-    c.drawString(42, 72,
+    c.drawString(42, 82,
         "Video disclosure: 625 consecutive Full-HD HoloOcean frames; dedicated cinematic path, not a telemetry-synchronised replay; fixed scientific result panels.")
+    c.drawString(42, 68,
+        "Stylistic underwater grade on engine footage only (highlight roll-off, cool cast, depth-fog gradient, vignette); content and geometry unchanged; science images ungraded.")
     footer(c, 6, "Limitations and next gate")
     c.showPage()
 
