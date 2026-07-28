@@ -116,7 +116,7 @@ into actionable environmental evidence.}
 \begin{tabularx}{\linewidth}{@{}>{\color{muted}}p{3.45cm}>{\color{navy}}X@{}}
 Applicant \& team lead & \textbf{Andrea Bedei}, PhD student, University of Bologna \\[1.5pt]
 Academic supervisors & Roberto Girau \textperiodcentered\ Giovanni Pau \textperiodcentered\ University of Bologna \\[1.5pt]
-Project collaborators & Lorenzo Bacchiani \textperiodcentered\ Andrea Melis \\[1.5pt]
+Project collaborators & Lorenzo Bacchiani \textperiodcentered\ Andrea Melis \textperiodcentered\ University of Bologna \\[1.5pt]
 Project phase & \textbf{Simulation Prototype or Model} \\[1.5pt]
 Submission & Prototypes for Humanity 2026 \\
 \end{tabularx}
@@ -207,7 +207,7 @@ year.} Between visits, the plume moves with tides and currents, unobserved.
   \fill[black!55] (10.27,2.8) circle (0.055);
   \fill[black!55] (10.95,2.8) circle (0.055);
   \node[anchor=south west,align=left,color=navy] at (11.1,3.42)
-      {\textbf{BlueROV2} + forward-looking sonar\\[-1pt]{\color{muted}+ planned conductivity--temperature payload}};
+      {\textbf{BlueROV2} + owned imaging sonar\\[-1pt]{\color{muted}+ planned conductivity--temperature payload}};
   \draw[black!40,thin] (11.2,3.4) -- (10.8,3.06);
   \node[anchor=north,align=center,color=teal!60!black] at (9.6,2.5) {sonar};
   % ---- adaptive trajectory ----
@@ -336,7 +336,7 @@ autonomous environmental instrument.
   \node[hw,minimum width=4.35cm,minimum height=1.02cm] (rov) at (0,0)
     {\textbf{\color{deepblue}\faRobot~~BlueROV2}\\vehicle \textperiodcentered\ camera \textperiodcentered\ lights \textperiodcentered\ depth \& heading};
   \node[hw,minimum width=4.35cm] (sonar) at (0,-1.28)
-    {\textbf{\color{deepblue}\faWifi~~Omniscan 450 FS}\\forward-looking imaging sonar};
+    {\textbf{\color{deepblue}\faWifi~~On-vehicle sonar (owned)}\\imaging sonar};
   \node[hwplan,minimum width=4.35cm] (ct) at (0,-2.48)
     {\textbf{\color{accent}\faTint~~CT payload (planned)}\\calibrated conductivity--temperature};
   \node[lab] at (0,-3.35) {\footnotesize ON THE VEHICLE};
@@ -364,8 +364,8 @@ autonomous environmental instrument.
   \draw[arr,{Stealth[length=1.8mm]}-{Stealth[length=1.8mm]}] (planner.south) -- (gp.north);
   \draw[arr,{Stealth[length=1.8mm]}-{Stealth[length=1.8mm]}] (gp.south) -- (twin.north);
 \end{tikzpicture}
-\caption{\textbf{System overview.} Solid blue panels: hardware available today. Dashed panel:
-the calibrated CT sensor, the next integration step. Teal panels: mission software already
+\caption{\textbf{System overview.} Solid blue vehicle panels: hardware owned today. Dashed panel:
+the planned calibrated CT sensor. Teal panels: mission software already
 implemented and exercised in simulation.}
 \end{figure}
 
@@ -633,7 +633,7 @@ today's prototype from a sea-going instrument is integration and validation.
 {\sffamily\bfseries\color{teal}EXISTS AND WORKS TODAY}\\[3pt]
 \small
 \begin{itemize}
-  \item BlueROV2 (owned); Omniscan 450 FS selected, commercially available
+  \item BlueROV2 and on-vehicle sonar hardware owned by the team
   \item custom simulation environment with native imaging sonar
   \item sonar localisation with a 2.35 m error
   \item collision-safe adaptive mission planning
@@ -699,14 +699,7 @@ instrument, not the ocean.
 
 \subsection*{\sffamily\color{deepblue}Reusable system, low-cost repeat missions}
 
-BrineWatch separates the one-time cost of completing the robotic system from the much lower cost
-of repeating a mission. It is completed once and reused: subsequent missions require no dedicated
-survey vessel and produce a precise spatial map rather than a limited set of isolated measurements.
-
-After the initial investment, recurring costs are limited to local transport, consumables,
-equipment wear and the internal operational team. When needed, a small local boat can be rented
-for a short deployment. BrineWatch does not require the purchase or permanent operation of a fully
-equipped survey vessel.
+BrineWatch separates the one-time cost of completing the sensing and navigation system from the much lower cost of repeating each mission. The team already owns the BlueROV2, including its tether, camera, lighting and basic onboard instrumentation, together with the on-vehicle sonar hardware, including a side-scan unit, so the project budget does not include the purchase of a new underwater vehicle or sonar. The estimated USD 5k--9k core completion cost covers the calibrated CT payload, mounting, interfaces, integration, calibration and essential spares, while a more precise underwater navigation solution, such as DVL/INS and, where absolute georeferencing is required, USBL, will be specified separately according to the accuracy required for field 2-D and 3-D mapping. Once the system is completed, recurring costs are limited mainly to local transport, consumables, equipment wear and the operational team; deployment can take place from shore or, when necessary, from a small locally chartered boat, without purchasing or permanently operating a fully equipped survey vessel.
 
 \begin{center}
 \small\sffamily
@@ -730,7 +723,7 @@ equipped survey vessel.
 \begin{panel}[height=5.35cm,valign=top]
 {\sffamily\bfseries\color{deepblue}ONE-TIME SYSTEM COMPLETION}\\[2pt]
 {\sffamily\bfseries\color{deepblue}USD 5k--9k}\\[4pt]
-\small Omniscan 450 FS, calibrated CT payload, mounting and interfaces, integration, calibration
+\small Calibrated CT payload, mounting and interfaces, integration, calibration
 and essential spares. Once completed, the same system can be reused across repeated missions.
 
 \vspace{5pt}
@@ -876,7 +869,7 @@ Prototypes for Humanity 2026}
 [3] G.~Hitz \emph{et al.}, ``Adaptive continuous-space informative path planning for online environmental monitoring,'' \emph{J.~Field Robotics} 34(8), 2017.\par
 [4] E.~Potokar \emph{et al.}, ``HoloOcean: an underwater robotics simulator,'' \emph{IEEE ICRA}, 2022; ``A preview of HoloOcean 2.0,'' arXiv:2510.06160, 2025.\par
 [5] Blue Robotics: BlueROV2 product page, price checked 22 July 2026.\par
-[6] Cerulean Sonar: Omniscan 450 FS product page, price checked 22 July 2026.\par
+[6] Cerulean Sonar: Omniscan 450 imaging-sonar product family.\par
 [7] Marine Institute: 2026 vessel rates of EUR 18{,}000--21{,}500 per day; converted at the ECB
 reference rate of USD 1.1426 per EUR, 20 July 2026.\par
 [8] BrineWatch project video: \url{https://youtu.be/bsZbojE48Yk}.\par
